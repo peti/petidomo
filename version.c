@@ -8,7 +8,7 @@
 #ifndef _VERSION_C_
 #define _VERSION_C_
 
-#define PETIDOMO_VERSION 0x400105
+#define PETIDOMO_VERSION 0x400106
 
 typedef struct {
     const int   v_hex;
@@ -32,13 +32,13 @@ extern petidomo_version_t petidomo_version;
 #undef  _VERSION_C_AS_HEADER_
 
 petidomo_version_t petidomo_version = {
-    0x400105,
-    "4.0b5",
-    "4.0b5 (10-Mar-2004)",
-    "This is OSSP petidomo, Version 4.0b5 (10-Mar-2004)",
-    "OSSP petidomo 4.0b5 (10-Mar-2004)",
-    "OSSP petidomo/4.0b5",
-    "@(#)OSSP petidomo 4.0b5 (10-Mar-2004)",
+    0x400106,
+    "4.0b6",
+    "4.0b6 (19-Mar-2004)",
+    "This is OSSP petidomo, Version 4.0b6 (19-Mar-2004)",
+    "OSSP petidomo 4.0b6 (19-Mar-2004)",
+    "OSSP petidomo/4.0b6",
+    "@(#)OSSP petidomo 4.0b6 (19-Mar-2004)",
     "$Id$"
 };
 
