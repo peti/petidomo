@@ -48,9 +48,6 @@
 #  include <dmalloc.h>
 #endif
 
-#include "libargv/argv.h"
-#include "debug.h"
-
 /********** config.c **********/
 
 struct PD_Config {
@@ -59,8 +56,6 @@ struct PD_Config {
     char *    master_password;
     char *    mta;
     char *    mta_options;
-    int       detach;
-    int       show_stats;
 };
 
 enum {
@@ -127,11 +122,6 @@ int FindBodyPassword(struct Mail *MailStruct);
 int isValidAdminPassword(const char *password, const char *listname);
 int isValidPostingPassword(const char *password, const char *listname);
 
-/********** exit.c **********/
-
-void RescueMail(const char *mail);
-void RemoveRescueMail(void);
-
 /********** filter.c **********/
 
 int MailFilter(struct Mail *MailStruct, const char *filter);
@@ -196,17 +186,9 @@ char *buildFuzzyMatchAddress(const char *);
 int isValidListName(const char *);
 bool isSubscribed(const char *, const char *, char **, char **, bool);
 
-/********** signature.c **********/
-
-void AppendSignature(FILE * fh);
-
 /********** unsubscribe.c **********/
 
 int DeleteAddress(struct Mail *MailStruct, const char *param1, const char *param2, const char *defaultlist);
-
-/********** argvSetDebugLevel.c **********/
-
-int argvSetDebugLevel(argv_array_t debug);
 
 /********** hermes.c **********/
 
@@ -220,8 +202,7 @@ int AddAddress(struct Mail *MailStruct, const char *param1, const char *param2, 
 
 struct Parse {
     const char *    keyword;
-    int             (*handleCommand)(struct Mail *, const char *, const char *, const
- char *);
+    int             (*handleCommand)(struct Mail *, const char *, const char *, const char *);
 };
 extern struct Parse ParseArray[];
 

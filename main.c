@@ -23,72 +23,38 @@
 #include <fcntl.h>
 #include <string.h>
 
+#include "libargv/argv.h"
 #include "petidomo.h"
 
 #ifndef LOG_PERROR
 #  define LOG_PERROR 0
 #endif
 
-MODULE_TABLE			/* defined in debug.h */
-static char *        listname = NULL;
-#ifdef DEBUG
-static argv_array_t  debug;
-#endif
+static char* listname = NULL;
+static char* mode = NULL;
 
 int
 main(int argc, char * argv[])
     {
     const struct PD_Config * MasterConfig;
     char *        incoming_mail;
-    char *        programname;
-    argv_t        args[] = {
-#ifdef DEBUG
-        {'d', "debug", ARGV_CHAR_P | ARGV_FLAG_ARRAY , &debug, "debug",
-         "Set debug level per module."},
-#endif
+    argv_t        args[] =
+	{
+        {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, or approve."},
         {ARGV_MAYBE, 0L, ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
         {ARGV_LAST}
-    };
-    int           fd;
-
-    /* Determine the name we have been called under. */
-
-    programname = strrchr(argv[0], (int) '/');
-    if (programname == NULL)
-      programname = argv[0];
-    else
-      programname++;
+	};
 
     /* Init logging routines first of all, so that we can report
        errors. */
 
-    openlog(programname, LOG_CONS | LOG_PID | LOG_PERROR, LOG_MAIL);
-
-    /* Set our umask. */
-
-    umask(S_IRWXO);		/* We don't care for "others". */
-
-    /* Switch real and effective uid/gid to 'petidomo'. */
-
-#ifdef HAVE_SETREUID
-    setreuid(geteuid(), geteuid());
-#endif
-#ifdef HAVE_SETREGID
-    setregid(getegid(), getegid());
-#endif
+    openlog("petidomo", LOG_CONS | LOG_PID | LOG_PERROR, LOG_MAIL);
 
     /* Parse the command line. */
 
     argv_help_string = "OpenPetidomo Mailing List Server";
     argv_version_string = "OpenPetidomo";
     argv_process(args, argc, argv);
-
-    /* Set debug level according to the wishes of the user. */
-
-#ifdef DEBUG
-    if (argvSetDebugLevel(debug) != 0)
-      exit(1);
-#endif
 
     /* Init Petidomo's internal stuff. */
 
@@ -106,58 +72,32 @@ main(int argc, char * argv[])
 	syslog(LOG_ERR, "Failed to read incoming mail from standard input.");
 	exit(1);
     }
-    RescueMail(incoming_mail);
-
-    /* Detach ourselves, if the configurator wished it so. */
-
-    if (MasterConfig->detach == TRUE) {
-	debug((DEBUG_MAIN, 3, "Detaching from control terminal and running asyncronously."));
-        switch (fork()) {
-	  case -1:
-	      syslog(LOG_CRIT, "Can't fork(): %m");
-	      exit(1);
-	  case 0:
-	      setsid();
-	      fd = open("/dev/null", O_RDWR, 0);
-	      if (fd != -1) {
-		  dup2(fd, STDIN_FILENO);
-		  dup2(fd, STDOUT_FILENO);
-		  dup2(fd, STDERR_FILENO);
-		  if (fd > 2)
-		    close (fd);
-	      }
-	      break;
-	  default:
-	      _exit(0);
-        }
-    }
 
     /* Now decide what we actually do with the mail. */
 
-    if (strcasecmp("listserv", programname) == 0)
+    if (strcasecmp("listserv", mode) == 0)
 	listserv_main(incoming_mail, listname);
-    else if (strcasecmp("hermes", programname) == 0)
+    else if (strcasecmp("deliver", mode) == 0)
 	{
 	if (listname != NULL)
 	    hermes_main(incoming_mail, listname);
 	else
 	    {
-	    syslog(LOG_ERR, "Wrong command line syntax. \"hermes\" requires a parameter.");
+	    syslog(LOG_ERR, "Wrong command line syntax; deliver mode requires a parameter.");
 	    exit(1);
 	    }
 	}
-    else if (strcasecmp("petidomo", programname) == 0)
+    else if (strcasecmp("petidomo", mode) == 0)
 	{
 	/* do nothing */
 	}
     else
 	{
-	syslog(LOG_ERR, "I have been called under an unknown name \"%s\".", programname);
+	syslog(LOG_ERR, "I don't know anything about mode \"%s\".", mode);
 	exit(1);
 	}
 
     /* Exit gracefully. */
 
-    RemoveRescueMail();
     return 0;
     }
