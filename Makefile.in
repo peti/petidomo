@@ -122,6 +122,14 @@ distclean::	clean
 realclean::	distclean
 	rm -f configure
 
+#   increase or update version information
+new-version:
+	@V="$(VERSION)"; OPT="-e"; [ ".$$V" != . ] && OPT="-s$$V"; \
+	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
+update-version:
+	@OPT="-s`$(SHTOOL) version -lc -dshort version.c`"; \
+	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
+
 dist: distclean
 	@echo "Fixing source tree permissions"; \
 	$(SHTOOL) fixperm *
