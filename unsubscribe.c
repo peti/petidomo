@@ -218,6 +218,7 @@ DeleteAddress(struct Mail * MailStruct,
 	    /* Require approval. */
 
 	    char* command;
+        char  c;
 	    char* cookie;
 
 	    syslog(LOG_INFO, "%s: Attempt to unsubscribe \"%s\" from list \"%s\" deferred, because the " \
@@ -243,16 +244,20 @@ DeleteAddress(struct Mail * MailStruct,
 		if (strcasecmp(address, originator) == 0)
 		    buffer = text_easy_sprintf("You requested that the address \"%s\" should be unsubscribed from " \
 					       "the mailing list \"%s\". This will not happen unless you approve the " \
-					       "request by replying to this mail and citing the string",
+					   "request by replying to this mail and concatenating the following two strings into one",
 					       originator, address, listname);
 		else
 		    buffer = text_easy_sprintf("Per request from \"%s\", the address \"%s\" should be unsubscribed from " \
 					       "the mailing list \"%s\". This will not happen unless you approve the " \
-					       "request by replying to this mail and citing the string",
+					   "request by replying to this mail and concatenating the following two strings into one",
 					       originator, address, listname);
 		text_wordwrap(buffer, 70);
-		fprintf(fh, "%s\n", buffer);
-		fprintf(fh, "\n    %s\n\n", cookie);
+	    fprintf(fh, "%s\n", buffer);
+	    fprintf(fh, "\n");
+	    c = cookie[16];
+ 	    cookie[16] = '\0'; fprintf(fh, "    %s\n", &cookie[ 0]);
+ 	    cookie[16] = c;    fprintf(fh, "    %s\n", &cookie[16]);
+	    fprintf(fh, "\n");
 		fprintf(fh, "in your reply.\n");
 		CloseMailer(fh);
 		}
