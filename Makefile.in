@@ -15,7 +15,7 @@ AR		= ar
 RANLIB		= @RANLIB@
 LEX		= @LEX@
 YACC		= @YACC@
-SHTOOL          = ./shtool
+SHTOOL          = ./etc/shtool
 
 CFLAGS		= @CFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(libexecdir)\" \
