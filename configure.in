@@ -5,7 +5,6 @@ dnl $Header$
 dnl
 
 AC_INIT(petidomo.h)
-AC_CONFIG_AUX_DIR(../etc)
 AC_REVISION($Revision$)dnl
 
 dnl Checks for paths and programs.

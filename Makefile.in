@@ -15,7 +15,7 @@ AR		= ar
 RANLIB		= @RANLIB@
 LEX		= @LEX@
 YACC		= @YACC@
-INSTALL		= ../etc/install-sh -c
+SHTOOL          = ./shtool
 
 CFLAGS		= @CFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(libexecdir)\" \
@@ -59,28 +59,27 @@ $(LIBS):
 	(cd `echo $@ | sed -e 's@/.*@@'` && $(MAKE) $(FLAGS_TO_PASS))
 
 install:	petidomo
-	@if [ ! -d $(bindir) ]; then $(INSTALL) -d $(bindir); fi
-	@if [ ! -d $(sysconfdir) ]; then $(INSTALL) -d $(sysconfdir); fi
-	@if [ ! -d $(localstatedir)/lists ]; then $(INSTALL) -d $(localstatedir)/lists; fi
-	@if [ ! -d $(localstatedir)/ack_queue ]; then $(INSTALL) -d $(localstatedir)/ack_queue; fi
-	@if [ ! -d $(datadir) ]; then $(INSTALL) -d $(datadir); fi
-	@if [ ! -d $(libexecdir) ]; then $(INSTALL) -d $(libexecdir); fi
-	$(INSTALL) -s -m 555 petidomo $(bindir)
-	$(INSTALL) -m 644 ../etc/petidomo.conf $(sysconfdir)/petidomo.conf-sample
-	$(INSTALL) -m 644 ../etc/petidomo.acl $(sysconfdir)/petidomo.acl-sample
-	$(INSTALL) -m 444 ../etc/help $(datadir)/help
-	$(INSTALL) -m 555 ../etc/InsertNameInSubject.sh $(libexecdir)
-	$(INSTALL) -m 555 ../etc/pgp-decrypt.sh $(libexecdir)
-	$(INSTALL) -m 555 ../etc/pgp-encrypt.sh $(libexecdir)
-	$(INSTALL) -m 555 ../etc/rfc2369.sh $(libexecdir)
+	$(SHTOOL) mkdir -f -p -m 755 $(bindir)
+	$(SHTOOL) mkdir -f -p -m 755 $(sysconfdir)
+	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/lists
+	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/ack_queue
+	$(SHTOOL) mkdir -f -p -m 755 $(datadir)
+	$(SHTOOL) mkdir -f -p -m 755 $(libexecdir)
+	$(SHTOOL) install -c -s -m 555 petidomo $(bindir)
+	$(SHTOOL) install -c -m 644 ../etc/petidomo.conf $(sysconfdir)/petidomo.conf-sample
+	$(SHTOOL) install -c -m 644 ../etc/petidomo.acl $(sysconfdir)/petidomo.acl-sample
+	$(SHTOOL) install -c -m 444 ../etc/help $(datadir)/help
+	$(SHTOOL) install -c -m 555 ../etc/InsertNameInSubject.sh $(libexecdir)
+	$(SHTOOL) install -c -m 555 ../etc/pgp-decrypt.sh $(libexecdir)
+	$(SHTOOL) install -c -m 555 ../etc/pgp-encrypt.sh $(libexecdir)
+	$(SHTOOL) install -c -m 555 ../etc/rfc2369.sh $(libexecdir)
 
 install-testlist:
-	@if [ ! -d $(localstatedir)/lists/testlist ]; then $(INSTALL) -d $(localstatedir)/lists/testlist; fi
-	$(INSTALL) -m 644 ../etc/list-config $(localstatedir)/lists/testlist/config
-	$(INSTALL) -m 644 ../etc/list-acl $(localstatedir)/lists/testlist/acl
+	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/lists/testlist
+	$(SHTOOL) install -c -m 644 ../etc/list-config $(localstatedir)/lists/testlist/config
+	$(SHTOOL) install -c -m 644 ../etc/list-acl $(localstatedir)/lists/testlist/acl
 	@rm -f $(localstatedir)/lists/testlist/list
-	cp /dev/null $(localstatedir)/lists/testlist/list
-	@chmod 644 $(localstatedir)/lists/testlist/list
+	$(SHTOOL) install -c -m 644 /dev/null $(localstatedir)/lists/testlist/list
 
 clean distclean realclean::
 	@for n in lib*; do (cd $$n && $(MAKE) $@); done
