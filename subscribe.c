@@ -26,9 +26,9 @@ AddAddress(struct Mail * MailStruct,
 		const char * param1,
 		const char * param2,
 		const char * defaultlist)
-{
-    const struct List_Config * ListConfig;
+    {
     const struct PD_Config   * MasterConfig;
+    const struct List_Config * ListConfig;
     FILE *         fh;
     const char *   address = NULL;
     const char *   listname = NULL;
@@ -38,81 +38,118 @@ AddAddress(struct Mail * MailStruct,
     char *         originator;
     char *         p;
 
+    /* Initialize internal stuff from master config file. */
+
+    MasterConfig = getMasterConfig();
+    sprintf(envelope, "petidomo-manager@%s", MasterConfig->fqdn);
+    originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
+
     /* Try to find out, which parameter is what. */
 
-    if (param1 != NULL) {
+    if (param1 != NULL)
+	{
 	if (isValidListName(param1) == TRUE)
-	  listname = param1;
+	    listname = param1;
 	else if (isRFC822Address(param1) == TRUE)
-	  address = param1;
+	    address = param1;
 
-	if (param2 != NULL) {
-	    if (isValidListName(param2) == TRUE)
-	      listname = param2;
-	    else if (isRFC822Address(param2) == TRUE)
-	      address = param2;
+	if (param2 != NULL)
+	    {
+	    if (listname == NULL && isValidListName(param2) == TRUE)
+		listname = param2;
+	    else if (address == NULL && isRFC822Address(param2) == TRUE)
+		address = param2;
+	    }
 	}
-    }
 
     if (address == NULL)
-      address = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
-    if (listname == NULL && defaultlist != NULL)
-      listname = defaultlist;
+	address = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
+    assert(address != NULL);
 
-    if (address == NULL || listname == NULL) {
-	syslog(LOG_NOTICE, "%s: subscribe-command invalid: No list specified.",
-	    MailStruct->From);
-	return 0;
-    }
+    if (listname == NULL)
+	{
+	if (defaultlist != NULL)
+	    listname = defaultlist;
+	else
+	    {
+	    syslog(LOG_NOTICE, "%s: subscribe-command invalid: No list specified.", MailStruct->From);
+	    fh = vOpenMailer(envelope, originator, NULL);
+	    if (fh != NULL)
+		{
+		fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n", MasterConfig->fqdn);
+		fprintf(fh, "To: %s\n", originator);
+		fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s\"\n", address);
+		if (MailStruct->Message_Id != NULL)
+		    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		fprintf(fh, "Precedence: junk\n");
+		fprintf(fh, "Sender: %s\n", envelope);
+		fprintf(fh, "\n");
+		buffer = text_easy_sprintf("You tried to subscribe the address \"%s\" to a mailing list. "   \
+					   "Unfortunately, your request could not be processed, because "    \
+					   "you didn't specify a valid mailing list name to which the "      \
+					   "address should be subscribed to. You may use the command INDEX " \
+					   "to receive an overview over the available mailing lists. Also, " \
+					   "use the command HELP to verify that you got the command syntax " \
+					   "right.", address);
+		text_wordwrap(buffer, 75);
+		fprintf(fh, "%s\n", buffer);
+		CloseMailer(fh);
+		}
+	    else
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
+	    return 0;
+	    }
+	}
 
-    /* Initialize internal stuff. */
-    MasterConfig = getMasterConfig();
+    /* Initialize internal stuff again from list config. */
+
     ListConfig = getListConfig(listname);
     sprintf(owner, "%s-owner@%s", listname, ListConfig->fqdn);
     sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
-    originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
     /* Check whether the request is authorized at all. */
 
-    if (isValidAdminPassword(getPassword(), listname) == FALSE) {
-
+    if (isValidAdminPassword(getPassword(), listname) == FALSE)
+	{
 	/* No valid password, check further. */
 
-	if (ListConfig->allowpubsub == FALSE) {
-
+	if (ListConfig->allowpubsub == FALSE)
+	    {
 	    /* Access was unauthorized, notify the originator. */
 
 	    syslog(LOG_INFO, "\"%s\" tried to subscribe \"%s\" to list \"%s\", but couldn't " \
-		"provide the correct password.", originator, address, listname);
+		   "provide the correct password.", originator, address, listname);
 
 	    fh = vOpenMailer(envelope, originator, NULL);
-	    if (fh != NULL) {
+	    if (fh != NULL)
+		{
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
 		fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n", address, listname);
 		if (MailStruct->Message_Id != NULL)
-		  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
 		buffer = text_easy_sprintf(
-"The mailing list \"%s\" is a closed forum and only the maintainer may " \
-"subscribe addresses. Your request has been forwarded to the " \
-"appropriate person, so please don't send any further mail. You will " \
-"be notified as soon as possible.", listname);
+					   "The mailing list \"%s\" is a closed forum and only the maintainer may " \
+					   "subscribe addresses. Your request has been forwarded to the " \
+					   "appropriate person, so please don't send any further mail. You will " \
+					   "be notified as soon as possible.", listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n", buffer);
                 CloseMailer(fh);
-	    }
+		}
 	    else
-	      syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
-		  originator);
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
+		       originator);
 
 	    /* Notify the owner. */
 
 	    fh = vOpenMailer(envelope, owner, NULL);
-	    if (fh != NULL) {
+	    if (fh != NULL)
+		{
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", owner);
@@ -121,59 +158,62 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
 		buffer = text_easy_sprintf(
-"\"%s\" tried to subscribe the address \"%s\" to the \"%s\" mailing list, " \
-"but couldn't provide the correct password. To subscribe him, send the " \
-"following commands to the server:", originator, address, listname);
+					   "\"%s\" tried to subscribe the address \"%s\" to the \"%s\" mailing list, " \
+					   "but couldn't provide the correct password. To subscribe him, send the " \
+					   "following commands to the server:", originator, address, listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "subscribe %s %s\n", address, listname);
                 CloseMailer(fh);
-	    }
-	    else {
+		}
+	    else
+		{
 		syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
 		return -1;
-	    }
+		}
 	    return 0;
-	}
+	    }
 
 	if (ListConfig->allowaliensub == FALSE &&
 	    (MailStruct->From == NULL || !strcasecmp(address, MailStruct->From) == FALSE) &&
-	    (MailStruct->Reply_To == NULL || !strcasecmp(address, MailStruct->Reply_To) == FALSE)) {
-
+	    (MailStruct->Reply_To == NULL || !strcasecmp(address, MailStruct->Reply_To) == FALSE))
+	    {
 	    /* Trying to subscribe something different than himself. */
 
 	    syslog(LOG_INFO, "\"%s\" tried to subscribe \"%s\" to list \"%s\", but the list " \
-		"type doesn't allow this.", originator, address, listname);
+		   "type doesn't allow this.", originator, address, listname);
 
 	    fh = vOpenMailer(envelope, originator, NULL);
-	    if (fh != NULL) {
+	    if (fh != NULL)
+		{
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
 		fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n", address, listname);
 		if (MailStruct->Message_Id != NULL)
-		  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
 		buffer = text_easy_sprintf(
-"The mailing list \"%s\" does not allow to automatically subscribe or unsubscribe an " \
-"address not equal to the one, you are mailing from. Your request has been forwarded " \
-"to the list administrator, so please don't send any futher mail. You will be notified " \
-"as soon as possible.", listname);
+					   "The mailing list \"%s\" does not allow to automatically subscribe or unsubscribe an " \
+					   "address not equal to the one, you are mailing from. Your request has been forwarded " \
+					   "to the list administrator, so please don't send any futher mail. You will be notified " \
+					   "as soon as possible.", listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n", buffer);
                 CloseMailer(fh);
-	    }
+		}
 	    else
-	      syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
-		  originator);
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
+		       originator);
 
 	    /* Notify the owner. */
 
 	    fh = vOpenMailer(envelope, owner, NULL);
-	    if (fh != NULL) {
+	    if (fh != NULL)
+		{
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", owner);
@@ -182,60 +222,64 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
 		buffer = text_easy_sprintf(
-"\"%s\" tried to subscribe the address \"%s\" to the \"%s\" mailing list. " \
-"The list type does not allow subscribing addresses not equal to the From: " \
-"address, though, so the request has been denied. To subscribe this person " \
-"manually, send the following commands to the server:", originator, address, listname);
+					   "\"%s\" tried to subscribe the address \"%s\" to the \"%s\" mailing list. " \
+					   "The list type does not allow subscribing addresses not equal to the From: " \
+					   "address, though, so the request has been denied. To subscribe this person " \
+					   "manually, send the following commands to the server:", originator, address, listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "subscribe %s %s\n", address, listname);
                 CloseMailer(fh);
-	    }
-	    else {
+		}
+	    else
+		{
 		syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
 		return -1;
-	    }
+		}
 	    return 0;
+	    }
 	}
-    }
 
     /* Check whether the address is subscribed already. */
 
-    if (isSubscribed(listname, address, NULL, NULL, FALSE) == TRUE) {
-
+    if (isSubscribed(listname, address, NULL, NULL, FALSE) == TRUE)
+	{
 	/* Notify the originator, that the address is already a
            member. */
 
 	fh = vOpenMailer(envelope, originator, NULL);
-	if (fh != NULL) {
+	if (fh != NULL)
+	    {
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", originator);
 	    fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n",
 		    address, listname);
 	    if (MailStruct->Message_Id != NULL)
-	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
 	    fprintf(fh, "The address is subscribed to this list already.\n");
 	    CloseMailer(fh);
-	}
-	else {
+	    }
+	else
+	    {
 	    syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
 	    return -1;
-	}
+	    }
 	return 0;
-    }
+	}
 
     /* Okay, add the address to the list. */
 
     fh = fopen(ListConfig->address_file, "a");
-    if (fh == NULL) {
+    if (fh == NULL)
+	{
 	syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", ListConfig->address_file);
 	return -1;
-    }
+	}
     fprintf(fh, "%s\n", address);
     fclose(fh);
 
@@ -243,73 +287,80 @@ AddAddress(struct Mail * MailStruct,
        subscriber, and the owner. */
 
     if (!strcasecmp(address, originator) == TRUE)
-      fh = vOpenMailer(envelope, address, owner, NULL);
+	fh = vOpenMailer(envelope, address, owner, NULL);
     else
-      fh = vOpenMailer(envelope, address, originator, owner, NULL);
-    if (fh != NULL) {
+	fh = vOpenMailer(envelope, address, originator, owner, NULL);
+    if (fh != NULL)
+	{
 	fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		listname, ListConfig->fqdn);
 	fprintf(fh, "To: %s\n", address);
 	if (!strcasecmp(address, originator) == TRUE)
-	  fprintf(fh, "Cc: %s\n", owner);
+	    fprintf(fh, "Cc: %s\n", owner);
 	else
-	  fprintf(fh, "Cc: %s, %s\n", originator, owner);
+	    fprintf(fh, "Cc: %s, %s\n", originator, owner);
 	fprintf(fh, "Subject: Petidomo: Request \"subscribe %s %s\"\n", address, listname);
 	if (MailStruct->Message_Id != NULL)
-	  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+	    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	fprintf(fh, "Precedence: junk\n");
 	fprintf(fh, "Sender: %s\n", envelope);
 	fprintf(fh, "\n");
-	if (!strcasecmp(address, originator) == TRUE) {
+	if (!strcasecmp(address, originator) == TRUE)
+	    {
 	    buffer = text_easy_sprintf(
-"Per your request, the address \"%s\" has been subscribed to the " \
-"\"%s\" mailing list. If you want to unsubscribe later, you can " \
-"do so by sending the following command to \"%s-request@%s\":",
-		     address, listname, listname, ListConfig->fqdn);
-	}
-	else {
+				       "Per your request, the address \"%s\" has been subscribed to the " \
+				       "\"%s\" mailing list. If you want to unsubscribe later, you can " \
+				       "do so by sending the following command to \"%s-request@%s\":",
+				       address, listname, listname, ListConfig->fqdn);
+	    }
+	else
+	    {
 	    buffer = text_easy_sprintf(
-"Per request from \"%s\", the address \"%s\" has been subscribed to the " \
-"\"%s\" mailing list. If you want to unsubscribe later, you can " \
-"do so by sending the following command to \"%s-request@%s\":",
-                     originator, address, listname, listname, ListConfig->fqdn);
-	}
+				       "Per request from \"%s\", the address \"%s\" has been subscribed to the " \
+				       "\"%s\" mailing list. If you want to unsubscribe later, you can " \
+				       "do so by sending the following command to \"%s-request@%s\":",
+				       originator, address, listname, listname, ListConfig->fqdn);
+	    }
 	text_wordwrap(buffer, 75);
 	fprintf(fh, "%s\n\n", buffer);
 	fprintf(fh, "unsubscribe %s\n\n", address);
 	fprintf(fh, "Please save a copy of this mail, to make sure you remember how " \
 		"to\nunsubscribe!\n");
 	CloseMailer(fh);
-    }
-    else {
+	}
+    else
+	{
 	syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
 	return -1;
-    }
+	}
 
     /* Send introduction text to the new member. */
 
     p = loadfile(ListConfig->intro_file);
-    if (p != NULL) {
+    if (p != NULL)
+	{
 	fh = vOpenMailer(envelope, address, NULL);
-	if (fh != NULL) {
+	if (fh != NULL)
+	    {
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", address);
 	    fprintf(fh, "Subject: Petidomo: Welcome to the \"%s\" mailing list!\n", listname);
 	    if (MailStruct->Message_Id != NULL)
-	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
 	    fprintf(fh, "%s\n", p);
 	    CloseMailer(fh);
 	    free(p);
-	}
-	else {
+	    }
+	else
+	    {
 	    free(p);
 	    syslog(LOG_ERR, "Failed to send introduction mail to \"%s\"!", address);
 	    return -1;
+	    }
 	}
-    }
     return 0;
-}
+    }
