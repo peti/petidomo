@@ -57,6 +57,7 @@ struct PD_Config
     char *    mta;
     char *    mta_options;
     char *    list_dir;
+    char *    ack_queue_dir;
     char *    help_file;
     char *    acl_file;
     char *    index_file;
@@ -176,7 +177,7 @@ int savefile(const char *filename, const char *buffer);
 
 /********** listserv.c **********/
 
-int listserv_main(char *incoming_mail, char *default_list);
+int listserv_main(char *incoming_mail, char *default_list, char);
 
 /********** mailer.c **********/
 
@@ -206,7 +207,7 @@ int DeleteAddress(struct Mail *MailStruct, const char *param1, const char *param
 
 /********** hermes.c **********/
 
-int hermes_main(char *incoming_mail, const char *listname);
+int hermes_main(char *incoming_mail, const char *listname, char);
 
 /********** subscribe.c **********/
 
@@ -224,5 +225,13 @@ extern struct Parse ParseArray[];
 /********** generate_cookie.c **********/
 
 char* generate_cookie(const char*);
+
+/********** queue_posting.c **********/
+
+void queue_posting(const struct Mail* mail, const char* listname);
+
+/********** queue_command.c **********/
+
+void queue_command(const struct Mail* mail, const char* command);
 
 #endif /* !defined(__PETIDOMO_H__) */

@@ -40,7 +40,8 @@ static char*  mta_options     = "-i -f%s";
 static char*  help_file       = DATADIR "/petidomo.conf";
 static char*  acl_file        = SYSCONFDIR "/petidomo.acl";
 static char*  index_file      = LOCALSTATEDIR "/index";
-static char*  list_dir        = LOCALSTATEDIR;
+static char*  list_dir        = LOCALSTATEDIR "/lists";
+static char*  ack_queue_dir   = LOCALSTATEDIR "/ack_queue";
 
 int InitPetidomo(const char* masterconfig_path)
     {
@@ -58,6 +59,7 @@ int InitPetidomo(const char* masterconfig_path)
 	{ "Acl_File", CF_STRING, &acl_file },
 	{ "Index_File", CF_STRING, &index_file },
 	{ "List_Directory", CF_STRING, &list_dir },
+	{ "Ack_Queue_Directory", CF_STRING, &ack_queue_dir },
 	{ NULL, 0, NULL}
 	};
 
@@ -116,6 +118,7 @@ int InitPetidomo(const char* masterconfig_path)
     MasterConfig->acl_file = acl_file;
     MasterConfig->index_file = index_file;
     MasterConfig->list_dir = list_dir;
+    MasterConfig->ack_queue_dir = ack_queue_dir;
 
     return 0;
     }

@@ -9,14 +9,6 @@ libexecdir 	= @libexecdir@/petidomo
 datadir 	= @datadir@/petidomo
 sysconfdir 	= @sysconfdir@
 localstatedir 	= @localstatedir@/petidomo
-# delete me
-#sharedstatedir	= @sharedstatedir@
-#sbindir 	= @sbindir@
-#libdir 		= @libdir@/petidomo
-#infodir 	= @infodir@
-#mandir 		= @mandir@
-#includedir 	= @includedir@
-# delete me
 
 CC		= @CC@
 AR		= ar
@@ -27,13 +19,15 @@ INSTALL		= ../etc/install-sh -c
 
 CFLAGS		= @CFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(libexecdir)\" \
-		  -DDATADIR=\"$(datadir)\" -DLOCALSTATEDIR=\"$(localstatedir)\"
+		  -DDATADIR=\"$(datadir)\" -DLOCALSTATEDIR=\"$(localstatedir)\" \
+		 -DBINDIR=\"$(bindir)\"
 LDFLAGS		= @LDFLAGS@
 
 OBJS		= acl.o archive.o authen.o config.o generate_cookie.o \
 		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
 		  mailer.o members.o parsearray.o password.o rfcparse.o \
-		  subscribe.o tool.o unsubscribe.o main.o
+		  subscribe.o tool.o unsubscribe.o main.o queue_command.o \
+	 	  queue_posting.o
 LIBS		= librfc822/librfc822.a libmpools/libmpools.a liblists/liblists.a libargv/libargv.a \
 		  libconfigfile/libconfigfile.a libtext/libtext.a
 
@@ -67,7 +61,8 @@ $(LIBS):
 install:	petidomo
 	@if [ ! -d $(bindir) ]; then $(INSTALL) -d $(bindir); fi
 	@if [ ! -d $(sysconfdir) ]; then $(INSTALL) -d $(sysconfdir); fi
-	@if [ ! -d $(localstatedir) ]; then $(INSTALL) -d $(localstatedir); fi
+	@if [ ! -d $(localstatedir)/lists ]; then $(INSTALL) -d $(localstatedir)/lists; fi
+	@if [ ! -d $(localstatedir)/ack_queue ]; then $(INSTALL) -d $(localstatedir)/ack_queue; fi
 	@if [ ! -d $(datadir) ]; then $(INSTALL) -d $(datadir); fi
 	@if [ ! -d $(libexecdir) ]; then $(INSTALL) -d $(libexecdir); fi
 	$(INSTALL) -s -m 555 petidomo $(bindir)
