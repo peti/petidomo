@@ -20,6 +20,8 @@
 %{
     /* Definitions we need in the parser. */
 
+#define YYSTYPE char *
+
 #include <errno.h>
 #ifdef DEBUG_DMALLOC
 #  include <dmalloc.h>
