@@ -48,7 +48,7 @@ main(int argc, char * argv[])
     char *        incoming_mail;
     argv_t        args[] =
 	{
-        {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, or approve."},
+        {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, approve or dump."},
         {ARGV_MAYBE, "listname", ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
         {ARGV_MAYBE, "masterconf", ARGV_CHAR_P, &masterconfig_path, "masterconf", "Path to petidomo.conf."},
         {ARGV_MAYBE, "approved", ARGV_BOOL, &g_is_approved, "approved", "approved flag."},
@@ -89,6 +89,29 @@ main(int argc, char * argv[])
     argv_help_string = "Petidomo Mailing List Server";
     argv_version_string = (char *)petidomo_version.v_gnu;
     argv_process(args, argc, argv);
+
+    /* Member Dump Mode */
+    if (strcasecmp(mode, "dump") == 0) {
+        char *cp;
+        const struct List_Config *ListConfig;
+        if (listname == NULL) {
+            fprintf(stderr, "petidomo: dump mode requires a list name argument\n");
+            exit(1);
+        }
+        if (InitPetidomo(masterconfig_path) != 0) {
+            fprintf(stderr, "petidomo: failed load master configuration.\n");
+            exit(1);
+        }
+        MasterConfig = getMasterConfig();
+        ListConfig = getListConfig(listname);
+        if ((cp = loadfile(ListConfig->address_file)) == NULL) {
+            fprintf(stderr, "petidomo: failed to open file \"%s\"\n", ListConfig->address_file);
+            exit(1);
+        }
+        fwrite(cp, strlen(cp), 1, stdout);
+        free(cp);
+        exit(0);
+    }
 
     /* Log a few helpful facts about this Petidomo instance. */
 

@@ -20,10 +20,6 @@ foreach my $dir (split(/:/, "$ENV{PATH}:/bin:/sbin:/usr/bin:/usr/sbin:/lib:/usr/
     }
 }
 
-#   locate the Petidomo basedir
-my $basedir = `petidomo --version 2>&1`;
-$basedir =~ s|^.+\((\S+)\).*$|$1|s;
-
 #   read config 
 my $list = {};
 open(FP, "<$config") || die "No ~/.petidomo file found";
@@ -32,17 +28,16 @@ while (<FP>) {
     if (m|^\s*(\S+)\s+(\S+)|) {
         my ($l, $pw) = ($1, $2);
         $l =~ s|@[^@]+$||;
-        if (-f "$basedir/$l.list") {
-            $list->{$l} = {};
-            $list->{$l}->{PASSWORD} = $pw;
-            $list->{$l}->{MEMBERS} = [];
-            open(LST, "<$basedir/$l.list");
-            while (<LST>) {
-                s|\n$||s;
-                push(@{$list->{$l}->{MEMBERS}}, $_);
-            }
-            close(LST);
+        $list->{$l} = {};
+        $list->{$l}->{PASSWORD} = $pw;
+        $list->{$l}->{MEMBERS} = [];
+        next if ($l eq 'petidomo');
+        open(DUMP, "./petidomo --masterconf=../test/petidomo.conf --mode=dump $l |") || die "fuck";
+        while (<DUMP>) {
+            s|\n$||s;
+            push(@{$list->{$l}->{MEMBERS}}, $_);
         }
+        close(DUMP);
     }
 }
 close(FP);
@@ -70,6 +65,5 @@ foreach my $l (keys(%{$list})) {
         }
     }
 }
-sleep(1);
 exit(0);
 
