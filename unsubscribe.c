@@ -176,8 +176,42 @@ DeleteAddress(struct Mail * MailStruct,
 		}
 	    return 0;
 	    }
+	}
 
-	else if (ListConfig->subtype == SUBSCRIPTION_ACKED && !g_is_approved)
+    /* Okay, remove the address from the list. */
+
+    if (isSubscribed(listname, address, &list, &p, FALSE) == FALSE)
+	{
+	/* Notify the originator, that the address is not subscribed at
+	   all. */
+
+	fh = vOpenMailer(envelope, originator, NULL);
+	if (fh != NULL)
+	    {
+	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
+		    listname, ListConfig->fqdn);
+	    fprintf(fh, "To: %s\n", originator);
+	    fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n",
+		    address, listname);
+	    if (MailStruct->Message_Id != NULL)
+		fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+	    fprintf(fh, "Precedence: junk\n");
+	    fprintf(fh, "Sender: %s\n", envelope);
+	    fprintf(fh, "\n");
+	    fprintf(fh, "The address is not subscribed to this list.\n");
+	    CloseMailer(fh);
+	    }
+	else
+	    {
+	    syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
+		   originator);
+	    return -1;
+	    }
+	}
+    else
+	{
+	if (isValidAdminPassword(getPassword(), listname) == FALSE &&
+	    ListConfig->subtype == SUBSCRIPTION_ACKED && !g_is_approved)
 	    {
 	    /* Require confirmation. */
 
@@ -214,40 +248,6 @@ DeleteAddress(struct Mail * MailStruct,
 	    return 0;
 	    }
 
-	}
-
-    /* Okay, remove the address from the list. */
-
-    if (isSubscribed(listname, address, &list, &p, FALSE) == FALSE)
-	{
-	/* Notify the originator, that the address is not subscribed at
-	   all. */
-
-	fh = vOpenMailer(envelope, originator, NULL);
-	if (fh != NULL)
-	    {
-	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
-		    listname, ListConfig->fqdn);
-	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n",
-		    address, listname);
-	    if (MailStruct->Message_Id != NULL)
-		fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
-	    fprintf(fh, "Precedence: junk\n");
-	    fprintf(fh, "Sender: %s\n", envelope);
-	    fprintf(fh, "\n");
-	    fprintf(fh, "The address is not subscribed to this list.\n");
-	    CloseMailer(fh);
-	    }
-	else
-	    {
-	    syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
-		   originator);
-	    return -1;
-	    }
-	}
-    else
-	{
 	fh = fopen(ListConfig->address_file, "w");
 	if (fh == NULL)
 	    {

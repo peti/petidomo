@@ -174,43 +174,6 @@ AddAddress(struct Mail * MailStruct,
 		}
 	    return 0;
 	    }
-
-	else if (ListConfig->subtype == SUBSCRIPTION_ACKED && !g_is_approved)
-	    {
-	    /* Require confirmation. */
-
-	    char* command = text_easy_sprintf("subscribe %s %s", address, listname);
-	    char* cookie  = queue_command(MailStruct, command);
-
-	    /* Notify the owner. */
-
-	    fh = vOpenMailer(envelope, address, NULL);
-	    if (fh != NULL)
-		{
-		fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
-		fprintf(fh, "To: %s\n", address);
-		fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Request from \"%s\"\n", listname, ListConfig->fqdn, originator);
-		fprintf(fh, "Precedence: junk\n");
-		fprintf(fh, "Sender: %s\n", envelope);
-		fprintf(fh, "\n");
-		buffer = text_easy_sprintf("Per request from \"%s\", the address \"%s\" should be subscribed to " \
-					   "the mailing list \"%s\". This will not happen unless you confirm the " \
-					   "request by replying to this mail and citing the string",
-					   originator, address, listname);
-		text_wordwrap(buffer, 70);
-		fprintf(fh, "%s\n", buffer);
-		fprintf(fh, "\n    %s\n\n", cookie);
-		fprintf(fh, "in your reply.\n");
-		CloseMailer(fh);
-		}
-	    else
-		{
-		syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
-		return -1;
-		}
-
-	    return 0;
-	    }
 	}
 
     /* Check whether the address is subscribed already. */
@@ -241,6 +204,44 @@ AddAddress(struct Mail * MailStruct,
 	    syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
 	    return -1;
 	    }
+	return 0;
+	}
+
+    if (isValidAdminPassword(getPassword(), listname) == FALSE &&
+	ListConfig->subtype == SUBSCRIPTION_ACKED && !g_is_approved)
+	{
+	/* Require confirmation. */
+
+	char* command = text_easy_sprintf("subscribe %s %s", address, listname);
+	char* cookie  = queue_command(MailStruct, command);
+
+	/* Notify the owner. */
+
+	fh = vOpenMailer(envelope, address, NULL);
+	if (fh != NULL)
+	    {
+	    fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
+	    fprintf(fh, "To: %s\n", address);
+	    fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Request from \"%s\"\n", listname, ListConfig->fqdn, originator);
+	    fprintf(fh, "Precedence: junk\n");
+	    fprintf(fh, "Sender: %s\n", envelope);
+	    fprintf(fh, "\n");
+	    buffer = text_easy_sprintf("Per request from \"%s\", the address \"%s\" should be subscribed to " \
+				       "the mailing list \"%s\". This will not happen unless you confirm the " \
+				       "request by replying to this mail and citing the string",
+				       originator, address, listname);
+	    text_wordwrap(buffer, 70);
+	    fprintf(fh, "%s\n", buffer);
+	    fprintf(fh, "\n    %s\n\n", cookie);
+	    fprintf(fh, "in your reply.\n");
+	    CloseMailer(fh);
+	    }
+	else
+	    {
+	    syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
+	    return -1;
+	    }
+
 	return 0;
 	}
 
