@@ -32,7 +32,7 @@ petidomo:	$(OBJS) $(LIBS)
 
 hermes listserv:	petidomo
 	@rm -f $@
-	ln -s $< $@
+	ln -s petidomo $@
 
 acl.c acl_scan.h:	acl.y
 	$(YACC) -d -p acl acl.y
