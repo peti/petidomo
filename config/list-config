@@ -119,7 +119,6 @@ AllowMembersCommand	no
 #	kept.
 #Archive		"log"
 
-
 #  TAG: IntroductionFile <string>
 #	This entry sets the path to the introduction file, which
 #	Petidomo will send to every new subscriber. If the path is not
