@@ -130,7 +130,7 @@ CloseMailer(FILE * fh)
 static int
 my_strlen(const char * p)
     {
-    u_int  i;
+    unsigned int  i;
     for (i = 0; *p && !isspace((int)*p); p++)
 	i++;
     return i;
@@ -144,20 +144,20 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
     {
     const struct PD_Config * MasterConfig = getMasterConfig();
     const struct List_Config * ListConfig = getListConfig(listname);
-    char **   arguments;
-    u_int     arguments_num = 256;
-    char      buffer[256];
-    char *    listfile;
-    char *    nextAddress;
-    char *    currAddress;
-    char *    p;
-    u_int     counter;
-    u_int     len;
-    u_int     address_byte;
-    u_int     max_address_byte;
-    int       fildes[2];
-    pid_t     child_pid;
-    int       child_status;
+    char **      arguments;
+    unsigned int arguments_num = 256;
+    char         buffer[256];
+    char *       listfile;
+    char *       nextAddress;
+    char *       currAddress;
+    char *       p;
+    unsigned int counter;
+    unsigned int len;
+    unsigned int address_byte;
+    unsigned int max_address_byte;
+    int          fildes[2];
+    pid_t        child_pid;
+    int          child_status;
 
     /* Initialize internal stuff. */
 
