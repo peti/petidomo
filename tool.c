@@ -143,11 +143,21 @@ isValidListName(const char * listname)
     if (stat(buffer, &sb) != 0)
 	{
 	free(buffer);
-	buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
+	buffer = text_easy_sprintf("%s/%s/conf", MasterConfig->list_dir, listname);
 	if (stat(buffer, &sb) != 0)
 	    {
 	    free(buffer);
-	    return FALSE;
+	    buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
+	    if (stat(buffer, &sb) != 0)
+		{
+		free(buffer);
+		buffer = text_easy_sprintf("%s/%s.conf", MasterConfig->list_dir, listname);
+		if (stat(buffer, &sb) != 0)
+		    {
+		    free(buffer);
+		    return FALSE;
+		    }
+		}
 	    }
 	}
     free(buffer);
