@@ -1,0 +1,12 @@
+#
+# Skeleton Makefile -- process with smake to create real Makefile.
+#
+# $Header$
+#
+.opt -o GNUmakefile.in
+
+LIBRARY		= configfile
+SRCS		= config.c
+
+.include <library.smk>
+.include <autoconf.base.smk>

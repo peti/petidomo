@@ -1,0 +1,28 @@
+dnl
+dnl configure.in -- Process this file with autoconf to produce a configure script.
+dnl
+dnl $Header$
+dnl
+
+AC_INIT(configfile.h)
+
+dnl Checks for paths and programs.
+dnl
+AC_PROG_CC
+AC_PROG_RANLIB
+
+dnl Enable warning flags for gcc.
+dnl
+if test "$GCC" = yes; then
+    CFLAGS="$CFLAGS -Wall -pedantic"
+    CXXFLAGS="$CXXFLAGS -Wall -pedantic"
+fi
+
+dnl Remove '-g' and '-O2' from the compile flags.
+dnl
+CFLAGS=`echo $CFLAGS | sed -e "s/-g//" -e "s/-O2//"`
+CXXFLAGS=`echo $CXXFLAGS | sed -e "s/-g//" -e "s/-O2//"`
+
+dnl Write results.
+dnl
+AC_OUTPUT(GNUmakefile)
