@@ -27,6 +27,10 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
+#define _VERSION_C_AS_HEADER_
+#include "version.c"
+#undef  _VERSION_C_AS_HEADER_
+
 #ifndef LOG_PERROR
 #  define LOG_PERROR 0
 #endif
@@ -83,7 +87,7 @@ main(int argc, char * argv[])
     /* Parse the command line. */
 
     argv_help_string = "Petidomo Mailing List Server";
-    argv_version_string = "Petidomo";
+    argv_version_string = (char *)petidomo_version.v_gnu;
     argv_process(args, argc, argv);
 
     /* Log a few helpful facts about this Petidomo instance. */

@@ -32,7 +32,7 @@ OBJS		= acl.o archive.o authen.o config.o generate_cookie.o	   \
 		  filter.o handleacl.o help.o hermes.o index.o io.o	   \
 		  listserv.o mailer.o members.o parsearray.o password.o	   \
 		  rfcparse.o subscribe.o tool.o unsubscribe.o main.o	   \
-		  queue_command.o queue_posting.o approve.o address-db.o
+		  queue_command.o queue_posting.o approve.o address-db.o version.o
 LIBS		= librfc822/librfc822.a libmpools/libmpools.a              \
 		  liblists/liblists.a libargv/libargv.a                    \
 		  libconfigfile/libconfigfile.a libtext/libtext.a
