@@ -39,7 +39,7 @@ char* queue_posting(const struct Mail* mail, const char* listname)
 	}
     fprintf(fh, "#! /bin/sh\n");
     fprintf(fh, "\n");
-    fprintf(fh, BINDIR "/petidomo --mode=deliver --listname=%s --approved <<[end-of-mail-marker]\n", listname);
+    fprintf(fh, "%s --mode=deliver --listname=%s --approved <<[end-of-mail-marker]\n", who_am_i, listname);
     fprintf(fh, "%s\n", mail->Header);
     fprintf(fh, "%s", mail->Body);
     fprintf(fh, "[end-of-mail-marker]\n");

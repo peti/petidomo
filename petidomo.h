@@ -51,6 +51,7 @@
 /********** main.c **********/
 
 extern char g_is_approved;
+extern const char* who_am_i;
 
 /********** config.c **********/
 

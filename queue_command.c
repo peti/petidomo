@@ -39,7 +39,7 @@ char* queue_command(const struct Mail* mail, const char* command)
 	}
     fprintf(fh, "#! /bin/sh\n");
     fprintf(fh, "\n");
-    fprintf(fh, BINDIR "/petidomo --mode=listserv --approved <<[end-of-mail-marker]\n");
+    fprintf(fh, "%s --mode=listserv --approved <<[end-of-mail-marker]\n", who_am_i);
     fprintf(fh, "Sender: %s\n", mail->Envelope);
     fprintf(fh, "From: %s\n", mail->From);
     if (mail->Reply_To)

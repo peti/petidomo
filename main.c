@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "libargv/argv.h"
+#include "libtext/text.h"
 #include "petidomo.h"
 
 #ifndef LOG_PERROR
@@ -34,6 +35,7 @@ static char*  listname = NULL;
 static char*  mode = NULL;
 static char*  masterconfig_path = SYSCONFDIR "/petidomo.conf";
 char          g_is_approved = ARGV_FALSE;
+const char* who_am_i;
 
 int
 main(int argc, char * argv[])
@@ -53,6 +55,25 @@ main(int argc, char * argv[])
        errors. */
 
     openlog("petidomo", LOG_CONS | LOG_PID | LOG_PERROR, LOG_MAIL);
+
+    /* Store our full path and program name in who_am_I, so that
+       queue_posting() and queue_command() know where to find the
+       Petidomo binary. */
+
+    if (argv[0][0] == '/')
+	{
+	who_am_i = argv[0];
+	}
+    else
+	{
+	char buf[4096];
+	if (getcwd(buf, sizeof(buf)) == NULL)
+	    {
+	    syslog(LOG_CRIT, "Failed to get the path to my current working directory.");
+	    exit(1);
+	    }
+	who_am_i = text_easy_sprintf("%s/%s", buf, argv[0]);
+	}
 
     /* Parse the command line. */
 
