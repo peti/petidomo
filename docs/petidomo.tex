@@ -5,14 +5,27 @@
 % $Header$
 %
 \typearea[2cm]{12}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\sl The Petidomo Mailing List Manager}
+\chead{}
+\rhead{Page \thepage\ of \pageref{LastPage}}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\fancypagestyle{plain}{}
 \fussy
 
+\newcommand{\Def}[1]{{\sl #1}}
+\newcommand{\file}[1]{{\sf #1}}
+
 \begin{document}
+
 \title{The Petidomo Mailing List Manager}
 \author{Peter Simons $<$simons@computer.org$>$}
 \date{February 2001}
 \maketitle
-
 \tableofcontents
 \clearpage
 
@@ -486,109 +499,1408 @@ distribution.
 
 \chapter{Configuring Petidomo}
 
+\section{Configuration File Syntax}
+
+All configuration files in the Petidomo-package\label{Config file
+format}, have the following format:
+\begin{verbatim}
+keyword         parameter
+\end{verbatim}
+
+The ``keyword''-part must start at the first column of the line and is
+followed by one or several blanks or tabs. The first non-blank
+character then is interpreted as the parameter for this keyword. The
+following line, for example:
+\begin{verbatim}
+Hostname        petidomo.is.great
+\end{verbatim}
+will tell Petidomo that the name of the machine it is running on is
+called ``petidomo.is.great''. If the parameter contains any blanks,
+what is not very likely for a hostname, but may happen with other
+settings, you should enclose it in double quotes, like this:
+\begin{verbatim}
+AdminPassword   "open sesame"
+\end{verbatim}
+
+Quoting the parameter is not strictly necessary, though, Petidomo's
+config file parser will get it right anyway. You only have to quote
+the parameter, if it contains blanks as first or last character, what
+is rather unlikely to happen.
+
+Furthermore all empty lines are ignored. So are lines that start with
+a `\#' sign. You can use this for writing comments for the reader into
+the config file.
+
 \section{The Master Configuration File}
+\label{master config file}
 
-At startup, Petidomo will read its master configuration file in order
-to determine the correct file system paths, the machine's hostname,
-and the location of the system's MTA --- usually sendmail. If Petidomo
-is unable to locate or to parse that config file, it will abort
-immediately.
+Petidomo expects its master config file to be found under
+\file{\~{}peti\-do\-mo/etc/pe\-ti\-domo.conf}. The following keywords are
+recognized:
 
-When you started Petidomo while running the tests described in section
-\ref{testing}, you certainly noticed that Petidomo logs the path where
-it expects to find that config file:
+\begin{description}
+
+\item[Hostname] \hfill ``hostname.domain.name''
+
+This entry specifies the fully qualified domain name of the machine,
+Petidomo is running on. A fully qualified domain name is the
+hostname of the machine with the domain name appended with a dot. The
+following, for example:
+\begin{verbatim}
+HostName        listserver.foo.bar
+\end{verbatim}
+would be a valid statement. Normally this option has been set by the
+install script correctly already.
+
+The name you set here is not necessarily the name, Petidomo will use
+when delivering mailing list-postings to the subscribers, or when
+answering requests, because you can specify a different fully
+qualified domain name for every mailing list you host. This is known
+as \Def{virtual hosting}.
+
+This option is \emph{required}. Petidomo will abort with an error,
+if the master config file doesn't set it.
+
+\item[AdminPassword] \hfill ``password''
+
+This tag sets the master password, which authenticiates the Petidmo
+administrator. Here is an example:
+\begin{verbatim}
+AdminPassword   "open sesame"
+\end{verbatim}
+Normally this option has been set by the install script already.
+
+Please chose this password carefully. Knowledge of the master password
+will enable you to access \emph{all} mailing lists running on this
+system.
+
+Passwords are compared case-insensitively. That means, that the
+passwords ``Open SESAME'', ``open sesame'' and ``OPEN seSAme'' are all
+the same.
+
+This option is \emph{required}. Petidomo will abort with an error,
+if the master config file doesn't set it.
+
+
+\item[MTA] \hfill ``/path/to/executable''
+
+The MTA tag tells Petidomo which mail transport agent should be used
+to deliver outgoing emails. Normally this option has been set by the
+install script already, so you don't need to worry about this anymore.
+
+An example setting is:
+\begin{verbatim}
+MTA     "/usr/sbin/sendmail"
+\end{verbatim}
+but Petidomo will run fine with other mail transport agents, too. So
+far, the system has been tested with the Allman sendmail, SMail and
+qmail without any problems.
+
+This option is \emph{required}. Petidomo will abort with an error,
+if the master config file doesn't set it.
+
+
+\item[MTAOptions] \hfill ``string''
+
+This tag is a bit tricky and in ninety-nine out of hundred cases you
+should simply leave this option undefined as it is rarely required
+anyway.
+
+This entry sets the options which will be handed over to the MTA
+when it is called. The following example
+\begin{verbatim}
+MTAOptions "-odq -i -f%s"
+\end{verbatim}
+will yield a call ``$<$MTA$>$ -odq -i -f$<$envelope$>$''. The `\%s' is
+replaced with the envelope the mail should be sent under.
+
+Adding options to the execution call of the mail transport agent can
+be useful to enable or disable certain features for mailing lists
+only, while leaving them on for all other mail. The `-odq' setting is
+a fine example. This parameter will tell the Allmann sendmail to queue
+all mail, instead of trying to deliver it immediately.
+
+
+\item[ListDirectory] \hfill ``/path/to/directory''
+
+Here you can tell Petidomo the path to the directory where the mailing
+list config file reside. The compiled-in default is
+``LOCALSTATEDIR/petidomo/lists'' --- in most cases that resolves to
+\file{/usr/local/var/petidomo/lists}. When Petidomo tries to find the
+configuration of list, say, ``foobar'', it will look for any of the
+following files in this directory: \file{foobar.conf},
+\file{foobar.config}, \file{foobar/conf}, or \file{foobar/config}.
+
+\item[AckQueueDirectory] \hfill ``/path/to/directory''
+
+This tag will tell Petidomo where to store files that need to be
+queued for later processing --- for example subscribe requests that
+need to be acknowledged by the user before they'll be carried out. The
+default location is ``LOCALSTATEDIR/petidomo/ack-queue''; unless you
+changed the default path at compile time, this will resolve to
+\file{/usr/local/var/petidomo/ack-queue}. Please note that Petidomo
+will need permission to write to that directory in order for things to
+work.
+
+\item[HelpFile] \hfill ``/path/to/file''
+
+This tag will tell Petidomo where to find the text file that will be
+sent back to a user sending in a ``help'' command. The default
+location is ``DATADIR/petidomo/help"'', what is usually the file
+\file{/usr/local/share/petidomo/help}.
+
+
+\item[ACLFile] \hfill ``/path/to/file''
+
+This tag tells Petidomo the path to the system-wide ACL file. The
+default location is ``SYSCONFDIR/petidomo.acl'', what usually resolves
+to \file{/usr/local/etc/petidomo.acl}.
+
+\item[IndexFile] \hfill ``/path/to/file''
+
+Similarly to ``HelpFile'', this tag will tell Petidomo where to find
+the text file that will be sent back to a user requesting the server's
+``index''. The default location is ``LOCALSTATEDIR/petidomo/index'';
+unless you changed the default path at compile time, this will resolve
+to \file{/usr/local/var/petidomo/index}.
+
+\end{description}
+
+\section{List Configuration Files}
+\label{list config file}
+
+While the master config file sets options which are relevant for the
+Petidomo package as a whole, the list config file sets options which
+are valid only locally for the mailing list. The supported keywords
+are as follows.
+
+\begin{description}
+
+\item[ListType] \hfill ``open'', ``closed'',  ``moderated'',
+``acknowledged'', or ``acknowledged-once''
+
+This setting tells Petidomo who is allowed to post to the mailing
+list. On an ``open'' mailing list, everybody is allowed to post,
+whether he's subscribed or not. On a ``closed'' mailing list, only
+subscribers are allowed to post. That means that only mails coming
+from an address found on the list's address database will go through.
+All other mails will be sent back to the person trying to post with
+the comment that he should subscribe first.
+
+Please note that a closed list may not do exactly what you want,
+because when a person is subscribed to a list as
+``example@address.net'', but tries to post from a different account
+than that one, Petidomo will not let him post. It tries to recognize
+this case as far as possible: For example, it doesn't matter whether
+you are posting from ``address@host1.address.net'' or
+``address@host2.address.net'', Petidomo will handle that. But if the
+article comes from ``example@private.account'', it will be rejected,
+even though the sender might be a valid subscriber. It depends on the
+subscribers of the mailing list, whether this is a problem or not.
+
+A better way to keep spam off your lists may be the ``acknowledged''
+or ``acknowledged-once'' type of list. The former list mode means that
+every time someone tries to post, he will get a short reply back which
+contains some cryptographic cookie. Furthermore the mail will tell
+him to please reply to that mail and send the cookie back to Petidomo.
+Once that is accomplished, Petidomo will let the posting pass.
+
+This means that only people will be able to post that have a valid
+envelope or from address --- something spammers usually do not. Since
+the request for confirmation never reaches them, their postings will
+not go through. Everybody else can acknoledge the posting by sending
+the cookie back and thus get by that hurdle.
+
+The difference between the ``acknowledged'' and ``acknowledged-once''
+mode finally is that in the latter mode, people have to send that
+confirmation back only \emph{once}, while in the first mode, they have
+to send it in every time they're trying to post. Petidomo will keep a
+database of addresses that have been confirmed by that mechanism and
+these addresses are allowed to post from now on without having to
+confirm their posting again. Please note that this list of addresses
+is not related to the list of subscribers!
+
+Last but not least, there is a mode called ``moderated''; in this
+mode, nobody is allowed to post unless he can provide the correct
+posting- or administrator password for the list.
+
+If this option is unset, the default is to run an open list.
+
+\item[SubscriptionType] \hfill ``public'', ``admin'', or ``acknowledged''
+
+This option specifies who may subscribe to a mailing list. On an
+``open''-subscription list, anybody may subscribe any address to the
+list. If the subscription type is ``admin'', only the person knowing
+the admin password of the mailing list is allowed to subscribe or
+unsubscribe addresses. All other requests that aren't properly
+authenticated will be forwarded to the list owner for approval.
+
+If the subscription type is set to ``acknowledged'', anybody can issue
+a subscribe command, but the address will not be added to the list (or
+removed from the list in case of an ``unsubscribe'') unless the
+request has been confirmed: Petidomo will send a random cookie to the
+address in questing and ask to send the cookie back to acknowledge the
+request. Once the cookie has been send back, the request is carried
+out.
+
+This mode is useful to prevent people from adding random addresses to
+the list or to prevent them from removing other people from the list
+without their consesus.
+
+If this option is unset, the default to allow public subscription.
+
+\item[AllowMembersCommand] \hfill ``yes'' or ``no''
+
+Petidomo knows a command ``members'' or ``who'', which can be sent
+to the server and it will reply with the complete list of subscribed
+addresses for the mailing list. This may be useful for list
+administrators, but it can be abused easily by spammers, to collect
+addresses where to send their unsolicted commercial e-mail to.
+
+Furthermore, with certain mailing lists it may be undesirable that one
+can see ``who else'' is subscribed to that list. That's why this
+option has been added. If you set it to ``no'', the
+``members''-command will be diabled for this list. (This is also the
+default if the option is not specified in the config file.)
+
+If you set it to ``yes'', the ``members''-command will work.
+
+\item[Hostname] \hfill ``hostname.domainname''
+
+This options tells Petidomo to use this hostname for the mailing list,
+instead of the one configured in the master configuration file. This
+feature is useful to do virtual hosting.
+
+\Def{Virtual hosting} is required when several mailing lists run on
+the same server, but they have to look like they would coming from
+different machines. Let's use an example: The internet service
+provider ``Inter.Net'' offers its customers to host mailing lists for
+them. A small software house of the name ``Petiware'' wants to provide
+a mailing list for all its customers, but they don't have a dedicated
+Internet line.
+
+So they use the service provided by Inter.Net and let them host the
+mailing list on their machine. The mailing list server at Inter.Net
+has the fully qualified domain name ``mail.inter.net''. Petiware,
+though, wants the list to run under the name
+``customers@petiware.com'' and \emph{not} ``customers@inter.net'' ---
+what would a be misleading.
+
+So all the mailing list guru from Inter.Net has to do is to set the
+entry
+\begin{verbatim}
+Hostname        petiware.com
+\end{verbatim}
+in the config file of the ``customers'' mailing list. Petidomo will
+now use the hostname ``peti\-ware.com'' in all mails that are posted
+to that list, instead of ``mail.inter.net''.
+
+You can specify a different hostname for every mailing list, using
+this feature. \emph{That} is ``virtual hosting''. Further details on
+virtual hosting can be found in section~\ref{virtual hosting and
+sendmail} of the user manual.
+
+If this entry is unset, the name configured in the master config file
+will be used as hostname for this mailing list.
+
+\item[AdminPassword] \hfill ``string''
+\label{list admin password}
+
+This tag sets the master password, which authenticiates the
+administrator of this mailing list. The administrator has special
+priviledes, such as deleting other users, overriding access control
+restrictions or un-/subscribing users to closed mailing lists. This is
+described briefly in section~\ref{petidomo as admin} of the user manual.
+
+Please note that passwords are always case-insensitive. It is also
+worth noting that the master password is always valid as administrator
+password for the list, also.
+
+Leave this entry blank, if you don't want to enable remote
+administration of the mailing list.
+
+\item[PostingPassword] \hfill ``string''
+\label{posting password}
+
+This tag sets the ``posting password''. The posting password allows to
+post an article to a moderated mailing list, but it does not allow any
+administration of the list itself. On lists that are of a different
+type than moderated, setting a posting password does usually not make
+any sense and you can leave this entry unset.
+
+\item[ReplyTo] \hfill ``email@address.net'' or ``none''
+
+This tag controls the `Reply-To:' field, which Petidomo adds to
+posted articles before it is delivered to the recipients. Using this
+option, you can force Petidomo to insert a `Reply-To:' which points
+to a certain address. On a moderated list, for example, you can set
+this as follows:
+\begin{verbatim}
+ReplyTo         moderator@address.net
+\end{verbatim}
+to direct all replies to the posting to the moderator again,
+regardless of what address is noted in the `From:' line of the mail.
+
+If you set ``none'', Petidomo will not add a `Reply-To:' header at
+all.
+
+If this option is unset, Petidomo will to insert a `Reply-To:'
+header that directs replies back to the mailing list, so that
+subscribers can conveniently post simply by hitting the `reply'
+function in their mail reader.
+
+\item[PostingFilter] \hfill ``bourne shell command''
+
+If you specify a posting filter, this program or script will be
+started by Petidomo before it sends a posting out to the
+subscribers. The programm will receive the article, as it has been
+prepared by Petidomo, on standard input and is expected to write the
+final version of the mail to standard output. The posting filter can
+be used to manipulate the headers for special purposes.
+
+An example for a postin filter that wouldn't modify the mail at all is
+the following:
+\begin{verbatim}
+PostingFilter   /bin/cat
+\end{verbatim}
+
+A detailed discussion of posting filters can be found in
+section~\ref{using posting filters} of the manual.
+
+If the filter program exits with a returncode not equal to 0 (zero),
+Petidomo will not post the article and terminate.
+
+
+\item[Archive] \hfill ``/path/of/archive''
+
+If this option is set, Petidomo will archive all articles that have
+been posted on that mailing list. The parameter for this tag may
+either be the name and path of a file or of a directory. The path may
+either be absolute (\file{/var/archive/list}) or relative
+(\file{archive}). For relative paths, the directory where the list's
+config file resides will be used as starting point. If the
+``Archive''-tag points to a file, Petidomo will append every posted
+article to that file. If points to a directory, each posting will be
+stored in that directory in a separate file.
+
+If this option is unset, posted articles will not be archived at all.
+
+For further information an creating mailing list archives, please
+refer to section~\ref{mailing list archives} of the user manual.
+
+
+\item[IntroductionFile] \hfill ``/path/to/file''
+
+This tag specifies the path to the so called ``introduction'' file.
+Every time an address is added to the mailing list, Petidomo will send
+the contents of this file to the new subscriber. This is meant to be
+used to inform the new subscriber about the list's topic, habits he
+should know, etc. If the file does not exist, no mail is sent out.
+
+If the path specified here is relative --- not starting with a ``/''
+character that is ---, it is interpreted to be relative to the
+directory where the list's config file has been found. The default
+path is \file{introduction}.
+
+
+\item[DescriptionFile] \hfill ``/path/to/file''
+
+This tag specifies the path to the so called ``description'' file.
+This file is supposed to contain a short description of the mailing
+list's topic and purpose. It's contents will be sent back if a user
+requests the command ``help listname''.
+
+If the path specified here is relative --- not starting with a ``/''
+character that is ---, it is interpreted to be relative to the
+directory where the list's config file has been found. The default
+path is \file{description}.
+
+
+\item[ACLFile] \hfill ``/path/to/file''
+
+This tag specifies the path to the list-specific ACL file. Please
+refer to section~\ref{acl} for more information about the access
+control language of Petidomo.
+
+If the path specified here is relative --- not starting with a ``/''
+character that is ---, it is interpreted to be relative to the
+directory where the list's config file has been found. The default
+path is \file{acl}.
+
+
+\item[HeaderFile] \hfill ``/path/to/file''
+
+The contents of this file this tag points to will be added to the
+header of \emph{every} posting on this list. This may be used to add
+custom headers like:
 \begin{quote}
 \begin{verbatim}
-petidomo[8706]: Petidomo 4.0b1 (18-Jan-2001) starting up; \
-        mode=listserv, listname=<none>, \
-        masterconf=/usr/local/etc/petidomo.conf, \
-        approved=false, ruid=2, euid=2, gid=2, egid=2
+X-List-Archive-is-at: http://list-archive.example.org/
 \end{verbatim}
 \end{quote}
 
-Here, the master config file will be expected at {\sf
-/usr/local/etc/petidomo.conf} --- what is the default, unless you
-changed the ``sysconfdir'' while compiling the binary. If you want to
-change that path without re-compiling the binary, you can simply
-provide a new location on the command line when calling Petidomo by
-adding the parameter ``{\sf {-}-masterconf=/new/path/to/file}''. You
-can also omit the equal sign and write ``{\sf
-{-}-masterconf~/new/path/to/file}'' if you prefer that.
+Please note that the contents of this file will be added
+\emph{verbatim}! So don't include any empty lines in here as empty
+lines mark the end of the mail headers! Generally, please use this
+feature with care; most mailing list administrators tend to
+overestimate the importance of custom headers on their mailing list.
 
-In any case, this config file must exist, be readable for Petidomo and
-have correct contents, or your installation won't do anything but tell
-you that there's something wrong. In the following, we'll list all
-directives you can set in that file and explain their syntax and
-semantics.
+If the path specified here is relative --- not starting with a ``/''
+character that is ---, it is interpreted to be relative to the
+directory where the list's config file has been found. The default
+path is \file{header}.
 
-\label{config file syntax}
-All directives must be stated at the first column of a line and
-obviously only one directive per line is allowed. Each directive
-consists of a keyword and the data part. Which keywords exist will be
-explained below. You separate the keyword from the data by whitespace.
-Either tabs of blanks are fine and you may use any number of
-whitespace characters you like.
 
-The case of the keywords does not matter; both ``hostname'' and
-``HoStNaMe'' are the same to Petidomo. If the data part contains any
-whitespace itself --- as in the MTAOptions directive ---, it is
-recommended to enclose it in double quotes to avoid confusion.
-Petidomo will get it right if you do not use double quotes, though,
-unless you need to specifi whitespace at the beginning or the end of
-the data part; any whitespace there will be ignored.
+\item[SignatureFile] \hfill ``/path/to/file''
 
-Empty lines will be ignored and so will any line that starts with the
-{\sf \#} character; you can use it to add comments to the config file.
+The contents of this file this tag points to will be appended to
+\emph{every} posting on this list. This may be used to add a
+list-specific signature, like:
+\begin{quote}
+\begin{verbatim}
+--
+ Useful comment here.
+\end{verbatim}
+\end{quote}
 
-OK, here is the list of keywords to be used in the master config file
-including a description what they mean.
+If the path specified here is relative --- not starting with a ``/''
+character that is ---, it is interpreted to be relative to the
+directory where the list's config file has been found. The default
+path is \file{signature}.
 
-\paragraph{Hostname}
 
-This is a required directive that tells Petidomo how the system's
-Internet host name is. You should use the fully qualified host name
-here --- the host's name including the domain name that is. If you
-omit the domain, things might work, but they probably won't.
+\item[AddressFile] \hfill ``/path/to/file''
 
-\paragraph{AdminPassword}
+This tag specifies the path to the path of the file Petidomo uses to
+store the list of subscribed addresses. If the path specified here is
+relative --- not starting with a ``/'' character that is ---, it is
+interpreted to be relative to the directory where the list's config
+file has been found. The default path is \file{list}.
 
-Use this to specify a password, which only the administrator of the
-Petidomo systems should know. You can use this password to approve
-e-mails or to subscribe addresses to closed lists. You can do pretty
-much anything with Petidomo you want, so choose somthing a bit more
-original than the example ``open sesame'' found in the config file
-examples. This option is required; Petidomo will not run unless it is
-there.
 
-\paragraph{MTA}
+\item[AcknowledgementFile] \hfill ``/path/to/file''
 
-Here you must specify the path to the MTA Petidomo will use to send
-outbound e-mail. This option is required.
+This tag specifies the path to the path of the file Petidomo uses to
+store the list of addresses that have been verified by the
+acknowledgement mechanism and may furtheron post without having to
+acknowledge their posting again. This is only used if the list is set
+to ``acknowledge-once'' mode.
 
-\paragraph{MTAOptions}
+If the path specified here is relative --- not starting with a ``/''
+character that is ---, it is interpreted to be relative to the
+directory where the list's config file has been found. The default
+path is \file{ack}.
 
-Depending on which MTA you use, you may want to provide parameters to
-it when it is started. Those options can be specified here. The
-default options, if this directive is not specified in the master
-config file, are ``{\tt -i -f\%s}''. The {\tt \%s} is a place holder
-for the envelope from to be added by Petidomo and it will be replaced
-by the apropriate e-mail address at execution time.
+\end{description}
 
-Please note that the compiled in default options work for sendmail,
-you may have to change them if you're using a different MTA.
+\section{Command Line Syntax}
 
-\paragraph{ListDirectory}
+\section{Aliases}
+\label{aliases}
 
-\paragraph{AckQueueDirectory}
+The binaries of the Petidomo package are usually not called manually
+from the shell, but by the mail transport agent. This works as
+follows: You create an e-mail account, which serves the purpose of
+accepting the incoming e-mail and piping it into the appropriate
+binary.
 
-\paragraph{HelpFile}
+This is archieved with the ``alias''-function of your mail transport
+agent. Most MTAs, like sendmail, have a file where a list of special
+account names is given together with the instructions what to do with
+any mail received for that account. This file is usually located in
+\file{/etc/aliases}.
 
-\paragraph{ACLFile}
+One thing, aliases can do is to pipe the mail into a program for
+processing. This is the mechanism Petidomo uses. Petidomo requires
+you to add the following aliases to your system:
+\begin{verbatim}
+#
+# Mailing List Stuff
+#
+petidomo-manager: root
+petidomo: "|/usr/local/petidomo/bin/listserv"
+\end{verbatim}
 
-\paragraph{IndexFile}
+The lines starting with the `\#' character are only comments and are
+ignored by the mail transport agent. The fourth line, though, is the
+first command. It tells the MTA to accept mail for an user of the name
+``petidomo-manager'' and to re-direct the e-mail to an user of the
+name ``root'' --- the system administrator.
 
-\section{List Config Files}
+Petidomo will send notifications of an error and administrative
+things like that to the address ``petidomo-manager''. By setting this
+alias to a certain user name, you can control who will receive those
+mails.
 
+The next line now tells the MTA to pipe any incoming mail for the user
+``petidomo'' into the ``listserv'' program, instead of delivering it
+into a mailbox. ``listserv'' will then parse the mail for commands and
+react accordingly. Hence, the address people can send their
+subscription requests to is ``petidomo@your.host.name''.
+
+These aliases have been created by the install script, unless you told
+it not to, and you don't need to worry about them.
+
+\bigskip
+
+Furthermore, each mailing list on your server requires three aliases,
+as shown in the example below, which is written for the ``testlist''
+mailing list that comes with the distribution:
+\begin{verbatim}
+testlist: "|/usr/local/petidomo/bin/hermes testlist"
+testlist-request: "|/usr/local/petidomo/bin/listserv testlist"
+testlist-owner: petidomo-manager
+\end{verbatim}
+
+The first alias, ``testlist'' is the address to which people can send
+their mail in order to post to the mailing list. Any incoming mail for
+that account will be piped into the ``hermes'' binary, which will
+process the mail and then re-send it to all subscribers of the mailing
+list. In order to let ``hermes'' know, for which mailing list the
+posting was meant, the parameter ``testlist'' has to be specified on
+the command line. If the name of the mailing list was ``foobar'', the
+line would look like this:
+\begin{verbatim}
+foobar: "|/usr/local/petidomo/bin/hermes foobar"
+\end{verbatim}
+
+The second alias is a special request address, to which users can send
+their commands. The difference between this address and the
+``petidomo'' alias described above is that ``listserv'' is being given
+a default listname on the command line. The difference is this: If
+``listserv'' receives a mail, which has the command ``subscribe'' in
+it, without any further parameters, it will reject the command with an
+error, because it doesn't know to which list the sender wants to be
+added.
+
+If the command ``subscribe'' is sent to the ``testlist-request''
+address, though, it will assume that the user wants to be subscribed
+to the ``testlist'' mailing list, as this is the default list for this
+address.
+
+The name of this alias should always be the name of the mailing list
+with the string ``-request'' appended. Theoretically you could choose
+a different name, but this unwritten standard is wide accepted
+throghout the Internet for several years now.
+
+The last alias is the name of the mailing list with the string
+``-owner'' appended. This alias points to the person who is
+responsible for managing the ``testlist'' mailing list. Petidomo
+will send all e-mail concerning the administration of the mailing list
+to the address ``listname-owner''. Usually this will ultimately be the
+same person as the ``petidomo-manager'', but you are free to direct
+mail for this account to somebody else, or to several persons.
+
+\chapter{Petidomo for Mailing List Users}
+\label{petidomo as user}
+
+In this chapter, we will describe the commands, that are
+understood by the ``listserv'' program. ``listserv'' is the interface
+for the users of the mailing lists, where they can send their requests
+to in order to be subscribed to a mailing list, be unsubscribed again
+and similar things. The text here is mostly identical with the
+default help text that is sent to the user
+whenever he or she issues a command that is syntactically incorrect.
+This text is stored in the file
+\file{\~{}petidomo/etc/help} and can be
+customized to fit the requirements of your site.
+
+User commands always have to be sent to the request address of
+the mailing list --- \emph{not} to the mailing list itself. Petidomo
+will try to recognize commands that are sent to the mailing list and
+redirect them to the ``listserv'' program, but naturally this will not
+work in all cases. The address, where requests should be directed to,
+is \emph{always} the address of the mailing list with the string
+``-request'' appended to the username. If the mailing list is called
+``politics@foo.bar'', the appropriate request address is
+``politics-requst@foo.bar''.
+
+Alternatively, commands can always be sent to the address
+``peti\-do\-mo@your.ad\-dress'', but the ``-request''-address is preferable,
+for the fact that the ``listserv'' will have a default listname for
+this address and thus understand a simpler command syntax.
+
+\section{SUBSCRIBE}
+
+The ``subscribe'' command will add the address of the user to a
+mailing list. When using the ``-request''-address, only the word
+``subscribe'' is required for the request to suceed. If the command is
+sent to the ``petidomo'' address, the user will have to specify an
+additional parameter: The name of the mailing list he or she wants to
+be added to, like in the following example:
+\begin{verbatim}
+subscribe politics
+\end{verbatim}
+
+If the user wants to add an address that is not equal to the one he or
+she is sending the e-mail from, the e-mail address will have to be
+specified, too:
+\begin{verbatim}
+subscribe politics joe@foo.bar
+\end{verbatim}
+
+The order in which the e-mail address and the mailing list name are
+provided does not matter. Please note that the administrator can
+configure Petidomo to disallow un-/subscring other addresses than
+the one, the request is sent from, using the
+``AllowAlienSubscription'' option in the list's config file.
+
+The command ``add'' is synonymous to ``subscribe''.
+
+\section{UNSUBSCRIBE}
+
+The syntax and usage of the ``unsubscribe`` command are the same as the
+``subscribe'' command. The difference is, though, the the user's address
+is removed from the mailing list rather than added to it.
+
+``delete'' and ``remove'' can be used synonymously to ``unsubscribe''.
+
+\section{INDEX}
+
+The ``index'' command does not need any parameters. Sending it to the
+server will return a list of available mailing lists on this server.
+This is useful in case you want to subscribe to a list but can't
+remember the exact name anymore.
+
+The commands ``lists'' and ``longindex'' are synonyms to ``index''.
+
+\section{HELP}
+
+If the server receives the command ``help'', it will send the file
+\file{\~{}peti\-domo/etc/help} back. If ``help'' has a parameter,
+Petidomo will check whether this is a valid name of an existing
+mailing list, and if it is, it will return the description file for
+this mailing list, rather than the help-file.
+
+\section{MEMBERS}
+
+The ``members'' command will return the addresses of all subscribers
+of the mailing list, if the administrator chose to allow this command.
+When ``members' is sent to the ``-request''-address, the default list
+will be used by Petidomo. Otherwise, the name of the mailing list
+which's subscribers should be listed, has to be specified as an option
+like in the following example:
+\begin{verbatim}
+members politics
+\end{verbatim}
+
+The command ``who'' can be used synonymously to ``members''.
+
+\chapter{Petidomo for Administrators}
+\label{petidomo as admin}
+
+On the ``other side'' of Petidomo, from the user's
+perspective, is the administrator of the mailing list --- also called
+the \Def{mailing list owner}). Each mailing list has an
+alias ``listname-owner'' (see section~\ref{aliases}), where the mail
+address of the person who is responsible for this mailing list should
+be specified. Per default, this is the user who is known as
+``petidomo-manager''. But you are free to direct mail for this accoun
+to any other person --- or several persons.
+
+The list owner will receive administrative e-mail from Petidomo in
+the following cases:
+
+\begin{itemize}
+
+\item When a new user subscribes, or a subscriber removes himself from
+the list, a carbon copy of the recipt will be sent to the owner. By
+looking at these mails, the owner can check whether a ``subscribe'' or
+``unsubscribe'' command looks bogus. He or she can also keep track of
+who is on the list and who is not.
+
+\item If a ``members'' command is received for a mailing list where
+this command has been disabled, this will also be forwarded to the
+owner.
+
+\end{itemize}
+
+These mails are merely for information purposes and do not necessarily
+require an action from the admin. There are cases, where the list
+owner will receive mails from Petidomo, though, that require some
+kind of reaction.
+
+\section{Bounces}
+
+While maintaining mailing list with a larger number of subscribers, it
+happens regularly that subscribed addresses become invalid or are
+temporarily not reachable. In this case postings will \Def{bounce}.
+You will then receive a mail from a mail server telling you, that the
+delivery of the mail failed.
+
+Often, addresses become unreachable due to a misconfiguration of a
+machine, so it is not always necessary to remove that address from the
+list immediately, but when an addresses bounces for several days in a
+row, it is a good idea to delete that address from the mailing list.
+You should do that by sending an ``unsubscribe'' command for that
+address to the ``-request''-address of the mailing list.
+
+If you have configured Petidomo to disallow the unsubscription of
+addresses not equal to the address the mail is sent from, you will
+have to specify your admin password in the mail, to override the
+barrier. How this is done is described in section~\ref{approve} later.
+
+\section{Closed and moderated lists}
+
+If you have configured a mailing list to reject postings under certain
+circumstances, such as a closed or moderated mailing list, these
+rejected articles will be forwarded to you for approval. When you
+receive such a rejected article, you can either silently
+discard it, contact the author or post it to the mailing list with
+your approval.
+
+You can approve an article with the master password for Petidomo, the
+admin password of the mailing list in question or the posting password
+(see section~\ref{posting password} of that list.
+
+\section{Approving requests}
+\label{approve}
+
+To approve an article, you have several ways of specifying the
+appropriate password. They are all the same for Petidomo and it is
+only a matter of taste, which scheme you use.
+
+When sending a command to the ``listserv'' program, though the
+``-request'' or ``petidomo''-address, it is easy. Just preface your
+commands with a ``password'' command, like in the
+following example:
+\begin{verbatim}
+To: testlist-request@foo.bar
+Subject:
+
+password open sesame
+subscribe some@one.else
+subscribe someone@even.elser
+\end{verbatim}
+
+One ``password'' command sets your password for all the commands to
+follow. If you want to use one mail to send requests for several
+mailing lists with different passwords, just give a ``password''
+command again:
+\begin{verbatim}
+To: petidomo@foo.bar
+Subject:
+
+password open sesame
+subscribe user@inter.net testlist1
+password let me in
+subscribe user@inter.net testlist2
+\end{verbatim}
+
+Instead of ``password'', you can also use the commands ``passwd'', or
+``approve'', they are all synonymous.
+
+\section{Approving postings}
+
+If you want to approve a posting for a mailing list, just send the
+article to the mailing list and specify your password either in the
+header or in the body of the mail.
+
+If you choose to approve the mail in the body, add line with the
+command ``approve'' to the mail as first line of the body. Petidomo
+will strip that line before actually posting the article then. You can
+also use the synonyms ``approved'', ``password'' or ``passwd''
+instead. Here is an example:
+\begin{verbatim}
+From: simons@petidomo.com (Peter Simons)
+Subject: Cats are the most beautiful animals in the world.
+
+approve let me post
+It's not that I wouldn't like animals like dogs, birds
+or fishes, but for me, a cat is *the* animal to have.
+[...]
+\end{verbatim}
+
+The line ``approve let me post'' will be stripped by Petidomo and
+then the article will be sent out.
+
+If you want to specify the password in the headers, just add an header
+of the name ``Approved'' or ``Approve'' to the headers of the mail.
+(Unfortunately, many mail readers do not allow you to modify the
+headers of outgoing mail. That is why the body-approval has been
+added.) Here is the same example as above now using the headers:
+\begin{verbatim}
+From: simons@petidomo.com (Peter Simons)
+Subject: Cats are the most beautiful animals in the world.
+Approve: let me post
+
+It's not that I wouldn't like animals like dogs, birds
+or fishes, but for me, a cat is *the* animal to have.
+[...]
+\end{verbatim}
+
+Please note that you have to add a colon to the keyword to make a
+valid RFC mail-header.
+
+
+\chapter{The Access Control Language}
+\label{acl}
+
+Unfortunately, we live in a world where some people are trying to
+abuse services like mailing lists for their entertainment or for
+commercial purposes. It is also not uncommon that among thousands of
+mailing list subscribers, there is one particular moron who simply
+can't behave. That is why access control is a useful feature, even
+though it contradicts the idea of a mailing list: To be a media for
+communication.
+
+Writing and understanding ACL files is, to be honest, not very easy
+and the novice mailing list administrator should better be careful
+when using them, because a wrong access control rule might cause more
+trouble than it is worth, but the experienced administrator will
+certainly appreciate their power. Understanding how ACL files work
+will also require you to know a bit about the syntax of an RFC format
+e-mail. A good place to start is to take a look at RFC822 and its
+sons.
+
+In Petidomo, two places exist to control who is allowed to do what:
+The global acl file
+\file{\~{}petidomo/etc/acl} and the acl
+file that is local to the mailing list:
+\file{\~{}petidomo/lists/list\-name/acl}. While the latter is valid only
+for the list in which's home directory it is stored, the globl acl
+file will be parsed for \emph{all} your mailing lists. ACL files are
+only relevant for mailing list postings, the ``listserv'' program does
+not use them.
+
+The syntax of an ACL file is similar to the C programming
+language, as you can see in the following example:
+\begin{verbatim}
+if (envelope matches "mailer-daemon@") then
+        forward "petidomo-manager";
+\end{verbatim}
+
+This is a simple version of the default ACL file which comes with the
+Petidomo distribution and is installed in
+\file{\~{}petidomo/etc/acl}. It tells hermes to forward all postings
+to a mailing list, where the envelope of the mail matches the regular
+expression ``mailer-daemon@''. This rule is included in the default
+distribution to make sure that bounces of articles will not be posted
+to the list again, thus causing an infinite mail loop. The syntax of
+an ACL statement is shown in figure~\ref{acl syntax}.
+
+\begin{figure}[bth]
+\begin{center}
+\begin{tabular}{cccccccccc}
+IF & ( & from & match & {\tt "}regexp{\tt "} & ) & THEN & pass & & ; \\
+   &   & subject & matches &                   &   &      & drop & & \\
+   &   & envelope & ==     & {\tt "}string{\tt "}          &   &      & reject & & \\
+   &   & header   & =     &                & &     & rejectwith & {\tt "}file{\tt "}  & \\
+   &   & body     &       &                & &     & redirect   & {\tt "}address{\tt "} & \\
+   &   &      &       &                &   &      & forward    & {\tt "}address{\tt "} & \\
+   &   &      &       &                &   &      & filter     & {\tt "}script{\tt "} & \\
+IF & ( &  & {\tt "}filter{\tt "} &  & ) & THEN &  & & ; \\
+\end{tabular}
+\caption{The Access Control Language syntax.}
+\label{acl syntax}
+\end{center}
+\end{figure}
+
+Admittedly, the figure is rather impossible to understand without
+further explaination, don't worry if things are still a bit unclear
+after looking at it.
+
+Every ACL statement looks like this: ``IF condition THEN action ;''.
+The condition may or may not be enclosed in brackets. Several
+conditions can be combined with the keywords ``OR'' and ``AND''.
+Furthermore every condition can prefaced with a ``NOT'', which will
+reverse the outcome of the condition.
+
+Let's explain this all at a concrete example: You want to reject all
+postings which come from the addresses ``moron@moron.net'' and
+``spam@spam.net'', because these people have constantly been abusing
+your mailing list service. This can be done with the following two
+statements:
+\begin{verbatim}
+IF from == "moron@moron.net" THEN reject;
+IF from == "spam@spam.net" THEN reject;
+\end{verbatim}
+
+Using the ``OR'' statement you can combine this into one statement:
+\begin{verbatim}
+IF from == "moron@moron.net" OR
+   from == "spam@spam.net" THEN
+      reject;
+\end{verbatim}
+
+And now we include brackets for readability:
+\begin{verbatim}
+IF (from == "moron@moron.net") OR
+   (from == "spam@spam.net") THEN
+      reject;
+\end{verbatim}
+
+The keyword ``from'' stands for the address, noted in the ``From:''
+header line of the mail and, the ``== {\tt "}address{\tt "}'' means
+that the condition if this address is equal to the one written in
+quotes thereafter. (You can also use a single `=' character, if you
+prefer that over two equal-characters.) This is a verbatim match. If
+we'd use the ``match'' or ``matches'' keyword instead of the ``=='',
+the parameter would be interpreted as an extended regular expression
+and the condition would be true if the addresses matched this pattern.
+(Regular expressions are described in the re\_format(7) man page, or
+in the manpages of sed(1), grep(1) or egrep(1).)
+
+Other keywords than ``from'' for the first part of the conditional are
+``subject'' (the contents of the ``Subject:'' header), ``envelope''
+(the envelope of the mail), header and body. The latter two represent
+the whole header or body of the mail and should be used only for
+regular expression matches and not for verbatim matches.
+
+A short comment on the difference between ``redirect'' and
+``forward'': The ``redirect'' action will send the mail to the
+specified address without changing anythin in the mail. All the
+headers are left untouched and thus the mail will look as if it has
+been sent by the person to that address right away. This is useful for
+redirecting mails to daemons or programs, but it will usually confuse
+a human recipient
+
+The ``forward'' action, though, will send a mail to the specified
+address with a new set of headers, which identify the Petidomo Mailing List Manager as
+originator and then it will quote the mail that has been forwarded in
+the mail body.
+
+Valid actions are ``pass'' (post the mail immediately), ``drop''
+(discard the mail without further notice), ``reject'' (send a mail to
+the poster, telling him his posting was rejected), ``rejectwith''
+(sending mail to the poster, too, but with the contents of a specified
+file), ``redirect'' (redirect the mail to a specified address),
+``forward'' (like ``redirect'' but preface the mail with a note
+telling why the mail was re-sent) or ``filter'' (pipe the mail into
+the specified filter script and post the mail as the filter writes it
+to the standard output).
+
+Here are a few more examples in the hope that they make this all
+easier to understand: Let's assume you would like to catch all
+postings to your mailing lists, that contain the words ``MAKE MONEY
+FAST'' in the subject. Then one way of doing this is the following
+statement:
+\begin{verbatim}
+IF (subejct matches "make money fast") THEN
+      rejectwith "/usr/local/petidomo/etc/make-money-fast.txt";
+\end{verbatim}
+
+The file \file{/usr/local/petidomo/etc/make-money-fast.txt} could, for
+example, contain the following text:
+\begin{quotation}
+Dear poster,
+
+your mail has been rejected. Please note that chain letters like the
+``make money fast'' text you tried to post are illegal throughout the
+world and your are likely to get in trouble if you continue to spread
+them.
+\end{quotation}
+
+If someone tried to post the chain letter to your mailing lists now,
+he would receive a mail like that:
+\begin{verbatim}
+Date: Sat, 28 Jun 1997 19:59:18 +0200 (MET DST)
+From: testlist-owner@peti.cys.de (Petidomo Mailing List Server)
+To: simons@cys.de
+Cc: testlist-owner@peti.cys.de
+Subject: Your posting to list "testlist" was rejected
+Precedence: junk
+Sender: testlist-owner@peti.cys.de
+
+Dear poster,
+
+your mail has been rejected. Please note that chain
+letters like the ``make money fast'' text you tried
+to post are illegal throughout the world and your are
+likely to get in trouble if you continue to spread them.
+
+>From simons  Sat Jun 28 19:59:17 1997
+Received: from [[UNIX: localhost]]
+        by peti.cys.de (8.8.5/8.8.4) id TAA16959
+Date: Sat, 28 Jun 1997 19:59:17 +0200 (MET DST)
+Message-Id: <199706281759.TAA16959@peti.cys.de>
+From: Peter Simons <simons@cys.de>
+To: testlist
+Subject: MAKE MONEY FAST
+Mime-Version: 1.0 (generated by tm-edit 7.92)
+Content-Type: text/plain; charset=US-ASCII
+
+Hi, my name is David Rodes...
+\end{verbatim}
+
+A few more words about how the ACL files are parsed:
+\begin{itemize}
+
+\item All comparisons are done case insensitive. ``MAKE MONEY FAST''
+matches ``make money fast'' in both the verbatim and the regular
+expression match just fine.
+
+\item Any whitespace in the ACL file is ignored. The statements
+\begin{verbatim}
+if (envelope matches "mailer-daemon@") then drop;
+\end{verbatim}
+and
+\begin{verbatim}
+if
+    (envelope matches
+"mailer-daemon@")
+then
+       drop
+;
+\end{verbatim}
+are the same for Petidomo.
+
+\item The argument after the ``=='' or ``matches'' keyword \emph{has}
+to be included in quotes. An ACL statement like this:
+\begin{verbatim}
+if from == simons@petidomo.com then drop;
+\end{verbatim}
+will cause Petidomo to abort with an error, because it can't parse
+this.
+
+\item If you use an action that requires a parameter, like
+``rejectwith'' or ``forward'', this parameter has to be enclosed in
+quotes, too. A statement like this can also not be parsed by
+Petidomo:
+\begin{verbatim}
+if from == "simons@petidomo.com" then
+        forward postmaster@petidomo.com;
+\end{verbatim}
+
+\item Petidomo stops parsing the ACL file after the first statement
+has matched. If you want to reject all mails from an address that
+matches ``simons@.*\.de'', but you want mails from the address
+``simons@rhein.de'' to pass nonetheless, the following two statements
+will not work as expected:
+\begin{verbatim}
+if from matches "simons@.*\.de" then reject;
+if from == "simons@rhein.de" then pass;
+\end{verbatim}
+
+Instead you should use
+\begin{verbatim}
+if from == "simons@rhein.de" then pass;
+if from matches "simons@.*\.de" then reject;
+\end{verbatim}
+or
+\begin{verbatim}
+if (from matches "simons@.*\.de") and
+   (not (from == "simons@rhein.de")) then
+         reject;
+\end{verbatim}
+
+\item Currently you can't match for the double quote character ({\tt
+"}), we're afraid. The escape sequence {\tt \verb+\+"} is not
+supported yet.
+
+\end{itemize}
+
+One last example and then we'll come to the filters. The following
+statement rejectes a mail based on a match in the headers. This is
+very useful for rejecting mail from known spam domains. You usually
+can't rely on the spammer to use a valid ``From:'' header and hence
+the ``from''-match is useless to catch them. But the following
+statement will usually get them nonetheless:
+\begin{verbatim}
+if (header matches "^Received:.*from spam.domain") then
+     forward "petidomo-manager";
+\end{verbatim}
+
+\bigskip
+
+If you thought, the Access Control Language is powerful so far, take a
+look at the things you can do using filters. Rather than the syntax
+described below, you can use the following statement:
+\begin{verbatim}
+if ("/usr/local/petidomo/bin/CheckPosting") then reject;
+\end{verbatim}
+
+This is a special form of the usual ACL statements and it means the
+following: The mail in question is piped into the ``CheckPostin''
+script. The script or program can perform various tests and when it
+exists, the action part is executed depending on the return code the
+script exited with. A return code of zero (0) means ``true'' and the
+action will be executed. A return code of one (1) ``false'' and the
+action will not be executed.
+
+Any other return code will cause Petidomo to abort with an error and
+to save the mail. By using this mechanism, you can program even the
+most sophisticated tests and hook them into the access control
+mechanism.
+
+Another feature that hasn't been described yet is the action
+``filter''. The filter-action is pretty much the same as the posting
+filter, but it allows you to re-write the posting depending on who
+posted it or other criteria. Please note that this filter is executed
+additionally to a regular posting filter you might have configured.
+
+A nice example for what this feature can be used is the following:
+\begin{verbatim}
+if (address == "simons@petidomo.com") then
+       filter "/usr/local/petidomo/bin/simons.filter";
+\end{verbatim}
+
+The script \file{simons.filter} would then look like this:
+\begin{verbatim}
+#! /bin/sh
+
+cat
+echo
+echo "-- "
+echo " Hold your breath -- this is *the* Peter Simons!"
+\end{verbatim}
+
+We resisted the temptation of adding this ACL statement into the
+default configuration of Petidomo.
+
+% \chapter{Administrating Mailing Lists}
+%
+\chapter{Miscellaneous Topics}
+\section{Using posting filters}
+\label{using posting filters}
+
+The posting filter functionality of Petidomo is a very useful
+mechanism for you, if you run mailing lists where you want to
+guarantee certain formal criteria, because you can hook a script or
+program of your into the posting process and use it to re-format or
+re-write the article that is going to be posted.
+
+We have included one
+script into the distribution,
+\file{\~{}peti\-domo/bin/Insert\-Name\-In\-Sub\-ject.sh}, which adds a string
+into the subject line of every posting. The script is pretty short and
+used sed(1) to perform its function.
+
+To use it, just add the line
+\begin{verbatim}
+PostingFilter     ~petidomo/bin/InsertNameInSubject.sh listname
+\end{verbatim}
+with ``listname'' being the name of the mailing list.
+
+If the mailing list name was ``testlist'', for example, then this
+posting filter would re-write the subject line
+\begin{verbatim}
+Subject: Hi everbody
+\end{verbatim}
+to
+\begin{verbatim}
+Subject: [testlist] Hi everbody
+\end{verbatim}
+
+It is recommended to take a look at the script itself to understand
+how this works. You will need a bit of knowledge of the Unix scripting
+language and tools like sed(1) to program more complex posting filter,
+we're afraid.
+
+As the last point it should be made clear, that the string you specify
+as a filter is interpreted by the bourne shell for execution. It is
+thus absolutely possible, to use a posting filter like that
+\begin{verbatim}
+PostingFilter "/bin/cat | /bin/cat ; echo ; echo testing"
+\end{verbatim}
+even though one might argue whether this particular example is a
+useful thing. Anyway, you know what we wanted to demonstrate.
+
+\section{PGP-encrypted mailing lists}
+
+Another very useful feature of the posting filter and the access
+control languange is the ability to maintain \Def{encrypted mailing
+lists}. The idea is very simple: You create a PGP key pair for your
+mailing list and spread the public key among the subscribers of your
+mailing list. In turn you collect their public keys and store them on
+the mailing list server.
+
+Whenever a subscriber wants to post an article to the mailing list, he
+will encrypt it with the public key of the list server before
+transferring it through the Internet. Petidomo will then receive the
+mail, decrypt and process it and encrypt it again, with the public
+keys of the subscribers. Once encrypted again, the mail is distributed
+to the readers.
+
+Please note that at no time the mail was sent through the Internet in
+clear text. Hence this mode is well-suited for maintaining internal
+discussion lists for, say, software development among a few people who
+know each other but live spread throughout the world. Included in the
+distribution are two scripts, \file{pgp-encrypt.sh} and
+\file{pgp-decrypt.sh}, which realize this. The setup needs a bit of
+work, but once you understand the principle, it is rather easy. Just
+follow the steps described below.
+
+\begin{enumerate}
+
+\item Get the PGP software package from `http://www.pgpi.com/', you
+will need the PGP 2.6.2 version or later --- 5.x won't work, as far as
+I know, maybe someone wants to adapt the PGP-mechanism to PGP 5.x, any
+volunteers are welcome, and install it.
+
+\item Log in as user ``petidomo''.
+
+\item Create a directory \file{\~{}petidomo/.pgp} and set the {\tt
+\$PGPPATH} variable to it.
+
+\item Create a PGP key pair by calling `pgp -kg''. As user-id enter
+the address of the mailing list itself, for example: ``The secret
+mailing list $<$secretlist@petidomo.com$>$''.
+
+\item Create a \file{config.txt} file for PGP in
+\file{\~{}petidomo/.pgp} and insert the appropriate user id there.
+
+\item Distribute the newly created PGP key of the mailing list among
+the subscribers.
+
+\item Add the PGP keys of the subscribers to Petidomo's keyring.
+
+\item Edit the following definitions in
+\file{\~{}petidomo/bin/pgp-encrypt.sh}:
+
+\begin{verbatim}
+#
+# Please customize these things for your system.
+#
+PGP=/usr/local/bin/pgp
+PASSWORD="DecryptMe"
+PGPPATH=$PDHOME/.pgp
+\end{verbatim}
+
+You will need to change the location of the PGP binary and insert the
+password you chose for the secret key. For security reasons, the
+script itself should be owned by ``petidomo'' as user- and group id,
+and it should have the permission ``110'', so that only Petidomo can
+execute it.
+
+\item Edit the equivalent definitions in
+\file{\~{}petidomo/bin/pgp-encrypt.sh}.
+
+\item Now create the mailing list in question. In our example that
+would be ``secretlist''. Naturally the mailing list should not be open
+for public subscription.
+
+\item Edit the ACL file of the ``secretlist'' to contain the following
+line:
+
+\begin{verbatim}
+if (body matches "^-----BEGIN PGP MESSAGE-----$") then
+        filter "~petidomo/bin/pgp-decrypt.sh";
+\end{verbatim}
+
+\item Edit the config file to have the following posting filter:
+
+\begin{verbatim}
+PostingFilter   "~petidomo/bin/pgp-encrypt.sh secretlist"
+\end{verbatim}
+
+Please note that you must provide the name of the mailing list on the
+command line as parameter to \file{pgp-encrypt.sh}, so that it know
+which list file it should take the subscriber addresses from.
+
+\item Do a test posting and that's it.
+
+\end{enumerate}
+
+There are a few things you should take care of: First of all, you must
+make sure that you have the PGP public keys of all subscribers in the
+keyring belonging to the ``petidomo'' user, or some of them won't be
+able to decipher the mail posted via the list. You must also take care
+that the addresses these people are subscribed under, are actually
+listed in their public key, or PGP won't be able to recognize who is
+who, when being called by \file{pgp-encrypt.sh}.
+
+Finally, make sure that you do this only with the correct versions of
+the software. Petidomo needs to be version 2.1 or later, earlier
+versions won't work. The PGP binary needs to understand the {\tt -@}
+operator on the command line, which has been added in PGP 2.6i at some
+time.
+
+One last hint: If PGP-encryption or decryption doesn't work, it will
+usually help to remove the {\tt \$LOGFILE} parameter from the {\tt
+trap} command in the scripts:
+
+\begin{verbatim}
+trap 'rm -f $TMPFILE $HEADER $BODY $NEWBODY $LOGFILE; exit'...
+                                            ^^^^^^^^
+\end{verbatim}
+
+As a result, the script won't delete the output PGP issued when called
+after exiting. Thus you will find the file still lying in \file{/tmp}
+and can easily investigate what's wrong.
+
+\section{Virtual hosting and sendmail}
+\label{virtual hosting and sendmail}
+
+A very useful things is Petidomo's virtual hosting feature.
+Unfortunately, there are a few traps into which you might run when you
+are trying to use it together with the Allmann sendmail. But we'll
+start at the beginning.
+
+If you host mailing lists for domains other than your own, you can
+tell Petidomo to use this name instead of the local one for certain
+mailing lists in the list config file by setting the appropriate
+``HostName''. Now all mail posted to this list, or sent to the
+``-request'' address of the list, will appear to be coming from the
+domain name you configured, rather than your own.
+
+When you are using sendmail v8, you will have to write these names to
+the \$w\$ class in your sendmail.cf file, or the corresponfing M4
+config. This is done by adding the line
+\begin{verbatim}
+Cwdomain.name1 domain.name2 ...
+\end{verbatim}
+to the file.
+
+This will tell sendmail that these names are to be accepted and
+delivered locally rather than to the MX of these entries.
+
+Doing this might deliver a surprise, though, if you are using
+sendmail's masquerading abilities to hide the various hostname of your
+domain. Per default, sendmail masquerades not only the domain names
+you told him with the MASQUERADE\_DOMAIN() command, it automatically
+masquerades all domain names of the \$w\$ class, too.
+
+The result is that Petidomo's fine virtual hosting is gone
+immediately, because sendmail will re-write the name to your own
+domain name. The fix for this is rather easy: Add the command
+``FEATURE(limited\_masquerade)'' to your M4 file and sendmail won't
+touch the names that are stated only in the \$w\$ class.
+
+\section{Mailing list archives}
+\label{mailing list archives}
+
+If your are hosting a public mailing list, you might want to offer a
+mailing list archive, that is accessible through the WWW and has all
+the postings available for immediate access. We were in the midst of
+developing a tool that does this for you when we came accross a
+brilliant tool named ``MHonArc''. We installed it, tested it, and
+deleted all attempts of writing something like that ourselves
+immediately.
+
+We strongly recommend looking at MHonArc, if you want to offer a WWW
+archive of your mailing lists. You can find more information about
+MHonArc at the following location:
+`http://www.oac.uci.edu/indiv/ehood/mhonarc.html'
+
+The installation of the tool itself is very easy. Once you have
+MHonArc running, just enable the archiving feature in Petidomo and
+feed the archives into MHonArc. That's it.
+
+\section{Verifying the address lists}
+
+Petidomo tries its best to make sure that only syntactically correct
+addresses are subscribed to mailing lists, and if you stick to the
+listserv interface, there's very little chance, an incorrect address
+will make it into the \file{list} file.
+
+Sometimes, it is necessary to edit these files manually, though, or
+Petidomo's address validation algorithm fails. Once you have an
+incorrect address in your list file, sendmail will abort with an
+error, without trying to deliver the mail at all.
+
+To clarify, this does not happen when an address is not reachable,
+this happens only when you subscribe something like {\tt
+hey@this@is@wrong....}. Once you suspect that your address list has
+been corrupted, there's an easy way to find out, which addresses are
+wrong. Simply use sendmail's address verification mode like this:
+
+\begin{verbatim}
+ $ xargs <list sendmail -bv | sed -e '/deliverable/d'
+ > @bogus.address.here... user address required
+\end{verbatim}
+
+This call will find all incorrect address and notify you. The 'sed'
+call will filter out all correct addresses for your convenience.
 
 \end{document}
-
