@@ -39,7 +39,7 @@ char* queue_command(const struct Mail* mail, const char* command)
 	}
     fprintf(fh, "#! /bin/sh\n");
     fprintf(fh, "\n");
-    fprintf(fh, "%s --mode=listserv --approved <<[end-of-mail-marker]\n", who_am_i);
+    fprintf(fh, "%s --mode=listserv --approved <<[end-of-%s-marker]\n", who_am_i, cookie);
     fprintf(fh, "Sender: %s\n", mail->Envelope);
     fprintf(fh, "From: %s\n", mail->From);
     if (mail->Reply_To)
@@ -50,7 +50,7 @@ char* queue_command(const struct Mail* mail, const char* command)
 	fprintf(fh, "Approve: %s\n", mail->Approve);
     fprintf(fh, "\n");
     fprintf(fh, "%s\n", command);
-    fprintf(fh, "[end-of-mail-marker]\n");
+    fprintf(fh, "[end-of-%s-marker]\n", cookie);
     fclose(fh);
     chmod(buffer, 0755);
     free(buffer);
