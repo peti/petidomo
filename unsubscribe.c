@@ -218,6 +218,8 @@ DeleteAddress(struct Mail * MailStruct,
 	    char* command = text_easy_sprintf("unsubscribe %s %s", address, listname);
 	    char* cookie  = queue_command(MailStruct, command);
 
+	    /* Send request for confirmation to the user. */
+
 	    fh = vOpenMailer(envelope, address, NULL);
 	    if (fh != NULL)
 		{
@@ -227,10 +229,16 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
-		buffer = text_easy_sprintf("Per request from \"%s\", the address \"%s\" should be unsubscribed from " \
-					   "the mailing list \"%s\". This will not happen unless you confirm the " \
-					   "request by replying to this mail and citing the string",
-					   originator, address, listname);
+		if (strcasecmp(address, originator) == 0)
+		    buffer = text_easy_sprintf("You requested that the address \"%s\" should be unsubscribed from " \
+					       "the mailing list \"%s\". This will not happen unless you confirm the " \
+					       "request by replying to this mail and citing the string",
+					       originator, address, listname);
+		else
+		    buffer = text_easy_sprintf("Per request from \"%s\", the address \"%s\" should be unsubscribed from " \
+					       "the mailing list \"%s\". This will not happen unless you confirm the " \
+					       "request by replying to this mail and citing the string",
+					       originator, address, listname);
 		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n", buffer);
 		fprintf(fh, "\n    %s\n\n", cookie);
@@ -243,25 +251,32 @@ DeleteAddress(struct Mail * MailStruct,
 		return -1;
 		}
 
-	    fh = vOpenMailer(envelope, originator, NULL);
-	    if (fh != NULL)
+            /* If the request for confirmation has been sent to an
+               address different to that of the originator, notify him
+               what happened. */
+
+	    if (strcasecmp(address, originator) == 0)
 		{
-		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n", listname, ListConfig->fqdn);
-		fprintf(fh, "To: %s\n", originator);
-		fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n", address, listname);
-		if (MailStruct->Message_Id != NULL)
-		    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
-		fprintf(fh, "Precedence: junk\n");
-		fprintf(fh, "Sender: %s\n", envelope);
-		fprintf(fh, "\n");
-		fprintf(fh, "Unsubscribing the address will need confirmation. Such a\n");
-		fprintf(fh, "request has been sent to the address already, so don't move!\n");
-		CloseMailer(fh);
-		}
-	    else
-		{
-		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
-		return -1;
+		fh = vOpenMailer(envelope, originator, NULL);
+		if (fh != NULL)
+		    {
+		    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n", listname, ListConfig->fqdn);
+		    fprintf(fh, "To: %s\n", originator);
+		    fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n", address, listname);
+		    if (MailStruct->Message_Id != NULL)
+			fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		    fprintf(fh, "Precedence: junk\n");
+		    fprintf(fh, "Sender: %s\n", envelope);
+		    fprintf(fh, "\n");
+		    fprintf(fh, "Unsubscribing the address will need confirmation. Such a\n");
+		    fprintf(fh, "request has been sent to the address already, so don't move!\n");
+		    CloseMailer(fh);
+		    }
+		else
+		    {
+		    syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
+		    return -1;
+		    }
 		}
 
 	    return 0;
