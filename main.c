@@ -86,6 +86,11 @@ main(int argc, char * argv[])
     argv_version_string = "Petidomo";
     argv_process(args, argc, argv);
 
+    /* Log a few helpful facts about this Petidomo instance. */
+
+    syslog(LOG_DEBUG, "Petidomo starting up; mode=%s, listname=%s, masterconf=%s, approved=%s, ruid=%d, euid=%d, gid=%d, egid=%d",
+	   mode, listname, masterconfig_path, (g_is_approved) ? "true" : "false", getuid(), geteuid(), getgid(), getegid());
+
     /* Init Petidomo's internal stuff. */
 
     if (InitPetidomo(masterconfig_path) != 0) {
@@ -102,11 +107,6 @@ main(int argc, char * argv[])
 	syslog(LOG_ERR, "Failed to read incoming mail from standard input.");
 	exit(1);
     }
-
-    /* Log a few helpful facts about this Petidomo instance. */
-
-    syslog(LOG_DEBUG, "Petidomo starting up; mode=%s, listname=%s, approved=%s, ruid=%d, euid=%d, gid=%d, egid=%s",
-	   mode, listname, (g_is_approved) ? "true" : "false", getuid(), geteuid(), getgid(), getegid());
 
     /* Now decide what we actually do with the mail. */
 
