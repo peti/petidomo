@@ -1,9 +1,10 @@
 /*
- * Local defines for the argv module
+ * $Source$
+ * $Revision$
+ * $Date$
  *
- * Copyright 1995 by Gray Watson
- *
- * This file is part of the argv library.
+ * Copyright (c) 1999 by Gray Watson <gray.watson@letters.com>.
+ * All rights reserved.
  *
  * Permission to use, copy, modify, and distribute this software for
  * any purpose and without fee is hereby granted, provided that the
@@ -13,30 +14,18 @@
  * without specific, written prior permission.
  *
  * Gray Watson makes no representations about the suitability of the
- * software described herein for any purpose.  It is provided "as is"
+ * software described herein for any purpose. It is provided "as is"
  * without express or implied warranty.
- *
- * The author may be contacted at gray.watson@letters.com
- *
- * $Id$
  */
 
 #ifndef __ARGV_LOC_H__
 #define __ARGV_LOC_H__
 
-#include "argv.h"
+#include "argv.h"			/* to get the types */
 
-/*
- * global variable and procedure scoping for code readability
- */
-#undef	EXPORT
-#define	EXPORT
-
-#undef	IMPORT
-#define	IMPORT		extern
-
-#undef	LOCAL
-#define	LOCAL		static
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * generic constants
@@ -45,9 +34,6 @@
 #ifndef NULL
 #define NULL		0L
 #endif
-
-#undef	NULLC
-#define NULLC		'\0'
 
 #undef	MIN
 #define MIN(a,b)	((a) < (b) ? (a) : (b))
@@ -76,8 +62,8 @@
 #define FILE_LINE_SIZE		1024		/* max size of file lines */
 
 /* internal flags set in the ar_type field */
-/* ARGV_ARRAY is defined in argv.h */
-#define ARGV_FLAG_USED		(1 << 13)	/* if arg has been specified */
+/* NOTE: other external flags defined in argv.h */
+#define ARGV_FLAG_USED		(1 << 12)	/* if arg has been specified */
 
 /* error messages */
 #define USAGE_ERROR_NAME	"usage problem"
@@ -97,6 +83,7 @@
 #define GLOBAL_ERROR		"error="	/* error setting */
 #define GLOBAL_MULTI		"multi="	/* multi setting */
 #define GLOBAL_USAGE		"usage="	/* usage setting */
+#define GLOBAL_LASTTOG		"lasttog="	/* last-arg toggle */
 
 #define GLOBAL_CLOSE_DISABLE	1		/* disable close args */
 #define GLOBAL_CLOSE_ENABLE	2		/* enable close args */
@@ -114,7 +101,10 @@
 #define GLOBAL_MULTI_REJECT	11		/* reject multiple arg use */
 #define GLOBAL_MULTI_ACCEPT	12		/* accept multiple arg use */
 
-#define GLOBAL_ERROR_NONE	13		/* print only error */
+#define GLOBAL_LASTTOG_DISABLE	13		/* toggling of last-arg off */
+#define GLOBAL_LASTTOG_ENABLE	14		/* toggling of last-arg on */
+
+#define GLOBAL_ERROR_NONE	15		/* print only error */
 #define GLOBAL_ERROR_SEE	GLOBAL_USAGE_SEE /* error + see messages */
 #define GLOBAL_ERROR_SHORT	GLOBAL_USAGE_SHORT /* error + short */
 #define GLOBAL_ERROR_SHORTREM	GLOBAL_USAGE_SHORTREM /* err + short + remind*/
@@ -127,6 +117,7 @@
 #define SHORT_PREFIX		"-"		/* prefix for short args */
 #define UNKNOWN_ARG		"??"		/* unknown argument output */
 #define ARG_EQUALS		'='		/* to assign value to option */
+#define NUMBER_ARG_CHARS	"0123456789+-."	/* characters in numbers */
 
 /* how to produce the env var using sprintf and the argv_program variable */
 #define ENVIRON_FORMAT		"ARGV_%s"
@@ -175,13 +166,13 @@
 
 /* strcture defining argv types */
 typedef struct {
-  int		at_value;		/* value of the type */
+  unsigned int	at_value;		/* value of the type */
   char		*at_name;		/* name of the type */
-  int		at_size;		/* size of type */
+  unsigned int	at_size;		/* size of type */
   char		*at_desc;		/* description of the type */
 } argv_type_t;
 
-LOCAL	argv_type_t	argv_types[] = {
+static	argv_type_t	argv_types[] = {
   { ARGV_BOOL,		"flag",			sizeof(char),
       "if option used, set variable to true" },
   { ARGV_BOOL_NEG,	"negative flag",	sizeof(int),
@@ -190,12 +181,12 @@ LOCAL	argv_type_t	argv_types[] = {
       "like flag but you specify with yes/no argument" },
   { ARGV_CHAR,		"character",		sizeof(char),
       "single character" },
-  { ARGV_CHARP,		"string",		sizeof(char *),
+  { ARGV_CHAR_P,	"string",		sizeof(char *),
       "multiple characters terminated with a '\\0'" },
-  { ARGV_FLOAT,		"floating point",	sizeof(float),
-      "real number with decimal point" },
   { ARGV_SHORT,		"short integer",	sizeof(short),
       "decimal short-sized integer value" },
+  { ARGV_U_SHORT,	"unsigned short integer", sizeof(unsigned short),
+      "decimal unsigned short-sized integer value" },
   { ARGV_INT,		"integer",		sizeof(int),
       "decimal integer value" },
   { ARGV_U_INT,		"unsigned integer",	sizeof(unsigned int),
@@ -204,6 +195,10 @@ LOCAL	argv_type_t	argv_types[] = {
       "decimal long-sized integer value" },
   { ARGV_U_LONG,	"unsigned long",	sizeof(unsigned long),
       "decimal unsigned long-sized integer value" },
+  { ARGV_FLOAT,		"floating point",	sizeof(float),
+      "real number with decimal point" },
+  { ARGV_DOUBLE,	"double floating point", sizeof(double),
+      "double precision real number with decimal point" },
   { ARGV_BIN,		"binary",		sizeof(int),
       "base 2 value with digits of 0 or 1" },
   { ARGV_OCT,		"octal",		sizeof(int),
@@ -212,62 +207,15 @@ LOCAL	argv_type_t	argv_types[] = {
       "base 16 value with digits from 0-9, A-F" },
   { ARGV_INCR,		"increment",		sizeof(int),
       "increment variable each time option used" },
+  { ARGV_SIZE,		"long size",		sizeof(long),
+      "size as long int + [bkmg] b=byte,k=kilo,m=meg,g=gig" },
+  { ARGV_U_SIZE,	"unsigned long size",	sizeof(unsigned long),
+      "size as unsigned long int + [bkmg] b=byte,k=kilo,m=meg,g=gig" },
   { 0 }
 };
 
-/******************************** queue code *********************************/
-
-/*
- * Generic inline queue defines.
- */
-
-/* declare the arguments needed to maintain a queue for type TYPE */
-#define QUEUE_DECLARE(type)	\
-  type	*queue_alloc = NULL; \
-  int	queue_head = 0; \
-  int	queue_tail = 0; \
-  int	queue_count = 0; \
-  int	queue_max = 1
-#define LOCAL_QUEUE_DECLARE(type)	\
-  static	type	*queue_alloc = NULL; \
-  static	int	queue_head = 0; \
-  static	int	queue_tail = 0; \
-  static	int	queue_count = 0; \
-  static	int	queue_max = 1
-
-/* test to see if the queue has not been allocated */
-#define QUEUE_IS_NULL()	(queue_alloc == NULL)
-
-/* allocate a mini-queue */
-#define QUEUE_ALLOC(type, num)	\
-  do { \
-    queue_alloc = (type *)malloc(sizeof(type) * num); \
-    queue_head = 0; \
-    queue_tail = 0; \
-    queue_count = 0; \
-    queue_max  = num; \
-  } while(0)
-
-/* allocate a mini-queue's allocation */
-#define QUEUE_FREE()		free(queue_alloc)
-
-/* enqueue items from the mini-queue */
-#define QUEUE_ENQUEUE(item)	\
-  do { \
-    queue_alloc[queue_head] = item; \
-    queue_head = (queue_head + 1) % queue_max; \
-    queue_count++; \
-  } while(0)
-
-/* dequeue items from the mini-queue */
-#define QUEUE_DEQUEUE(item)	\
-  do { \
-    item = queue_alloc[queue_tail]; \
-    queue_tail = (queue_tail + 1) % queue_max; \
-    queue_count--; \
-  } while(0)
-
-/* count the number of items in the mini-queue */
-#define QUEUE_COUNT()		queue_count
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ! __ARGV_LOC_H__ */

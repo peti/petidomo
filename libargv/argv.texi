@@ -1,0 +1,833 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename argv.info
+@settitle Argv Tutorial
+@c %**end of header
+
+@c ================================================================
+@c This file has the new style title page commands.
+@c Also, it uses `@@include' files instead of `@@input' files.
+
+@c Run using special version of `texinfo.tex'.
+
+@c Also, run `makeinfo' rather than `texinfo-format-buffer'.
+@c ================================================================
+
+@c ================================================================
+@c $Id$
+@c ================================================================
+
+@ifinfo
+This file is an introduction to the Argv library which handles the
+process of command-line arguments.
+ 
+Copyright 1992 to 1998 by Gray Watson.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+chapter entitled ``Copying'' are included exactly as in the original,
+and provided that the entire resulting derived work is distributed under
+the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the chapter entitled ``Copying'' may be included in a
+translation approved by the author instead of in the original English.
+@end ifinfo
+
+@titlepage
+@title Argv Library
+@subtitle Version 2.4.0
+@subtitle October 1998
+@author Gray Watson
+
+@page
+Copyright 1992 to 1998 by Gray Watson.
+
+Published by Gray Watson
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+chapter entitled ``Copying'' are included exactly as in the original,
+and provided that the entire resulting derived work is distributed under
+the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the chapter entitled ``Copying'' may be included in a
+translation approved by the author instead of in the original English.
+@end titlepage
+
+@node Top, Copying, (dir), (dir)
+@top Argv Library
+
+@ifinfo
+Version 2.4.0 -- October 1998
+@end ifinfo
+
+@cindex introduction
+@cindex author
+
+The argv library has been designed to handle the argument processing
+needs of most Unix software and to provide a consistent usage framework
+for user applications.
+
+The library is reasonably portable having been run successfully on at
+least the following operating systems: AIX, BSDI, DG/UX, FreeBSD, HPUX,
+Irix, Linux, MS-DOG, NeXT, OSF, Solaris, SunOS, Ultrix, Unixware, and
+even Unicos on a Cray Y-MP.
+
+The package includes the library, configuration scripts, shell-script
+utility application, test program, and extensive documentation (text,
+texi, info, ps).  Documentation is available online at URL
+@code{http://www.letters.com/argv/}.
+
+The library is available via ftp from @samp{ftp.letters.com} in the
+@file{/src/argv} directory.  @xref{How To Get}.  I can be reached via my
+web page @samp{http://www.letters.com/~gray/} with any questions or
+feedback.  Please include the version number of the library that you are
+using as well as your machine and operating system types.
+
+Gray Watson.
+
+@menu
+* Copying::                     Library copying conditions.
+* Overview::			Description of how to use the library.
+* Details::                     Details about the library's operations.
+* General Usage::		Invoking Programs Which Use the Library.
+* Plugs::                       A couple soapbox comments.
+* Index of Concepts::           Index of concepts in the manual.
+@ifinfo
+* Full Node Listings::          Listing of all the nodes in the manual.
+@end ifinfo
+@end menu
+
+@node Copying, Overview, Top, Top
+@chapter Library Copying Conditions
+
+@cindex copying
+@cindex license
+@cindex library permissions
+@cindex permissions of the library
+
+Copyright 1992 to 1998 by Gray Watson.
+
+Gray Watson makes no representations about the suitability of the
+software described herein for any purpose.  It is provided ``as is''
+without express or implied warranty.  The name of Gray Watson cannot be
+used in advertising or publicity pertaining to distribution of the
+document or software without specific, written prior permission.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose and without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies, and
+that the name of Gray Watson not be used in advertising or publicity
+pertaining to distribution of the document or software without specific,
+written prior permission.
+
+Gray Watson makes no representations about the suitability of the
+software described herein for any purpose.  It is provided "as is"
+without express or implied warranty.
+
+@node Overview, Details, Copying, Top
+@chapter How to Use the Library
+
+@menu
+* Concepts::			General concepts behind the library. 
+* How To Get::			How to get the library.
+* Installation::                How to install the library.
+* Getting Started::             Getting started with the library.
+@end menu
+
+@node Concepts, How To Get, Overview, Overview
+@section The General Concepts Behind the Library
+
+@cindex command line arguments
+@cindex unix command line
+
+One thing that almost all Unix executables need to do is process the
+@dfn{command line arguments}.  Whether this is to enable verbose mode or
+specify the files for a utility to work on, code has to be written to
+process these user specified options.
+
+@example
+        int main(int argc, char **argv)
+        @{
+                ...
+        @}
+@end example
+
+As you must know, the command line arguments in most Unix systems are
+passed in as arguments to @code{main()} (seen above).  The @code{argc}
+integer argument contains the number of arguments specified.  The
+@code{argv} variable holds the arguments themselves.  It can be thought
+of as a pointer to a list of character pointers -- or an array of
+character pointers.
+
+To get a particular argument from @code{argv}, you use @code{argv[x]}
+where @code{x} is an integer whose value is from 0 to @code{argc - 1}.
+In most Unix implementations, the zeroth argument is always the name the
+program was executed with.  For instance, if you typed @samp{./ls -al},
+@code{argc} would equal 2 and the value of @code{argv[0]} would be
+@samp{"./ls"}.  The value for @code{argv[1]} would be @samp{"-al"}.
+
+@cindex getopt
+Currently, most programmers either write code on a per program basis to
+process arguments or they use the @code{getopt()} routine.  Writing
+argument processing code for each program results in improper and
+inconsistent argument handling.  Although better, @code{getopt()} does
+not provide the structure needed to ensure conformity in argument
+processing and still requires significant code to be written by the
+programmer.
+
+The goal for this library was to achieve a standardized way of
+processing arguments -- especially in terms of error and usage messages.
+Important consideration was also given to reducing the programming time
+necessary to enable the functionality.
+
+@node How To Get, Installation, Concepts, Overview
+@section How to get the library.
+
+@cindex downloading the library
+@cindex getting the source
+
+The newest versions of the argv library are available via anonymous ftp
+from @samp{ftp.letters.com} in the @file{/src/argv} directory.
+
+@cindex anonymous ftp
+@cindex ftp
+
+To use anonymous ftp, you ftp to the site and when the system prompts
+you for a login-id or username you enter @kbd{anonymous}.  When it
+prompts you for a password you enter your email address.  You then can
+change-directory (cd) into @file{/src/argv} and get the @file{README}
+and @file{argv.tar.gz} files.
+
+The versions in this repository also include such files as a
+postscript version of the manual and other large files which may not
+have been included in the distribution you received.
+
+@node Installation, Getting Started, How To Get, Overview
+@section Installing the Library
+
+@cindex installing the library
+@cindex compiling the library
+@cindex building the library
+@cindex configuring the library
+@cindex making the library
+
+To configure, compile, and install the library, follow these steps
+carefully.
+
+@enumerate
+
+@cindex configure script
+@cindex conf.h file
+
+@item Type @kbd{sh ./configure} to configure the library.  You may want
+to first examine the @file{config.help} file for some information about
+configure.  Configure should generate the @file{Makefile} and some
+configuration files automatically.
+
+@emph{NOTE}: It seems that some versions of tr (especially from HP-UX)
+don't understand @code{tr '[a-z]' '[A-Z]'}.  Since configure uses tr
+often, you may need to either get GNU's tr (in their textutils package)
+or generate the @file{Makefile} and @file{conf.h} files by hand.
+
+@item You may want to examine the @file{Makefile} and @file{conf.h} files
+created by configure to make sure it did its job correctly.
+
+@item Typing @kbd{make} should be enough to build @file{libargv.a}
+and the @file{argv_shell} utility.  If it does not work, please send me
+some notes so future users can profit from your experiences.
+
+@cindex ANSI-C compiler
+@cindex Deansify.pl script
+
+@emph{NOTE}: The code is pretty dependent on a good ANSI-C compiler.  If
+the configure script gives the @samp{WARNING} that you do not have an
+ANSI-C compiler, you may still be able to add some sort of option to
+your compiler to make it ANSI.  If there such is an option, please send
+it to the author so it can be added to the configure script.  Otherwise,
+you will have to try @kbd{make noansi}.  This will run the
+@file{Deansify.pl} perl script on the code which:
+
+@itemize @bullet
+@item @emph{WARNING}: modifies the source code in place
+@item changes all @code{void *} references to @code{char *}.
+@item fixes all functions to remove @code{foo(char * var)} declarations.
+@end itemize
+
+If it doesn't work you may have to do Deansify.pl's job by hand.
+
+@item Typing @kbd{make tests} should build the @file{argv_t} test
+program.  This can be run and given arguments to test the various
+library features.
+
+@item Typing @kbd{make install} should install the @file{libargv.a} 
+library in @file{/usr/local/lib}, the @file{argv_shell} utility in
+@file{/usr/local/bin}, and the @file{argv.info} documentation file in
+@file{/usr/local/info}.
+
+You may have specified a @samp{--prefix=PATH} option to configure in
+which can @samp{/usr/local} will have been replaced with @samp{PATH}.
+
+@end enumerate
+
+See the Getting Started section to get up and running with the library.
+@xref{Getting Started}.
+
+@node Getting Started,  , Installation, Overview
+@section Getting Started with the Library
+
+@cindex quick start
+@cindex getting started
+@cindex jump start
+@cindex how to begin
+@cindex where to begin
+
+This section should give you a quick idea on how to get going.
+
+@enumerate
+
+@item Make sure you have the latest version of the library.  It is
+available via anonymous ftp from @samp{ftp.letters.com} in the
+@file{/src/argv} directory.  @xref{How To Get}.
+
+@item Follow the installation instructions on how to configure and
+make and install the library (i.e. type: @kbd{make install}).
+@xref{Installation}.
+
+@item Examine the @file{argv_t.c} test program source to see an
+example of how to program with the library.  After adding the
+appropriate @code{argv_t} structure array to your main source file, you
+need to compile and link your programs with the library.
+
+@item The first time your program is run, the library makes a number
+of checks as to the validity of the argument structures being used.  You
+may have to note and fix reported problems.
+
+@item Run your program with the @samp{--usage} argument and voila.
+
+@end enumerate
+
+@node Details, General Usage, Overview, Top
+@chapter The Library's Operations
+
+@menu
+* Argv_t Structure::             The argv_t structure and it's usage.
+* Special Short Args::           The special ar_short_arg values.
+* Types of Variables::           The different variable types.
+* Variable Arrays::              Using arguments which ``absorb'' arrays.
+@end menu
+
+@node Argv_t Structure, Special Short Args, Details, Details
+@section The argv_t Structure and It's Usage
+
+The argv_t argument structure is as follows:
+
+@example
+typedef struct @{
+        char    ar_short_arg;           /* short argument */
+        char    *ar_long_arg;           /* long argument */
+        short   ar_type;                /* type of variable */
+        void    *ar_variable;           /* point to variable to set */
+        char    *ar_var_label;          /* label for var description */
+        char    *ar_help_label;         /* help lable for the arg */
+@} argv_t;
+@end example
+
+The @code{ar_short_arg} element contains the character value of the
+short option ('d' for @samp{-d}) or special codes such as ARGV_LAST
+which identifies the last element in the array.  @xref{Special Short
+Args}.
+
+The @code{ar_long_arg} element (if not-NULL) holds the string which is
+the long version of @code{ar_short_arg}.  For instance, with @samp{-d},
+you might have "delete".  This would mean that @samp{-d} and
+@samp{--delete} would be equivalent.  @samp{--} is the long-option
+prefix per POSIX specs.
+
+You would define an array of these arguments at the top of the file with
+@code{main()} in it.
+
+@example
+static char copy = ARGV_FALSE;
+
+static argv_t args[] = @{
+  @{ 'c', "copy", ARGV_BOOL, &copy, NULL, "copy-files flag" @},
+  @{ 'g', "group", ARGV_CHAR_P, &group, "group", "name of group to set" @},
+  ...
+  @{ ARGV_LAST @}
+@};
+
+...
+
+int main(int argc, char ** argv)
+@{
+  argv_process(args, argc, argv);
+@}
+@end example
+
+@node Special Short Args, Types of Variables, Argv_t Structure, Details
+@section The Special ar_short_arg Values
+
+There are 3 types of arguments:
+
+@table @dfn
+@item optional
+Arguments that may or may not be supplied by the user.
+
+@item mandatory
+Arguments that must be supplied by the user.  For instance grep must be
+given an expression on the command line.
+
+If the argument is a mandatory argument which has no -%c prefix then the
+@code{ar_short_arg} element should be assigned ARGV_MAND.
+
+@item maybe
+Arguments that might be specified by the caller but are not mandatory.
+For instance, you can grep a file or you can grep standard-input.  The
+file should be a maybe argument.
+
+If this is a maybe argument then use ARGV_MAYBE in the
+@code{ar_short_arg} field.
+
+@end table
+
+To mark the last entry in the structure list use ARGV_LAST.  ARGV_OR
+also works.
+
+@node Types of Variables, Variable Arrays, Special Short Args, Details
+@section The argv_t Structure and It's Usage
+
+Ar_type holds the type of the argument whether an optional argument or
+mandatory.  Below are the available values for this field.
+
+@table @code
+@item ARGV_BOOL
+character type, sets the variable to ARGV_TRUE if used
+
+@item ARGV_BOOL_NEG
+like ARGV_BOOL but sets the variable to ARGV_FALSE if used
+
+@item ARGV_BOOL_ARG
+like ARGV_BOOL but takes a yes/no argument
+
+@item ARGV_CHAR
+a single character
+
+@item ARGV_CHAR_P
+a string of characters (character pointer)
+
+@item ARGV_FLOAT
+a floating pointer number
+
+@item ARGV_SHORT
+a short integer number
+
+@item ARGV_INT
+an integer number
+
+@item ARGV_U_INT
+an unsigned integer number
+
+@item ARGV_LONG
+a long integer number
+
+@item ARGV_U_LONG
+an unsigned long integer number
+
+@item ARGV_BIN
+a binary base-2 number (0s and 1s)
+
+@item ARGV_OCT
+an octal base-8 number (0 to 7)
+
+@item ARGV_HEX
+a hexadecimal base-16 number (0 to 9 and A to F)
+
+@item ARGV_INCR
+a integer type which is incremented each time it is specified
+
+@item ARGV_SIZE
+a long integer size number which understands b for bytes, k for
+kilobytes, m for megabytes, and g for gigabytes
+
+@item ARGV_U_SIZE
+an unsigned long integer version of ARGV_SIZE
+
+@item ARGV_BOOL_INT
+like ARGV_BOOL except the variable is an integer and not a character
+
+@item ARGV_BOOL_INT_NEG
+like ARGV_BOOL_NEG except the variable is an integer and not a character
+
+@item ARGV_BOOL_INT_ARG
+like ARGV_BOOL_ARG except the variable is an integer and not a character
+
+@end table
+
+For printing out of the type of the argument on the command line, use
+the @samp{--argv-display} option which will display the argument, its
+type and value.  It will display the variables' default values if no
+arguments specified before it on the command line otherwise it will show
+the values the variables are set to after processing the arguments.
+
+Basically the argument processing routines, examine the type of the
+variable, absorb another argument (if necessary), and then translate the
+string argument (if necessary) and write the data into the address
+stored in the ar_variable field.
+
+ARGV_BOOL, ARGV_BOOL_NEG, ARGV_INCR, ARGV_BOOL_INT, and
+ARGV_BOOL_INT_NEG are special in the above list in that they do not
+require another argument.  With @samp{ls -l}, for example, the @samp{-l}
+flag lives on its own.  With @samp{install -m 444 @dots{}}, on the other
+hand, @samp{444} is an octal number argument associated with @samp{-m}
+and will be translated and assigned to the @samp{-m} mode variable.
+
+@node Variable Arrays,  , Types of Variables, Details
+@section Using Arguments Which ``Absorb'' Arrays.
+
+Needs to be written.  Sorry.
+
+@node General Usage, Plugs, Details, Top
+@chapter Invoking Programs Which Use the Library
+
+@menu
+* Usage Messages::                How to get usage messages from argv programs.
+* Specifying Arguments::          How to specify arguments to argv programs.
+* Long Versus Short::             Long versus short arguments.
+* Global Environment Variable::   Settings for all argv programs.
+* Program Environment Variable::  Arguments for a specific argv program.
+@end menu
+
+@node Usage Messages, Specifying Arguments, General Usage, General Usage
+@section How to get usage messages from argv programs
+
+If a program @samp{install} has the library compiled in you should be
+able to do a @samp{install --usage-long} to get the long-format usage
+message.
+
+@example
+Usage: install
+  [-c]              or --copy-files       = copy file(s), don't move %t
+  [-g group]        or --group-id         = group id name (default bin) %s
+  [-m octal-mode]   or --mode-value       = permissions mode value %o
+  [-o owner]        or --owner-id         = owner id name (default bin) %s
+  [-s]              or --strip            = strip destination binary %t
+  [file(s)] directory/destination         = files to install or mkdir arg
+@end example
+
+In the above example, the program install's usage message is detailed.
+The @samp{[-c]} line details the copy-files flag.  You can either enable
+it with a @samp{-c} or @samp{--copy-files}.  The description of the flag
+follows with lastly, a @samp{%t} showing that it is a @dfn{true/false}
+flag.
+
+The @samp{[-g]} line shows the group-id flag.  It is different from the
+@samp{-c} flag since, if used, it takes a group string argument (notice
+the @samp{%s} at the end of the line indicating it takes a string
+argument).
+
+@samp{install --usage-short} or just @samp{--usage} will get you a
+condensed usage message:
+
+@example
+Usage: install [-cs] [-g group] [-m octal-mode] [-o owner] [file(s)]
+       directory/destination
+@end example
+
+@node Specifying Arguments, Long Versus Short, Usage Messages, General Usage
+@section How to Specify Arguments to Argv Programs
+
+Specifying arguments to a program which uses the library is quite
+straight-forward and standardized.  Once you have learned how to do it
+once, you can use any program with it.
+
+There are five basic types of arguments as defined by the library:
+
+@table @dfn
+
+@item true/false flags
+Do not have an associated value and the program will get a True if one
+is specified else False.
+
+The @samp{-c} in @samp{install -c}.
+
+@item variable flags
+Have an associate value which will be supplied to the program.
+
+The @samp{-m} in @samp{install -m 0644} will get the value @samp{0644}.
+
+@item values
+Arguments without a @samp{-} and are associated values for the variable
+flags.
+
+@item mandatory
+Arguments without a @samp{-} but are @emph{not} associated to variable
+flags.  These can be supplied to the program if allowed.  They are
+mandatory in that they must be supplied.  If the program asks for 3
+arguments, 3 must be supplied.  @emph{NOTE} that order is important with
+these.
+
+The @samp{from} and @samp{to} arguments in @samp{install from to}.
+
+@item maybe
+These are the same as the mandatory arguments except they are optional
+arguments and can but do not have to be supplied.
+
+The @samp{file} argument in @samp{ls file} since @samp{ls} does not
+require a file to be listed to work.
+
+@end table
+
+The values for the variable flags are assigned in a straight
+First-In-First-Out queue.  In @samp{install -m -g 0644 bin}, the value
+@samp{0644} is assigned to the @samp{-m} flag and the value @samp{bin}
+is assigned to @samp{-g}.
+
+Additional values that cannot be matched to variable flags will become
+mandatory or maybe arguments if the program is configured to accept
+them.
+
+@example
+        install from -c -m -g 0644 -o wheel -s jim to
+@end example
+
+In the previous convoluted example, @samp{from} and @samp{to} are
+mandatory arguments, @samp{-c} and @samp{-s} are true/false flags,
+@samp{-m} gets assigned @samp{0644}, @samp{-g} gets @samp{wheel}, and
+@samp{-o} gets @samp{jim}.  It would be much easier to write it as:
+
+@example
+        install -cs -m 0644 -g wheel -o jim to from
+@end example
+
+@node Long Versus Short, Global Environment Variable, Specifying Arguments, General Usage
+@section Long Versus Short Arguments
+
+Needs to be written.  Sorry.
+
+@node Global Environment Variable, Program Environment Variable, Long Versus Short, General Usage
+@section Global Settings For All Argv Programs
+
+@cindex environment variable
+@cindex GLOBAL_ARGV
+
+An @dfn{environment variable} is a variable that is part of the user's
+working environment and is shared by all the programs.  The
+@samp{GLOBAL_ARGV} variable is used by the argv library to customize its
+behavior at runtime.  It can be set by hand and should probably be
+entered into your shell's runtime configuration or @dfn{RC} file.
+
+@cindex C shell usage
+@cindex csh usage
+@cindex tcsh usage
+To set the variable, C shell (csh or tcsh) users need to invoke:
+
+@example
+setenv GLOBAL_ARGV value
+@end example
+
+@cindex Bourne shell usage
+@cindex sh usage
+@cindex bash usage
+@cindex ksh usage
+@cindex zsh usage
+Bourne shell (sh, bash, ksh, or zsh) users should use:
+
+@example
+GLOBAL_ARGV=value
+export GLOBAL_ARGV
+@end example
+
+The value in the above example is a comma separated list of tokens each
+having a corresponding value.  The tokens and their values are described
+below:
+
+@itemize @bullet
+
+@item close -- close argument acceptance
+
+Enables the handling of arguments such as @samp{-m=444} where @samp{-m}
+is a flag and @samp{444} is its value.
+
+Values: disable, enable.
+
+@itemize @bullet
+@item disable -- treat @samp{=} like a normal argument
+@item enable (default) -- enable the @samp{-x=10} format
+@end itemize
+
+@item env -- environment variable handling
+
+Enables the processing of the @samp{ARGV_*} variables.  If you have a
+set of options that you always use for @samp{ls} for instance, you cat
+set the @samp{ARGV_LS} environmental variable to hold these options.
+For instance: @samp{setenv ARGV_LS "-sCF"}.
+
+Values: none, before, after.
+
+@itemize @bullet
+@item none -- No processed at all
+@item before (default) -- options from env variable are processed
+Before command line
+@item after -- env options processed After command line
+@end itemize
+
+@item error -- handling of usage errors
+
+Whenever you do not use a command correctly, this token determines how
+the library reports errors to you.
+
+Values: none, see, short, shortrem, long, all.
+
+@itemize @bullet
+@item none -- on errors print nothing but error message
+@item see (default) -- on errors print see --usage for more info.
+@item short -- on errors print the short-format usage messages
+@item shortrem -- on errors print short-format + how to get long
+@item long -- on errors print the long-format usage messages
+@item all -- on errors print the long-format usage messages + help, etc.
+@end itemize
+
+@item multi -- the handling of arguments specified more than once
+
+If you use am argument twice on the command line, this token determines
+if the library should say it is an error.
+
+Values: accept, reject.
+
+@itemize @bullet
+@item accept (default) -- it's NOT an error if specified more than once
+@item reject -- it's an error if specified more than once
+@end itemize
+
+@item usage -- usage messages for --usage
+
+Determines what messages the library prints when you use the
+@samp{--usage} option.
+
+Values: short, shortrem, long, all.
+
+@itemize @bullet
+@item short (default) -- default is the short-format messages
+@item shortrem -- default is the short-format messages + how to get long
+@item long -- default is the long-format messages
+@item all -- default is the long-format messages + help, usage, version
+@end itemize
+
+@end itemize
+
+Examples:
+
+@example
+        # accept -x=10, no env variables, long messages on errors,
+        # accept multiple uses, and print all messages on --usage.
+	setenv GLOBAL_ARGV close=accept,env=none,error=long,multi=accept,usage=all
+
+        # process env variable options before command line,
+        # and reject multiple argument uses
+	setenv GLOBAL_ARGV env=before,error=long,multi=reject
+@end example
+
+@node Program Environment Variable,  , Global Environment Variable, General Usage
+@section Arguments For a Specific Argv Program
+
+Needs to be written.  Sorry.
+
+@node Plugs, Index of Concepts, General Usage, Top
+@chapter Plugs and Soapbox Comments
+
+@cindex plugs
+@cindex soapbox comments
+
+Since I have your attention I would like to talk for a second about a
+couple of things that I feel strongly about.  If you would like any more
+information about the below, please mail to the supplied addresses or
+drop me a line with any questions.
+
+@table @asis
+@item The Electronic Frontier Foundation (EFF)
+@cindex EFF
+@cindex Electronic Frontier Foundation
+The EFF is a organization committed to ensuring that the rules,
+regulations, and laws being applied to emerging communications
+technologies are in keeping with our society's highest traditions of the
+free and open flow of ideas and information while protecting personal
+privacy.  http://www.eff.org/
+
+@item Computer Professionals for Social Responsibility (CPSR)
+@cindex CPSR
+@cindex Computer Professionals for Social Responsibility
+CPSR is a public-interest alliance of computer scientists and others
+interested in the impact of computer technology on society.  We work to
+influence decisions regarding the development and use of computers
+because those decisions have far-reaching consequences and reflect basic
+values and priorities.  http://www.cpsr.org/
+@end table
+
+@node Index of Concepts, Full Node Listings, Plugs, Top
+@unnumbered Concept Index
+
+@printindex cp
+@contents
+
+@ifinfo
+
+@node Full Node Listings,  , Index of Concepts, Top
+@unnumbered Detailed Node Listing
+
+@menu
+Top.
+
+* Copying::                     Library copying conditions.
+* Overview::			Description of how to use the library.
+* Details::                     Details about the library's operations.
+* General Usage::		Invoking Programs Which Use the Library.
+* Plugs::                       A couple soapbox comments.
+* Index of Concepts::           Index of concepts in the manual.
+* Full Node Listings::          Listing of all the nodes in the manual.
+
+Overview.
+
+* Concepts::			General concepts behind the library. 
+* How To Get::			How to get the library.
+* Installation::                How to install the library.
+* Getting Started::             Getting started with the library.
+
+Details
+
+* Argv_t Structure::             The argv_t structure and it's usage.
+* Special Short Args::           The special ar_short_arg values.
+* Types of Variables::           The different variable types.
+* Variable Arrays::              Using arguments which ``absorb'' arrays.
+
+General Usage
+
+* Usage Messages::                How to get usage messages from argv programs.
+* Specifying Arguments::          How to specify arguments to argv programs.
+* Long Versus Short::             Long versus short arguments.
+* Global Environment Variable::   Settings for all argv programs.
+* Program Environment Variable::  Arguments for a specific argv program.
+
+@end menu
+
+@end ifinfo
+@bye
