@@ -1,0 +1,51 @@
+dnl
+dnl configure.in -- Process this file with autoconf to produce a configure script.
+dnl
+dnl $Header$
+dnl
+
+AC_INIT(main.c)
+AC_CONFIG_AUX_DIR(../etc)
+AC_REVISION($Revision$)dnl
+
+dnl Checks for paths and programs.
+dnl
+AC_PROG_CC
+AC_PROG_RANLIB
+AC_PROG_LEX
+if test "$LEX" != "flex"; then
+    AC_MSG_WARN($LEX might not work for us. Please install flex if the build fails.)
+fi
+AC_PROG_YACC
+if test "$YACC" != "bison -y"; then
+    AC_MSG_WARN($YACC might not work for us. Please install bison if the build fails.)
+fi
+
+dnl Checks for typedefs
+dnl
+AC_CHECK_TYPE(ssize_t, long)
+
+dnl Set special flags for gcc.
+dnl
+if test "$GCC" = yes; then
+    CFLAGS="$CFLAGS -Wall -pedantic -pipe"
+fi
+
+dnl Remove '-g' from the compile flags.
+dnl
+CFLAGS=`echo $CFLAGS | sed -e "s/-g//"`
+
+
+dnl Run the sub-system configures.
+dnl
+AC_CONFIG_SUBDIRS(libargv)
+AC_CONFIG_SUBDIRS(libconfigfile)
+AC_CONFIG_SUBDIRS(libdebug)
+AC_CONFIG_SUBDIRS(liblists)
+AC_CONFIG_SUBDIRS(libmpools)
+AC_CONFIG_SUBDIRS(librfc822)
+AC_CONFIG_SUBDIRS(libtext)
+
+dnl Write results.
+dnl
+AC_OUTPUT(Makefile)
