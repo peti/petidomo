@@ -35,15 +35,9 @@ dnl Remove '-g' from the compile flags.
 dnl
 CFLAGS=`echo $CFLAGS | sed -e "s/-g//"`
 
-
-dnl Run the sub-system configures.
+dnl Turn '-O2' to '-O3'.
 dnl
-AC_CONFIG_SUBDIRS(libargv)
-AC_CONFIG_SUBDIRS(libconfigfile)
-AC_CONFIG_SUBDIRS(libdebug)
-AC_CONFIG_SUBDIRS(liblists)
-AC_CONFIG_SUBDIRS(librfc822)
-AC_CONFIG_SUBDIRS(libtext)
+CFLAGS=`echo $CFLAGS | sed -e "s/-O2/-O3/"`
 
 dnl Write results.
 dnl
