@@ -25,6 +25,10 @@
 #ifndef __LIB_TEXT_H__
 #define __LIB_TEXT_H__ 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -64,5 +68,9 @@ void     text_wordwrap(char * buffer, unsigned int line_len);
 char *   text_easy_sprintf(const char * fmt, ...);
 char *   text_find_next_line(char *);
 char *   text_find_string(char * buffer, char * string);
+
+#ifdef __cplusplus
+}   // end extern "C"
+#endif
 
 #endif /* !__LIB_TEXT_H__ */
