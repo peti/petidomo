@@ -1,19 +1,27 @@
 /*
- *      $Source$
- *      $Revision$
- *      $Date$
- *
- *      Copyright (C) 1996,97 CyberSolutions GmbH.
- *      All rights reserved.
- *
- *      - Set debug-level for various modules from the command line.
- */
+   $Source$
+   $Revision$
+
+   Copyright (C) 2000 by CyberSolutions GmbH, Germany.
+
+   This file is part of OpenPetidomo.
+
+   OpenPetidomo is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+   OpenPetidomo is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <debug.h>
-#include <argv.h>
+#include "debug.h"
+#include "libargv/argv.h"
 
 #ifdef DEBUG
 
@@ -43,6 +51,10 @@ extern const char * const ModuleTable[];
    REQUIRES: extern const char * const ModuleTable[]
 */
 
+
+/* let's define ModuleTable here */
+MODULE_TABLE
+
 int
 argvSetDebugLevel(argv_array_t debug /* parameter array as returned by the argv routines */
 		  )
@@ -51,7 +63,7 @@ argvSetDebugLevel(argv_array_t debug /* parameter array as returned by the argv 
     char *         DebugLevel;
     unsigned int   count, i;
 
-    for (count = 0; count < debug.aa_entryn; count++) {
+    for (count = 0; count < debug.aa_entry_n; count++) {
         ModuleName = strtok(ARGV_ARRAY_ENTRY(debug, char *, count), ",/:");
         DebugLevel = strtok(NULL, ",/:");
         if (ModuleName == NULL || DebugLevel == NULL

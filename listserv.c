@@ -1,17 +1,27 @@
 /*
- *      $Source$
- *      $Revision$
- *      $Date$
- *
- *      Copyright (C) 1996 by CyberSolutions GmbH.
- *      All rights reserved.
- */
+   $Source$
+   $Revision$
+
+   Copyright (C) 2000 by CyberSolutions GmbH, Germany.
+
+   This file is part of OpenPetidomo.
+
+   OpenPetidomo is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+   OpenPetidomo is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+*/
 
 #include <string.h>
 #include <ctype.h>
 
-#include <text.h>
-#include <petidomo.h>
+#include "libtext/text.h"
+#include "petidomo.h"
 
 char * g_currLine;		/* pointer to the line currently parsed */
 
@@ -45,6 +55,10 @@ listserv_main(char * incoming_mail, char * default_list)
 
     /* Do sanity checks. */
 
+    if (MailStruct->Envelope == NULL) {
+	syslog(LOG_NOTICE, "Received mail without a valid envelope.");
+	return 0;
+    }
     if (MailStruct->From == NULL) {
         syslog(LOG_NOTICE, "Received mail without From: line.");
         return 0;

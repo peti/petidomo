@@ -1,11 +1,21 @@
 /*
- *      $Source$
- *      $Revision$
- *      $Date$
- *
- *      Copyright (C) 1996 by CyberSolutions GmbH.
- *      All rights reserved.
- */
+   $Source$
+   $Revision$
+
+   Copyright (C) 2000 by CyberSolutions GmbH, Germany.
+
+   This file is part of OpenPetidomo.
+
+   OpenPetidomo is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+   OpenPetidomo is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+*/
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -14,8 +24,8 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#include <text.h>
-#include <petidomo.h>
+#include "libtext/text.h"
+#include "petidomo.h"
 
 #ifndef ARG_NUM_MAX
 #  define ARG_NUM_MAX 4096
@@ -26,22 +36,22 @@
 
 static char *
 my_strcpy(char * dst, const char * src)
-{
+    {
     while((*dst++ = *src++) != '\0')
-      ;
+	;
     return dst-1;
-}
+    }
 
 FILE *
 OpenMailer(const char * envelope, const char * recipients[])
-{
+    {
     assert(1==0);
     return NULL;
-}
+    }
 
 FILE *
 vOpenMailer(const char * envelope, ...)
-{
+    {
     const struct PD_Config *   MasterConfig;
     va_list                    ap;
     FILE *                     fh;
@@ -79,28 +89,32 @@ vOpenMailer(const char * envelope, ...)
     /* Copy the mta's options into the array, while replacing '%s'
        with the envelope. */
 
-    for (options = MasterConfig->mta_options; *options != '\0'; ) {
+    for (options = MasterConfig->mta_options; *options != '\0'; )
+	{
 	debug((DEBUG_MAILER, 4, "Parsing '%c' character.", *options));
-	if (options[0] == '%' && options[1] == 's') {
+	if (options[0] == '%' && options[1] == 's')
+	    {
 	    p = my_strcpy(p, envelope);
 	    *p++ = ' ';
 	    options += 2;
 	    break;
-	}
-	else {
+	    }
+	else
+	    {
 	    debug((DEBUG_MAILER, 4, "Wrote '%c' to aray.", *options));
 	    *p++ = *options++;
+	    }
 	}
-    }
     *p++ = ' ';
 
     /* Append the list of recipients. */
 
     va_start(ap, envelope);
-    while ((q = va_arg(ap, const char *)) != NULL) {
+    while ((q = va_arg(ap, const char *)) != NULL)
+	{
 	p = my_strcpy(p, q);
 	*p++ = ' ';
-    }
+	}
     p[-1] = '\0';
     va_end(ap);
 
@@ -108,35 +122,34 @@ vOpenMailer(const char * envelope, ...)
 
     fh = popen(cmdline, "w");
     if (fh == NULL)
-      syslog(LOG_ERR, "Failed opening pipe to \"%s\": %m", cmdline);
+	syslog(LOG_ERR, "Failed opening pipe to \"%s\": %m", cmdline);
 
     free(cmdline);
     return fh;
-}
+    }
 
 
 int
 CloseMailer(FILE * fh)
-{
+    {
     return pclose(fh);
-}
-
+    }
 
 static int
 my_strlen(const char * p)
-{
+    {
     u_int  i;
     for (i = 0; *p && !isspace((int)*p); p++)
-      i++;
+	i++;
     return i;
-}
+    }
 
 #define MYPIPE_READ fildes[0]
 #define MYPIPE_WRITE fildes[1]
 
 int
 ListMail(const char * envelope, const char * listname, const struct Mail * MailStruct)
-{
+    {
     const struct PD_Config * MasterConfig = getMasterConfig();
     char **   arguments;
     u_int     arguments_num = 256;
@@ -164,11 +177,12 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
     sprintf(buffer, "lists/%s/list", listname);
     listfile = loadfile(buffer);
     if (listfile == NULL)
-      return 1;
+	return 1;
 
     /* Now go into delivery loop until we're finished. */
 
-    for(counter = 0, currAddress = listfile; *currAddress != '\0'; counter = 0) {
+    for(counter = 0, currAddress = listfile; *currAddress != '\0'; counter = 0)
+	{
 
 	/* Set up the call to the MTA, including options. */
 
@@ -176,86 +190,96 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
 	debug((DEBUG_MAILER, 5, "MTA is \"%s\".", arguments[0]));
 	sprintf(buffer, MasterConfig->mta_options, envelope);
 	debug((DEBUG_MAILER, 5, "MTA options are \"%s\".", buffer));
-	for (p = buffer, arguments[counter++] = buffer; *p != '\0'; p++) {
+	for (p = buffer, arguments[counter++] = buffer; *p != '\0'; p++)
+	    {
 	    debug((DEBUG_MAILER, 9, "Left to parse: \"%s\".", p));
-	    if (isspace((int)*p)) {
+	    if (isspace((int)*p))
+		{
 		*p++ = '\0';
 		debug((DEBUG_MAILER, 9, "Left to parse: \"%s\".", p));
 		while(*p != '\0' && isspace((int)*p))
-		  p++;
+		    p++;
 		debug((DEBUG_MAILER, 9, "Left to parse: \"%s\".", p));
 		arguments[counter++] = p;
+		}
 	    }
-	}
 	if (strlen(arguments[counter-1]) == 0)
-	  counter--;
+	    counter--;
 
 	/* Append as many recipients as fit. */
 
-	for (address_byte = 0; *currAddress != '\0' ; currAddress = nextAddress) {
+	for (address_byte = 0; *currAddress != '\0' ; currAddress = nextAddress)
+	    {
 	    nextAddress = text_find_next_line(currAddress);
 	    len = my_strlen(currAddress);
-	    if (address_byte + len > max_address_byte) {
+	    if (address_byte + len > max_address_byte)
+		{
 		debug((DEBUG_MAILER, 1, "Sending early, command line exceeds %d characters.", ARG_MAX));
 		break;
-	    }
-	    if (counter > ARG_NUM_MAX) {
+		}
+	    if (counter > ARG_NUM_MAX)
+		{
 		debug((DEBUG_MAILER, 1, "Sending early, command line exceeds %d arguments.", ARG_NUM_MAX));
 		break;
-	    }
+		}
 	    currAddress[len] = '\0';
 	    debug((DEBUG_MAILER, 8, "Address \"%s\" is %u byte long.", currAddress, len));
 	    address_byte += len;
 	    arguments[counter++] = currAddress;
-	    if (counter+8 >= arguments_num) {
+	    if (counter+8 >= arguments_num)
+		{
 		debug((DEBUG_MAILER, 1, "Enlarging internal array."));
 		arguments_num += 256;
 		arguments = realloc(arguments, (arguments_num+1) * sizeof(char *));
 		if (arguments == NULL)
-		  return -1;
+		    return -1;
+		}
 	    }
-	}
 
 	/* Deliver the mail. */
 
 	arguments[counter++] = NULL;
-	if (pipe(fildes) == -1) {
+	if (pipe(fildes) == -1)
+	    {
 	    syslog(LOG_ERR, "Couldn't open a pipe to my child process: %m");
 	    return -1;
-	}
+	    }
 	child_pid = fork();
-	switch(child_pid) {
-	  case 0:
-	      /* Child */
-	      close(MYPIPE_WRITE);
-	      if (dup2(MYPIPE_READ, STDIN_FILENO) == -1) {
-		  syslog(LOG_ERR, "Child process couldn't read from pipe: %m");
-		  return -1;
-	      }
-	      close(MYPIPE_READ);
-	      execv(MasterConfig->mta, arguments);
-	      syslog(LOG_ERR, "Couldn't exec(\"%s\"): %m", MasterConfig->mta);
-	      return -1;
-	  case -1:
-	      /* Error */
-	      syslog(LOG_ERR, "Couldn't fork: %m");
-	      return -1;
-	  default:
-	      /* everything is fine */
-	      close(MYPIPE_READ);
-	}
+	switch(child_pid)
+	    {
+	    case 0:
+		/* Child */
+		close(MYPIPE_WRITE);
+		if (dup2(MYPIPE_READ, STDIN_FILENO) == -1)
+		    {
+		    syslog(LOG_ERR, "Child process couldn't read from pipe: %m");
+		    return -1;
+		    }
+		close(MYPIPE_READ);
+		execv(MasterConfig->mta, arguments);
+		syslog(LOG_ERR, "Couldn't exec(\"%s\"): %m", MasterConfig->mta);
+		return -1;
+	    case -1:
+		/* Error */
+		syslog(LOG_ERR, "Couldn't fork: %m");
+		return -1;
+	    default:
+		/* everything is fine */
+		close(MYPIPE_READ);
+	    }
 	write(MYPIPE_WRITE, MailStruct->Header, strlen(MailStruct->Header));
 	write(MYPIPE_WRITE, "\n", 1);
 	write(MYPIPE_WRITE, MailStruct->Body, strlen(MailStruct->Body));
 	if (MailStruct->ListSignature != NULL)
-	  write(MYPIPE_WRITE, MailStruct->ListSignature, strlen(MailStruct->ListSignature));
+	    write(MYPIPE_WRITE, MailStruct->ListSignature, strlen(MailStruct->ListSignature));
 	close(MYPIPE_WRITE);
 	waitpid(child_pid, &child_status, 0);
-	if (!(WIFEXITED(child_status) && WEXITSTATUS(child_status) == 0)) {
+	if (!(WIFEXITED(child_status) && WEXITSTATUS(child_status) == 0))
+	    {
 	    syslog(LOG_ERR, "The executed mail agent return error %d, aborting.",
-		WEXITSTATUS(child_status));
+		   WEXITSTATUS(child_status));
 	    return -1;
+	    }
 	}
-    }
     return 0;
-}
+    }

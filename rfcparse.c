@@ -1,19 +1,29 @@
 /*
- *      $Source$
- *      $Revision$
- *      $Date$
- *
- *      Copyright (C) 1996 by CyberSolutions GmbH.
- *      All rights reserved.
- */
+   $Source$
+   $Revision$
+
+   Copyright (C) 2000 by CyberSolutions GmbH, Germany.
+
+   This file is part of OpenPetidomo.
+
+   OpenPetidomo is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+   OpenPetidomo is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+*/
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include <rfc822.h>
-#include <text.h>
-#include <petidomo.h>
+#include "librfc822/rfc822.h"
+#include "libtext/text.h"
+#include "petidomo.h"
 
 void
 RemoveCarrigeReturns(char * buffer)
@@ -342,6 +352,24 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    if (*MailStruct->Subject == ' ')
 	      MailStruct->Subject += 1;
 	    debug((DEBUG_RFCPARSE, 5, "Subject: is \"%s\".", MailStruct->Subject));
+	}
+	else if (strncasecmp("Sender:", currLine, strlen("Sender:")) == 0) {
+	    if (MailStruct->Envelope != NULL)
+	      syslog(LOG_NOTICE, "Received mail with multiple sender addresses.");
+	    MailStruct->Envelope = &currLine[strlen("Sender:")];
+	    if (*MailStruct->Envelope == ' ')
+	      MailStruct->Envelope += 1;
+	    debug((DEBUG_RFCPARSE, 5, "Sender: is \"%s\".", MailStruct->Envelope));
+	}
+	else if (strncasecmp("Return-Path:", currLine, strlen("Return-Path:")) == 0 &&
+		 MailStruct->Envelope == NULL)
+	{
+	    if (MailStruct->Envelope != NULL)
+	      syslog(LOG_NOTICE, "Received mail with multiple sender addresses.");
+	    MailStruct->Envelope = &currLine[strlen("Return-Path:")];
+	    if (*MailStruct->Envelope == ' ')
+	      MailStruct->Envelope += 1;
+	    debug((DEBUG_RFCPARSE, 5, "Return-Path: is \"%s\".", MailStruct->Envelope));
 	}
     }
 
