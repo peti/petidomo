@@ -98,3 +98,24 @@ realclean::	distclean
 
 # Dependencies
 
+acl.o: libtext/text.h petidomo.h acl_scan.c acl_scan.h
+acl_scan.o: acl_scan.h
+archive.o: libtext/text.h petidomo.h
+authen.o: libtext/text.h petidomo.h
+config.o: liblists/lists.h libconfigfile/configfile.h petidomo.h
+filter.o: petidomo.h
+handleacl.o: petidomo.h
+help.o: libtext/text.h petidomo.h
+hermes.o: libtext/text.h petidomo.h
+index.o: libtext/text.h petidomo.h
+io.o: petidomo.h
+listserv.o: libtext/text.h petidomo.h
+mailer.o: libtext/text.h petidomo.h
+main.o: libargv/argv.h petidomo.h
+members.o: libtext/text.h petidomo.h
+parsearray.o: petidomo.h
+password.o: petidomo.h
+rfcparse.o: librfc822/rfc822.h libtext/text.h petidomo.h
+subscribe.o: libtext/text.h petidomo.h
+tool.o: libtext/text.h petidomo.h
+unsubscribe.o: libtext/text.h petidomo.h
