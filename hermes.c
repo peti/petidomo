@@ -199,6 +199,60 @@ hermes_main(char * incoming_mail, const char * listname)
 		}
 	    return 0;
 	    }
+
+	else if (ListConfig->listtype == LIST_ACKED_ONCE)
+	    {
+	    /* First posting needs an acknowledgement. */
+
+	    if (g_is_approved)
+		{
+		int rc = add_address(ListConfig->ack_file, MailStruct->From);
+		if (rc < 0)
+		    {
+		    syslog(LOG_ERR, "Can't add address to ack file.");
+		    return -1;
+		    }
+		}
+	    else
+		{
+		int rc = is_address_on_list(ListConfig->ack_file, MailStruct->From);
+		if (rc == 0)
+		    rc = is_address_on_list(ListConfig->ack_file, MailStruct->Envelope);
+		if (rc < 0)
+		    {
+		    syslog(LOG_ERR, "Can't verify whether address \"%s\" needs to be acknowledged or not.", MailStruct->From);
+		    return -1;
+		    }
+		else if (rc == 0)
+		    {
+		    char* cookie = queue_posting(MailStruct, listname);
+		    fh = vOpenMailer(owner, MailStruct->Envelope, NULL);
+		    if (fh != NULL)
+			{
+			fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
+			fprintf(fh, "To: %s\n", MailStruct->Envelope);
+			fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Your posting to list \"%s\"\n",
+				listname, ListConfig->fqdn, listname);
+			fprintf(fh, "Precedence: junk\n");
+			fprintf(fh, "Sender: %s\n", owner);
+			fprintf(fh, "\n");
+			fprintf(fh, "Your posting needs to be confirmed. Do this by replying\n");
+			fprintf(fh, "to this mail and citing the string\n");
+			fprintf(fh, "\n");
+			fprintf(fh, "    %s\n", cookie);
+			fprintf(fh, "\n");
+			fprintf(fh, "in your reply. You won't have to do that again.\n");
+			CloseMailer(fh);
+			}
+		    else
+			{
+			syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
+			return -1;
+			}
+		    return 0;
+		    }
+		}
+	    }
 	}
 
     /* Copy the desired headers from the original mail to our own

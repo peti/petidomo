@@ -251,4 +251,9 @@ char* queue_posting(const struct Mail* mail, const char* listname);
 
 char* queue_command(const struct Mail* mail, const char* command);
 
+/********** address_db.c **********/
+
+int is_address_on_list(const char* file, const char* address);
+int add_address(const char* file, const char* address);
+
 #endif /* !defined(__PETIDOMO_H__) */
