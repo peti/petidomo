@@ -3,12 +3,14 @@
 #
 
 CC		= @CC@
+CXX		= @CXX@
 AR		= ar
 RANLIB		= @RANLIB@
 LEX		= @LEX@
 YACC		= @YACC@
 
 CFLAGS		= @CFLAGS@
+CXXFLAGS	= @CXXFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@
 LDFLAGS		= @LDFLAGS@
 
@@ -20,15 +22,18 @@ LIBS		= librfc822/librfc822.a liblists/liblists.a libargv/libargv.a \
 		  libconfigfile/libconfigfile.a libtext/libtext.a \
 		  libdebug/libdebug.a
 
-FLAGS_TO_PASS	= CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
-		  YACC="$(YACC)" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" \
-		  LDFLAGS="$(LDFLAGS)"
+FLAGS_TO_PASS	= CC="$(CC)" CXX="$(CXX)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
+		  YACC="$(YACC)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" \
+		  CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
 
 .SUFFIXES:
-.SUFFIXES:	.c .o
+.SUFFIXES:	.c .o .cpp
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
 all:	hermes listserv
 
