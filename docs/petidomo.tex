@@ -48,8 +48,8 @@ here.
 \section{Building the Binaries}
 
 Untar the source archive of Petidomo in a directory of your choice
-like {\sf /usr/local/src} or your home directory. This will create a
-directory called {\sf petidomo-VERSION}, where the ``{\sf VERSION}''
+like \file{/usr/local/src} or your home directory. This will create a
+directory called \file{petidomo-VERSION}, where the ``VERSION''
 part is called exactly as in the file name of the tar archive. Change
 into this directory.
 
@@ -67,36 +67,36 @@ values if unspecified, are:
 
 \item[{-}{-}help] Display the complete list of command line options.
 
-\item[{-}{-}prefix] The the {\sf PREFIX} for all following paths. The
-default is {\sf /usr/local}.
+\item[{-}{-}prefix] The the \file{PREFIX} for all following paths. The
+default is \file{/usr/local}.
 
-\item[{-}{-}exec-prefix] Set the {\sf EPREFIX} for all following
+\item[{-}{-}exec-prefix] Set the \file{EPREFIX} for all following
 paths. This is useful in case you want to install binaries into a
 different directory hierarchy than normal text files, but usually the
-{\sf EPREFIX} is identical to {\sf PREFIX}. The default is {\sf
-PREFIX}.
+\file{EPREFIX} is identical to \file{PREFIX}. The default is
+\file{PREFIX}.
 
 \item[{-}{-}bindir] Set the directory where the binaries should be
-installed. The default is {\sf EPREFIX/bin}.
+installed. The default is \file{EPREFIX/bin}.
 
 \item[{-}{-}libexecdir] Set the directory where executables should be
 installed that will be called by Petidomo but not by the user directly
-(like posting filters). The default is {\sf EPREFIX/libexec}.
+(like posting filters). The default is \file{EPREFIX/libexec}.
 
 \item[{-}{-}datadir] Set the directory where read-only
 architecture-independent data files should be installed (like the help
-file). The default is {\sf PREFIX/share}.
+file). The default is \file{PREFIX/share}.
 
 \item[{-}{-}sysconfdir] Set the directory where read-only
-configuration files should be installed. The default is {\sf
-PREFIX/etc}.
+configuration files should be installed. The default is
+\file{PREFIX/etc}.
 
 \item[{-}{-}localstatedir] Set the directory where modifiable
 data files should be installed (like the approve-queue or the mailing
-list config files). The default is {\sf PREFIX/var}.
+list config files). The default is \file{PREFIX/var}.
 
 \item[{-}{-}mandir] Set the directory where man documentation files
-should be installed. The default is {\sf PREFIX/man}.
+should be installed. The default is \file{PREFIX/man}.
 
 \end{description}
 
@@ -169,7 +169,7 @@ make
 \end{quote}
 to start the building process. Petidomo has been tested with various
 flavours of the make utility and all of them seem to work fine. If in
-doubt, try GNU Make, which is available from {\sf ftp.gnu.org}.
+doubt, try GNU Make, which is available from ftp.gnu.org.
 
 Petidomo has also been built using parallel builds. This is useful if
 you have a multi-processer system. You can do this with most make
@@ -254,9 +254,9 @@ users.
 
 To run Petidomo via sendmail --- what is what you want to do ---, you
 have to create apropriate aliases for it. You can do this by adding
-the folling lines to your {\sf aliases} file, which usually resides in
-{\sf /etc/aliases} or, with newer sendmail versions, in {\sf
-/etc/mail/aliases}:
+the folling lines to your aliases file, which usually resides in
+\file{/etc/aliases} or, with newer sendmail versions, in
+\file{/etc/mail/aliases}:
 \begin{quote}
 \begin{verbatim}
 petidomo-manager:   postmaster
@@ -281,7 +281,7 @@ testlist-request:   "|/usr/local/bin/petidomo --mode=listserv testlist"
 testlist-owner:     petidomo-manager
 \end{verbatim}
 \end{quote}
-Having done all this, execute the {\sf newaliases} utility to rebuild
+Having done all this, execute the newaliases(1) utility to rebuild
 sendmail's internal database. Your changes will not have any effect
 unless you do this.
 
@@ -303,9 +303,9 @@ Add the line
 foobar:             "/tmp/foobar-mail"
 \end{verbatim}
 \end{quote}
-to your aliases file and execute {\sf newaliases}. Then send an e-mail
-to the address ``foobar''. The contents of this mail will be stored in
-the file {\sf /tmp/foobar-mail} then and we are interested in the user
+to your aliases file and execute newaliases(1). Then send an e-mail to
+the address ``foobar''. The contents of this mail will be stored in
+the file \file{/tmp/foobar-mail} then and we are interested in the user
 who owns this file:
 \begin{quote}
 \begin{verbatim}
@@ -325,7 +325,7 @@ OK, sendmail starts Petidomo under user id ``daemon''. This means that
 installation. This is the default, because all files are installed
 with read permisson for everybody. Also, all directories allow access
 to anybody by default. But ``daemon'' also needs write access to the
-``localstatedir'' --- {\sf /usr/local/var/petidomo} per default. You
+``localstatedir'' --- \file{/usr/local/var/petidomo} per default. You
 can ensure this by executing the command:
 \begin{quote}
 \begin{verbatim}
@@ -338,28 +338,29 @@ This is a rather simplistic solution to the permisson problem; you
 figured that if you are the kind of person who wants to do things like
 this, you won't need an explanation how to do it anyway. Just that
 much information for you: Petidomo does not actually write to the
-``localstatdir'', but only to the subdirectory {\sf ack-queue} located
+``localstatdir'', but only to the subdirectory \file{ack-queue} located
 in it.
 
-Of course, you do not necessarily need to have the {\sf ack-queue}
+Of course, you do not necessarily need to have the \file{ack-queue}
 directory owned by ``daemon'', you can also set the group permissions
 apropriately. Furthermore, Petidomo will usually want to write to the
-{\sf lists} directory located in the ``localstatedir'', because most
+\file{lists} directory located in the ``localstatedir'', because most
 list administrators tend to place the mailing list archives there, but
 you can enable write access according to the list's configuration once
 you know how you're mailing lists are configured. In case something
-does not work as expected, check out the syslog messages for the {\sf
-LOG\_MAIL} facility --- this is where Petidomo logs its error messages.
+does not work as expected, check out the syslog messages for the
+LOG\_MAIL facility --- this is where Petidomo logs its error messages.
 
 \section{Configuring Petidomo}
 
 The last step before we can test our installation is to configure
 Petidomo. This is really simple. List the contents of the
 ``sysconfdir'' you chose. If you did not change the default paths,
-this is {\sf /usr/local/etc}. There you will find two files: {\sf
-petidomo.conf-sample} and {\sf petidomo.acl-sample}. Just rename them
-to {\sf petidomo.conf} and {\sf petidomo.acl} respectively and fire up
-your favorite text editor to edit the file {\sf petidomo.conf}.
+this is \file{/usr/local/etc}. There you will find two files:
+\file{petidomo.conf-sample} and \file{petidomo.acl-sample}. Just
+rename them to \file{petidomo.conf} and \file{petidomo.acl}
+respectively and fire up your favorite text editor to edit the file
+\file{petidomo.conf}.
 
 Uncomment the options ``Hostname'', ``AdminPassword'', and ``MTA'' and
 set the values correctly. ``Hostname'' should be the fully qualified
@@ -370,8 +371,8 @@ if this doesn't make any sense to you.) As ``AdminPassword'', you can
 chose pretty much any text you like, just make sure you remember it.
 The ``MTA'' setting will usually be alright the way it is. You may
 want to check whether sendmail does actually live at this path; on
-some Unixes, it is not installed at {\sf /usr/sbin/sendmail}, but at
-{\sf /usr/lib/sendmail}. Change the setting if this is the case. You
+some Unixes, it is not installed at \file{/usr/sbin/sendmail}, but at
+\file{/usr/lib/sendmail}. Change the setting if this is the case. You
 can ignore all other settings right now. Come back and configure those
 once you have read the apropriate sections of this manual. If you're
 an experienced Unix wizard, the comments in the config file will
@@ -402,8 +403,8 @@ petidomo... aliased to "|/usr/local/bin/petidomo --mode=listserv"
 
 Once you sent the e-mail, sendmail will start up Petidomo and feed the
 mail text into it for processing. If you take a look at the syslogfile
-containing the {\sf LOG\_MAIL} facility now --- this is usally {\sf
-/var/log/messages} or {\sf /var/log/maillog} ---, you will find that
+containing the LOG\_MAIL facility now --- this is usally
+\file{/var/log/messages} or \file{/var/log/maillog} ---, you will find that
 Petidomo logged entries there that look pretty much like the following
 ones. The backslash (``\verb#\#'') characters at the end of some of
 these lines denote that the line has been wrapped for readability. In
@@ -434,9 +435,10 @@ sendmail[8709]: f1CIHX508707: to=simons@peti.cryp.to, delay=00:00:00, \
 As you can see, Petidomo logged how it was started, where it is
 expecting its master config file and under which user- and group id it
 is running. Then it logs that it has received a HELP request. This
-request will be answered by sending the file {\sf
-/usr/local/share/petidomo/help} back to the person who requested help,
-and if everthing worked, you will now find that mail in your mail box.
+request will be answered by sending the file
+\file{/usr/local/share/petidomo/help} back to the person who requested
+help, and if everthing worked, you will now find that mail in your
+mail box.
 
 If something went wrong, Petidomo will tell you what went wrong. So,
 please fix the problem and try again. In 99\% of all cases, the error
@@ -494,7 +496,7 @@ fast. All this, thanks to the wonders of the {\bf Petidomo Mailing
 List Manager!}
 
 In case any of the benefits promised above stays away, please consult
-paragraphs 11 and 12 of the file {\sf COPYING} included in this
+paragraphs 11 and 12 of the file \file{COPYING} included in this
 distribution.
 
 \chapter{Configuring Petidomo}
@@ -1054,7 +1056,7 @@ posting is supposed to be posted to. In ``dump'' mode, this is the
 name of the list, which's subscriber list should be dumped. In
 ``approve'' mode, this parameter is ignored.
 
-\item[{-}-masterconf={\sf /path/to/petidomo.conf}]
+\item[{-}-masterconf=\file{/path/to/petidomo.conf}]
 
 Using this parameter you can tell Petidomo to use a different location
 for the master config file than the one that has been compiled in.
