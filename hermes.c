@@ -24,8 +24,7 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-int
-hermes_main(char * incoming_mail, const char * listname)
+void hermes_main(char * incoming_mail, const char * listname)
     {
     const struct PD_Config *     MasterConfig;
     const struct List_Config *   ListConfig;
@@ -63,17 +62,17 @@ hermes_main(char * incoming_mail, const char * listname)
     if (MailStruct->Envelope == NULL)
 	{
 	syslog(LOG_ERR, "Received mail without a valid envelope.");
-	return 0;
+	return;
 	}
     if (MailStruct->From == NULL)
 	{
 	syslog(LOG_ERR, "Received mail without From: line.");
-	return 0;
+	return;
 	}
     if (*MailStruct->Body == '\0')
 	{
 	syslog(LOG_INFO, "Received mail with empty body.");
-	return 0;
+	return;
 	}
 
     /* Initialize internal stuff. */
@@ -116,7 +115,7 @@ hermes_main(char * incoming_mail, const char * listname)
 	    case 0:
 		break;
 	    case 1:
-		return 0;
+		return;
 	    }
 	}
 
@@ -146,9 +145,9 @@ hermes_main(char * incoming_mail, const char * listname)
 	    else
 		{
 		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-		return -1;
+		exit(-1);
 		}
-	    return 0;
+	    return;
 	    }
 
 	else if (ListConfig->listtype == LIST_CLOSED)
@@ -178,9 +177,9 @@ hermes_main(char * incoming_mail, const char * listname)
 		else
 		    {
 		    syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-		    return -1;
+		    exit(-1);
 		    }
-		return 0;
+		return;
 		}
 	    }
 
@@ -215,9 +214,9 @@ hermes_main(char * incoming_mail, const char * listname)
 	    else
 		{
 		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-		return -1;
+		exit(-1);
 		}
-	    return 0;
+	    return;
 	    }
 
 	else if (ListConfig->listtype == LIST_ACKED_ONCE)
@@ -233,7 +232,7 @@ hermes_main(char * incoming_mail, const char * listname)
 		if (rc < 0)
 		    {
 		    syslog(LOG_ERR, "Can't add address to ack file.");
-		    return -1;
+		    exit(-1);
 		    }
 		}
 	    else
@@ -245,7 +244,7 @@ hermes_main(char * incoming_mail, const char * listname)
 		if (rc < 0)
 		    {
 		    syslog(LOG_ERR, "Can't verify whether address \"%s\" needs to be acknowledged or not.", MailStruct->From);
-		    return -1;
+		    exit(-1);
 		    }
 		else if (rc == 0)
 		    {
@@ -276,9 +275,9 @@ hermes_main(char * incoming_mail, const char * listname)
 		    else
 			{
 			syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-			return -1;
+			exit(-1);
 			}
-		    return 0;
+		    return;
 		    }
 		else
 		    syslog(LOG_NOTICE, "\"%s\" tried to post to ack-once list \"%s\" and has been found in " \
@@ -429,6 +428,4 @@ hermes_main(char * incoming_mail, const char * listname)
     /* Archive the article. */
 
     ArchiveMail(MailStruct, listname);
-
-    return 0;
     }

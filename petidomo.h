@@ -191,11 +191,11 @@ int savefile(const char *filename, const char *buffer);
 
 /********** listserv.c **********/
 
-int listserv_main(char *incoming_mail, char *default_list);
+void listserv_main(char *incoming_mail, char *default_list);
 
 /********** approve.c **********/
 
-int approve_main(char *incoming_mail);
+void approve_main(char *incoming_mail);
 
 /********** mailer.c **********/
 
@@ -225,7 +225,7 @@ int DeleteAddress(struct Mail *MailStruct, const char *param1, const char *param
 
 /********** hermes.c **********/
 
-int hermes_main(char *incoming_mail, const char *listname);
+void hermes_main(char *incoming_mail, const char *listname);
 
 /********** subscribe.c **********/
 

@@ -25,8 +25,7 @@
 
 char * g_currLine;		/* pointer to the line currently parsed */
 
-int
-listserv_main(char * incoming_mail, char * default_list)
+void listserv_main(char * incoming_mail, char * default_list)
 {
     const struct List_Config * ListConfig;
     struct Mail *   MailStruct;
@@ -56,11 +55,11 @@ listserv_main(char * incoming_mail, char * default_list)
 
     if (MailStruct->Envelope == NULL) {
 	syslog(LOG_NOTICE, "Received mail without a valid envelope.");
-	return 0;
+	return;
     }
     if (MailStruct->From == NULL) {
         syslog(LOG_NOTICE, "Received mail without From: line.");
-        return 0;
+        return;
     }
 
     /* Do access control. */
@@ -77,7 +76,7 @@ listserv_main(char * incoming_mail, char * default_list)
       case 0:
 	  break;
       case 1:
-	  return 0;
+	  return;
     }
 
     /* Parse the body and call the apropriate routines for each
@@ -87,7 +86,7 @@ listserv_main(char * incoming_mail, char * default_list)
     if (*g_currLine == '\0') {
 	syslog(LOG_NOTICE, "Received mail with empty body.");
 	SendHelp(MailStruct, NULL, NULL, default_list);
-	return 0;
+	return;
     }
     for (nextLine = text_find_next_line(g_currLine), junklines = 0, found = 0;
 	 *g_currLine != '\0' && junklines <= 7;
@@ -147,6 +146,4 @@ listserv_main(char * incoming_mail, char * default_list)
 	    ((MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From));
 	Indecipherable(MailStruct, default_list);
     }
-
-    return 0;
 }
