@@ -179,7 +179,7 @@ AddAddress(struct Mail * MailStruct,
 
     if (isSubscribed(listname, address, NULL, NULL, FALSE) == TRUE)
 	{
-	syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" rejected because the " \
+	syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" rejected, because the " \
 	       "address is already on the list.", MailStruct->From, address, listname);
 
 	/* Notify the originator, that the address is already a
@@ -215,7 +215,7 @@ AddAddress(struct Mail * MailStruct,
 	char* command;
 	char* cookie;
 
-	syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" deferred because the " \
+	syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" deferred, because the " \
 	       "request must be acknowledged first.", MailStruct->From, address, listname);
 
 	command = text_easy_sprintf("subscribe %s %s", address, listname);

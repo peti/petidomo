@@ -179,7 +179,7 @@ DeleteAddress(struct Mail * MailStruct,
 
     if (isSubscribed(listname, address, &list, &p, FALSE) == FALSE)
 	{
-       syslog(LOG_INFO, "%s: Attempt to unsubscribe \"%s\" from list \"%s\" rejected because the " \
+       syslog(LOG_INFO, "%s: Attempt to unsubscribe \"%s\" from list \"%s\" rejected, because the " \
               "address is not on the list.", MailStruct->From, address, listname);
 
 	/* Notify the originator, that the address is not subscribed at
@@ -218,7 +218,7 @@ DeleteAddress(struct Mail * MailStruct,
 	    char* command;
 	    char* cookie;
 
-	    syslog(LOG_INFO, "%s: Attempt to unsubscribe \"%s\" from list \"%s\" deferred because the " \
+	    syslog(LOG_INFO, "%s: Attempt to unsubscribe \"%s\" from list \"%s\" deferred, because the " \
 		   "request must be acknowledged first.", MailStruct->From, address, listname);
 
 	    command = text_easy_sprintf("unsubscribe %s %s", address, listname);
