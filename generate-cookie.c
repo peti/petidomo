@@ -66,7 +66,7 @@ char* generate_cookie(const char* buffer)
 static char* encode_digest_to_ascii(unsigned char digest[16])
     {
     int                  i;
-    static const char    hex[] = "0123456789abcdef";
+    static const char    hex[] = "0123456789ABCDEF";
     char *               buffer;
 
     buffer = xmalloc(33);
