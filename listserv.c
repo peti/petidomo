@@ -26,7 +26,7 @@
 char * g_currLine;		/* pointer to the line currently parsed */
 
 int
-listserv_main(char * incoming_mail, char * default_list)
+listserv_main(char * incoming_mail, char * default_list, char is_approved)
 {
     const struct List_Config * ListConfig;
     struct Mail *   MailStruct;

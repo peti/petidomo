@@ -25,7 +25,7 @@
 #include "petidomo.h"
 
 int
-hermes_main(char * incoming_mail, const char * listname)
+hermes_main(char * incoming_mail, const char * listname, char is_approved)
 {
     const struct PD_Config *     MasterConfig;
     const struct List_Config *   ListConfig;
