@@ -73,7 +73,7 @@ SendHelp(struct Mail * MailStruct,
 		free(p);
 	    }
 	    else {
-		syslog(LOG_NOTICE, "List \"%s\" doesn't have a description.", param1);
+		syslog(LOG_INFO, "List \"%s\" doesn't have a description.", param1);
 		fprintf(fh, "No description available.\n");
 	    }
 	    CloseMailer(fh);

@@ -125,7 +125,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 
 	if (ListConfig->listtype == LIST_MODERATED)
 	    {
-	    syslog(LOG_NOTICE, "\"%s\" tried to post to list \"%s\", but failed to " \
+	    syslog(LOG_INFO, "\"%s\" tried to post to list \"%s\", but failed to " \
 		   "provide a correct password.", MailStruct->From, listname);
 
 	    fh = vOpenMailer(envelope, owner, NULL);
@@ -156,7 +156,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 
 	    if (isSubscribed(listname, MailStruct->From, NULL, NULL, TRUE) == FALSE)
 		{
-		syslog(LOG_NOTICE, "\"%s\" tried to post to closed list \"%s\", but " \
+		syslog(LOG_INFO, "\"%s\" tried to post to closed list \"%s\", but " \
 		       "he is no subscriber.", MailStruct->From, listname);
 
 		fh = vOpenMailer(envelope, owner, NULL);
@@ -190,7 +190,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 	    char* cookie;
 	    char* originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
-	    syslog(LOG_NOTICE, "\"%s\" tried to post to acknowledged list \"%s\"; posting " \
+	    syslog(LOG_INFO, "\"%s\" tried to post to acknowledged list \"%s\"; posting " \
 		   "has been deferred.", MailStruct->From, listname);
 
 	    cookie = queue_posting(MailStruct, listname);
@@ -225,7 +225,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 
 	    if (g_is_approved)
 		{
-		syslog(LOG_NOTICE, "\"%s\" acknowledged a former posting attempt on ack-once list \"%s\"; " \
+		syslog(LOG_INFO, "\"%s\" acknowledged a former posting attempt on ack-once list \"%s\"; " \
 		       "add him to the ack file and let the posting pass.", MailStruct->From, listname);
 
 		rc = add_address(ListConfig->ack_file, MailStruct->From);
@@ -250,7 +250,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 		    {
 		    char* cookie;
 
-		    syslog(LOG_NOTICE, "\"%s\" tried to post to ack-once list \"%s\", but is posting " \
+		    syslog(LOG_INFO, "\"%s\" tried to post to ack-once list \"%s\", but is posting " \
 			   "for the first time; posting has been deferred.", MailStruct->From, listname);
 
 		    cookie = queue_posting(MailStruct, listname);
@@ -280,7 +280,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 		    return;
 		    }
 		else
-		    syslog(LOG_NOTICE, "\"%s\" tried to post to ack-once list \"%s\" and has been found in " \
+		    syslog(LOG_INFO, "\"%s\" tried to post to ack-once list \"%s\" and has been found in " \
 			   "the ack file; letting posting pass.", MailStruct->From, listname);
 		}
 	    }

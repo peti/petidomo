@@ -54,7 +54,7 @@ SendSubscriberList(struct Mail * MailStruct,
       listname = defaultlist;
 
     if (address == NULL || listname == NULL) {
-	syslog(LOG_NOTICE, "%s: members-command invalid: No list specified.",
+	syslog(LOG_INFO, "%s: members-command invalid: No list specified.",
 	    MailStruct->From);
 	return 0;
     }
@@ -70,7 +70,7 @@ SendSubscriberList(struct Mail * MailStruct,
     if (isValidAdminPassword(getPassword(), listname) == FALSE &&
 	ListConfig->allowmembers == FALSE) {
 
-	syslog(LOG_NOTICE, "MEMBERS command from \"%s\" has been denied.", address);
+	syslog(LOG_INFO, "MEMBERS command from \"%s\" has been denied.", address);
 	fh = vOpenMailer(envelope, address, owner, NULL);
 	if (fh != NULL) {
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",

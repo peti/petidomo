@@ -271,7 +271,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 
 	if (strncasecmp("From:", currLine, strlen("From:")) == 0) {
 	    if (MailStruct->From != NULL) {
-		syslog(LOG_NOTICE, "Received mail with multiple From: lines.");
+		syslog(LOG_INFO, "Received mail with multiple From: lines.");
 		continue;
 	    }
 	    MailStruct->From = &currLine[strlen("From:")];
@@ -281,7 +281,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    CanonizeAddress(&(MailStruct->From), fqdn);
 	} else if (strncasecmp("Reply-To:", currLine, strlen("Reply-To:")) == 0) {
 	    if (MailStruct->Reply_To != NULL) {
-		syslog(LOG_NOTICE, "Received mail with multiple Reply-To: lines.");
+		syslog(LOG_INFO, "Received mail with multiple Reply-To: lines.");
 		continue;
 	    }
 	    MailStruct->Reply_To = &currLine[strlen("Reply-To:")];
@@ -301,7 +301,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	}
 	else if (strncasecmp("Approve:", currLine, strlen("Approve:")) == 0) {
 	    if (MailStruct->Approve != NULL)
-	      syslog(LOG_NOTICE, "Received mail with multiple Approve: lines.");
+	      syslog(LOG_INFO, "Received mail with multiple Approve: lines.");
 	    MailStruct->Approve = &currLine[strlen("Approve:")];
 	    rc = ParseApproveLine(MailStruct->Approve);
 	    if (rc != 0)
@@ -309,7 +309,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	}
 	else if (strncasecmp("Approved:", currLine, strlen("Approved:")) == 0) {
 	    if (MailStruct->Approve != NULL)
-	      syslog(LOG_NOTICE, "Received mail with multiple Approve: lines.");
+	      syslog(LOG_INFO, "Received mail with multiple Approve: lines.");
 	    MailStruct->Approve = &currLine[strlen("Approved:")];
 	    rc = ParseApproveLine(MailStruct->Approve);
 	    if (rc != 0)
@@ -317,7 +317,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	}
 	else if (strncasecmp("Subject:", currLine, strlen("Subject:")) == 0) {
 	    if (MailStruct->Subject != NULL)
-	      syslog(LOG_NOTICE, "Received mail with multiple Subject: lines.");
+	      syslog(LOG_INFO, "Received mail with multiple Subject: lines.");
 	    MailStruct->Subject = &currLine[strlen("Subject:")];
 	    if (*MailStruct->Subject == ' ')
 	      MailStruct->Subject += 1;

@@ -84,7 +84,6 @@ void listserv_main(char * incoming_mail, char * default_list)
 
     g_currLine = MailStruct->Body;
     if (*g_currLine == '\0') {
-	syslog(LOG_NOTICE, "Received mail with empty body.");
 	SendHelp(MailStruct, NULL, NULL, default_list);
 	return;
     }
