@@ -198,7 +198,7 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "Precedence: junk\n");
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
-	    fprintf(fh, "The address is subscribed to this list already.\n");
+	    fprintf(fh, "The address \"%s\" is already subscribed to list \"%s\".\n", address, listname);
 	    CloseMailer(fh);
 	    }
 	else
