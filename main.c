@@ -33,7 +33,7 @@
 static char*  listname = NULL;
 static char*  mode = NULL;
 static char*  masterconfig_path = SYSCONFDIR "/petidomo.conf";
-static char   is_approved = ARGV_FALSE;
+char          g_is_approved = ARGV_FALSE;
 
 int
 main(int argc, char * argv[])
@@ -45,7 +45,7 @@ main(int argc, char * argv[])
         {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, or approve."},
         {ARGV_MAYBE, "listname", ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
         {ARGV_MAYBE, "masterconf", ARGV_CHAR_P, &masterconfig_path, "masterconf", "Path to petidomo.conf."},
-        {ARGV_MAYBE, "approved", ARGV_BOOL, &is_approved, "approved", "approved flag."},
+        {ARGV_MAYBE, "approved", ARGV_BOOL, &g_is_approved, "approved", "approved flag."},
         {ARGV_LAST}
 	};
 
@@ -80,11 +80,11 @@ main(int argc, char * argv[])
     /* Now decide what we actually do with the mail. */
 
     if (strcasecmp("listserv", mode) == 0)
-	listserv_main(incoming_mail, listname, is_approved);
+	listserv_main(incoming_mail, listname);
     else if (strcasecmp("deliver", mode) == 0)
 	{
 	if (listname != NULL)
-	    hermes_main(incoming_mail, listname, is_approved);
+	    hermes_main(incoming_mail, listname);
 	else
 	    {
 	    syslog(LOG_ERR, "Wrong command line syntax; deliver mode requires a parameter.");

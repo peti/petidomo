@@ -48,6 +48,10 @@
 #  include <dmalloc.h>
 #endif
 
+/********** main.c **********/
+
+extern char g_is_approved;
+
 /********** config.c **********/
 
 struct PD_Config
@@ -185,7 +189,7 @@ int savefile(const char *filename, const char *buffer);
 
 /********** listserv.c **********/
 
-int listserv_main(char *incoming_mail, char *default_list, char);
+int listserv_main(char *incoming_mail, char *default_list);
 
 /********** mailer.c **********/
 
@@ -215,7 +219,7 @@ int DeleteAddress(struct Mail *MailStruct, const char *param1, const char *param
 
 /********** hermes.c **********/
 
-int hermes_main(char *incoming_mail, const char *listname, char);
+int hermes_main(char *incoming_mail, const char *listname);
 
 /********** subscribe.c **********/
 
