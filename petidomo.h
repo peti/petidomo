@@ -63,17 +63,26 @@ struct PD_Config
     char *    index_file;
     };
 
-enum
+enum list_type_t
     {
     LIST_OPEN,
     LIST_CLOSED,
-    LIST_MODERATED
+    LIST_MODERATED,
+    LIST_ACKED,
+    LIST_ACKED_ONCE
+    };
+
+enum subscription_type_t
+    {
+    SUBSCRIPTION_PUBLIC,
+    SUBSCRIPTION_ADMIN,
+    SUBSCRIPTION_ACKED
     };
 
 struct List_Config
     {
     unsigned int  listtype;
-    int           allowpubsub;
+    unsigned int  subtype;
     int           allowmembers;
     char *        fqdn;
     char *        admin_password;

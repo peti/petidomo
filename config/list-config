@@ -2,28 +2,36 @@
 # $Header$
 #
 
-#  TAG: ListType <open|closed|moderated>
-#       The following types of mailing lists exists and one of them
-#       should be specified here:
+#  TAG: ListType <open|closed|moderated|acknowledged|acknowledged-once>
+#       The following types of mailing lists exists:
 #
 #         open -- The list is open for all postings which are not rejected
 #		due to the access control mechanism.
 #         closed -- Only subscribers are allowed to post.
 #         moderated -- Only postings which contain the correct posting
 #		password are allowed.
+#         acknowledged -- Every attempt to post will be answered with
+#               a request for acknowledgment, asking the poster to
+#               confirm. This prevents abuse and forgery.
+#         acknowledged-once -- A fist-time poster will have to
+#               acknowledge his posting once, after that, he can post
+#               as he wishes.
 #
 #       This option is REQUIRED. Petidomo will abort with an error, if it is
 #       unset.
 ListType	open
 
-#  TAG: AllowPublicSubscription <yes|no>
-#	  yes -- Everybody can subscribe and unsubscribe.
-#         no  -- Un-/subscription can only be done by the admin.
+#  TAG: SubscriptionType <public|admin|acknowledged>
+#	  public -- Everybody can subscribe and unsubscribe.
+#         admin  -- Un-/subscription can only be done by the admin.
 #		Authenticiation is done via password mechanism.
+#         acknowledged -- Anybody can un-/subscribe, but he has to
+#               acknowledge the request sent to the address add to or
+#               deleted from the list.
 #
 #	The default, if this option is unset, is to allow public
 #	subscription and unsubscription.
-AllowPublicSubscription	yes
+SubscriptionType	public
 
 #  TAG: AllowMembersCommand <yes|no>
 #	Does the 'members' or 'who' command work for this mailing list, or

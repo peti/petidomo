@@ -136,7 +136,7 @@ static char*     listtype;
 static char*     reply_to;
 static char*     postingfilter;
 static char*     archivepath;
-static bool      allowpubsub;
+static char*     subtype;
 static bool      allowmembers;
 static char*     intro_file;
 static char*     sig_file;
@@ -161,7 +161,7 @@ const struct List_Config* getListConfig(const char * listname)
     struct ConfigFile ListCF[] =
 	{
 	{ "ListType", CF_STRING, &listtype },
-	{ "AllowPublicSubscription", CF_YES_NO, &allowpubsub },
+	{ "SubscriptionType", CF_STRING, &subtype },
 	{ "AllowMembersCommand", CF_YES_NO, &allowmembers },
 	{ "ReplyTo", CF_STRING, &reply_to },
 	{ "Hostname", CF_STRING, &list_fqdn },
@@ -188,7 +188,7 @@ const struct List_Config* getListConfig(const char * listname)
     reply_to         = NULL;
     postingfilter    = NULL;
     archivepath      = NULL;
-    allowpubsub      = TRUE;
+    subtype          = NULL;
     allowmembers     = FALSE;
     intro_file       = "introduction";
     sig_file         = "signature";
@@ -252,12 +252,23 @@ const struct List_Config* getListConfig(const char * listname)
 	ListConfig->listtype = LIST_CLOSED;
     else if (!strcasecmp(listtype, "moderated"))
 	ListConfig->listtype = LIST_MODERATED;
+    else if (!strcasecmp(listtype, "acknowledged") || !strcasecmp(listtype, "acked"))
+	ListConfig->listtype = LIST_ACKED;
+    else if (!strcasecmp(listtype, "acknowledged-once") || !strcasecmp(listtype, "acked-once"))
+	ListConfig->listtype = LIST_ACKED_ONCE;
     else
 	{
 	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
 	exit(1);
 	}
-    ListConfig->allowpubsub = allowpubsub;
+
+    if (!strcasecmp(subtype, "public"))
+	ListConfig->listtype = SUBSCRIPTION_PUBLIC;
+    else if (!strcasecmp(subtype, "admin"))
+	ListConfig->listtype = SUBSCRIPTION_ADMIN;
+    else if (!strcasecmp(subtype, "acknowledged") || !strcasecmp(subtype, "acked"))
+	ListConfig->listtype = SUBSCRIPTION_ACKED;
+
     ListConfig->allowmembers = allowmembers;
     ListConfig->fqdn = (list_fqdn) ? list_fqdn : MasterConfig->fqdn;
     ListConfig->reply_to = reply_to;

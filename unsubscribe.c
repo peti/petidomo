@@ -114,7 +114,7 @@ DeleteAddress(struct Mail * MailStruct,
 	{
 	/* No valid password, check further. */
 
-	if (ListConfig->allowpubsub == FALSE)
+	if (ListConfig->subtype == SUBSCRIPTION_ADMIN)
 	    {
 	    /* Access was unauthorized, notify the originator. */
 
