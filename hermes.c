@@ -179,16 +179,17 @@ hermes_main(char * incoming_mail, const char * listname)
 	    /* Every posting needs an acknowledgement. */
 
 	    char* cookie;
+	    char* originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
 	    syslog(LOG_NOTICE, "\"%s\" tried to post to acknowledged list \"%s\"; posting " \
 		   "has been deferred.", MailStruct->From, listname);
 
 	    cookie = queue_posting(MailStruct, listname);
-            fh = vOpenMailer(owner, MailStruct->Envelope, NULL);
+            fh = vOpenMailer(owner, originator, NULL);
             if (fh != NULL)
 		{
 		fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
-		fprintf(fh, "To: %s\n", MailStruct->Envelope);
+		fprintf(fh, "To: %s\n", originator);
 		fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Your posting to list \"%s\"\n", listname, ListConfig->fqdn, listname);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", owner);
@@ -227,9 +228,10 @@ hermes_main(char * incoming_mail, const char * listname)
 		}
 	    else
 		{
+		char* originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 		rc = is_address_on_list(ListConfig->ack_file, MailStruct->From);
-		if (rc == 0)
-		    rc = is_address_on_list(ListConfig->ack_file, MailStruct->Envelope);
+		if (rc == 0 && MailStruct->Reply_To)
+		    rc = is_address_on_list(ListConfig->ack_file, MailStruct->Reply_To);
 		if (rc < 0)
 		    {
 		    syslog(LOG_ERR, "Can't verify whether address \"%s\" needs to be acknowledged or not.", MailStruct->From);
@@ -243,11 +245,11 @@ hermes_main(char * incoming_mail, const char * listname)
 			   "for the first time; posting has been deferred.", MailStruct->From, listname);
 
 		    cookie = queue_posting(MailStruct, listname);
-		    fh = vOpenMailer(owner, MailStruct->Envelope, NULL);
+		    fh = vOpenMailer(owner, originator, NULL);
 		    if (fh != NULL)
 			{
 			fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
-			fprintf(fh, "To: %s\n", MailStruct->Envelope);
+			fprintf(fh, "To: %s\n", originator);
 			fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Your posting to list \"%s\"\n",
 				listname, ListConfig->fqdn, listname);
 			fprintf(fh, "Precedence: junk\n");
