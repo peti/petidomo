@@ -303,22 +303,19 @@ AddAddress(struct Mail * MailStruct,
     fprintf(fh, "%s\n", address);
     fclose(fh);
 
-    /* Send success notification to the originator, the new
-       subscriber, and the owner. */
+    /* Send success notification to the originator and the new subscriber */
 
     if (!strcasecmp(address, originator) == TRUE)
-	fh = vOpenMailer(envelope, address, owner, NULL);
+	fh = vOpenMailer(envelope, address, NULL);
     else
-	fh = vOpenMailer(envelope, address, originator, owner, NULL);
+	fh = vOpenMailer(envelope, address, originator, NULL);
     if (fh != NULL)
 	{
 	fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		listname, ListConfig->fqdn);
 	fprintf(fh, "To: %s\n", address);
-	if (!strcasecmp(address, originator) == TRUE)
-	    fprintf(fh, "Cc: %s\n", owner);
-	else
-	    fprintf(fh, "Cc: %s, %s\n", originator, owner);
+	if (strcasecmp(address, originator) == TRUE)
+	    fprintf(fh, "Cc: %s\n", originator);
 	fprintf(fh, "Subject: Petidomo: Request \"subscribe %s %s\"\n", address, listname);
 	if (MailStruct->Message_Id != NULL)
 	    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
@@ -350,9 +347,44 @@ AddAddress(struct Mail * MailStruct,
 	}
     else
 	{
-	syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
+	syslog(LOG_ERR, "Failed to send email to \"%s\"!", address);
 	return -1;
 	}
+
+    /* Send success notification to the list owner */
+
+    fh = vOpenMailer(envelope, owner, NULL);
+    if (fh != NULL) {
+        fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
+                listname, ListConfig->fqdn);
+        fprintf(fh, "To: %s\n", owner);
+        fprintf(fh, "Subject: Petidomo: SUBSCRIBE %s@%s: %s\n", listname, ListConfig->fqdn, address);
+        if (MailStruct->Message_Id != NULL)
+            fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+        fprintf(fh, "Precedence: junk\n");
+        fprintf(fh, "Sender: %s\n", envelope);
+        fprintf(fh, "\n");
+        if (!strcasecmp(address, originator) == TRUE) {
+            buffer = text_easy_sprintf(
+                         "Per request from the subscriber, the address \"%s\"\n"
+                         "has been subscribed to the \"%s\" mailing list.\n",
+                         address, listname, ListConfig->fqdn);
+        }
+        else {
+            buffer = text_easy_sprintf(
+                         "Per request from \"%s\", the address \"%s\"\n"
+                         "has been subscribed to the \"%s\" mailing list.\n",
+                         originator, address, listname, ListConfig->fqdn);
+        }
+        text_wordwrap(buffer, 75);
+        fprintf(fh, "%s\n", buffer);
+        fprintf(fh, "No action is required on your part.\n");
+        CloseMailer(fh);
+    }
+    else {
+        syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
+        return -1;
+    }
 
     /* Send introduction text to the new member. */
 
