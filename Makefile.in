@@ -81,6 +81,11 @@ install:	petidomo
 
 install-testlist:
 	@if [ ! -d $(localstatedir)/testlist ]; then $(INSTALL) -d $(localstatedir)/testlist; fi
+	$(INSTALL) -m 644 ../etc/list-config $(localstatedir)/testlist/config
+	$(INSTALL) -m 644 ../etc/list-acl $(localstatedir)/testlist/acl
+	@rm -f $(localstatedir)/testlist/list
+	cp /dev/null $(localstatedir)/testlist/list
+	@chmod 644 $(localstatedir)/testlist/list
 
 clean distclean realclean::
 	@for n in lib*; do (cd $$n && $(MAKE) $@); done
