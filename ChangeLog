@@ -1,3 +1,10 @@
+2001-02-18  Peter Simons  <simons@peti.cryp.to>
+
+	* Per default, Petidomo will not be compiled with '-g -O2' as it
+	is common for GNU autoconf programs. I don't believe in these kind
+	of defaults, the user should choose his CFLAGS himself. The '-g'
+	is particularly annoying.
+
 2001-02-17  Peter Simons <simons@computer.org>
 
 	* Updated the documentation for the new version.
