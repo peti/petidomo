@@ -3,7 +3,7 @@
  * $Revision$
  * $Date$
  *
- * Copyright (c) 1996-99 by Peter Simons <simons@cys.de>
+ * Copyright (c) 1999 by CyberSolutions GmbH.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -19,7 +19,7 @@
  *
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by Peter Simons.
+ *      This product includes software developed by CyberSolutions GmbH.
  *
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
@@ -36,55 +36,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/types.h>
-#include <regex.h>
-#include "text.h"
+#include <iostream>
+#include <list>
 
-/* Simple front end to regular expressions.
+#include "text.hpp"
 
-   This is a simple front end to make the usage of regular expressions
-   easier. The routine tests whether the pattern provided in 'pattern'
-   matches the text in 'buffer' or not. Comparisons are done
-   case-insensitive, using the extended regular expression language.
-
-   RETURNS: If the pattern matches, TRUE is returned. Otherwise the
-   routine will return FALSE.
-
-   NOTE: The error handling is somewhat relaxed... well, don't use the
-   routine if you need error handling.
-
-   AUTHOR: Peter Simons <simons@rhein.de>
-
- */
-
-bool
-text_easy_pattern_match(const char * buffer, /* text buffer */
-		 const char * pattern /* regular expression */
-		 )
+int
+main(int argc, char ** argv)
 {
-    regex_t   preg;
-    int       rc;
+    //
+    // Test the tokenizer.
+    //
+    list<string>  l;
+    insert_iterator< list<string> > ii(l, l.end());
+    const string buf("this is a   test\n\n\n\r\tskfj     \t  blax\n");
+    tokenize(ii, buf);
+    cout << "Found " << l.size() << " tokens." << endl;
+    if( l.size()!=6 )
+      return 1;
+    copy(l.begin(), l.end(), ostream_iterator<string>(cout, "\n"));
 
-    /* Sanity checks. */
-
-    assert(buffer != NULL);
-    assert(pattern != NULL);
-    if (!buffer || !pattern)
-      return FALSE;
-
-    /* Compile the regular expression. */
-
-    rc = regcomp(&preg, pattern, REG_EXTENDED | REG_ICASE | REG_NOSUB | REG_NEWLINE);
-    if (rc != 0)
-	return FALSE;
-
-    /* Match it. */
-
-    rc = regexec(&preg, buffer, 0, NULL, 0);
-    regfree(&preg);
-
-    if (rc == 0)
-      return TRUE;
-    else
-      return FALSE;
+    return 0;
 }
