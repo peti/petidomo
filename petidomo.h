@@ -20,7 +20,6 @@
 #ifndef __PETIDOMO_H__
 #define __PETIDOMO_H__ 1
 
-
 /********** Useful defines and declarations **********/
 
 #ifndef __HAVE_DEFINED_BOOL__
@@ -240,19 +239,19 @@ struct Parse
     };
 extern struct Parse ParseArray[];
 
-/********** generate_cookie.c **********/
+/********** generate-cookie.c **********/
 
 char* generate_cookie(const char*);
 
-/********** queue_posting.c **********/
+/********** queue-posting.c **********/
 
 char* queue_posting(const struct Mail* mail, const char* listname);
 
-/********** queue_command.c **********/
+/********** queue-command.c **********/
 
 char* queue_command(const struct Mail* mail, const char* command);
 
-/********** address_db.c **********/
+/********** address-db.c **********/
 
 int is_address_on_list(const char* file, const char* address);
 int add_address(const char* file, const char* address);

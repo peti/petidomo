@@ -39,7 +39,7 @@ int operation, g_rc;
 char * g_parameter = NULL;
 struct Mail * g_MailStruct;
 
-#include "acl_scan.c"
+#include "acl-scan.c"
 
 #define YYERROR_VERBOSE
 %}

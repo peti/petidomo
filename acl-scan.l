@@ -19,7 +19,7 @@
 
 %{
 #include <ctype.h>
-#include "acl_scan.h"
+#include "acl-scan.h"
 %}
 %%
 ^[ \t]*#.*$	/* ignore comments */
