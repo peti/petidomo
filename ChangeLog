@@ -1,3 +1,39 @@
+
+Petidomo v4
+===========
+
+2000-12-01  Peter Simons <simons@computer.org>
+
+	* [...TO BE FILLED IN BY PETI...]
+
+2000-12-01  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Included various cleanups and adjustments derived from the original
+	OSSP hacks for Petidomo 2.2
+
+	* Added Perl scripts petidomo-approve and petidomo-kickout which are
+	useful to reduce the amount of effort required in daily mailing lists
+	administration.
+
+2000-12-01  Peter Simons <simons@computer.org>
+
+	* The base of this work off is again the latest free
+	version of Petidomo: 2.2, as released under GPLv2 on
+	http://www.petidomo.com/download/OpenPetidomo/source/ by
+	CyberSolutions GmbH.
+
+Petidomo v3
+===========
+
+	* There are no ChangeLog entries available for Petidomo v3, but that
+	doesn't matter because Petidomo v4 is based on the last version of
+	Petidomo v2. Nevertheless the non-free Petidomo v3 provided mainly an
+	optional user-interface and the ability to directly deliver mails in
+	parallel via SMTP.
+
+Petidomo v2
+===========
+
 1999-06-01  Peter Simons  <simons@petidomo.com>
 
 	* Re-released under GNU GPL.
@@ -105,3 +141,9 @@
 1997-06-30  Peter Simons  <simons@petidomo.com>
 
 	* Released as Petidomo 2.0.
+
+Petidomo v1
+===========
+
+	* There are no ChangeLog entries known for Petidomo v1.
+
