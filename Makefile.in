@@ -37,7 +37,7 @@ OBJS		= acl.o archive.o authen.o help.o io.o generate-cookie.o   \
 		  rfcparse.o subscribe.o tool.o unsubscribe.o main.o	   \
 		  queue-command.o queue-posting.o approve.o address-db.o   \
 		  version.o
-LIBS		= librfc822/librfc822.a libmpools/libmpools.a              \
+LIBS		= @LIBS@ librfc822/librfc822.a libmpools/libmpools.a              \
 		  liblists/liblists.a libargv/libargv.a                    \
 		  libconfigfile/libconfigfile.a libtext/libtext.a
 
