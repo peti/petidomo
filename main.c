@@ -93,7 +93,7 @@ main(int argc, char * argv[])
     /* Log a few helpful facts about this Petidomo instance. */
 
     syslog(LOG_DEBUG, "%s starting up; mode=%s, listname=%s, masterconf=%s, approved=%s, ruid=%d, euid=%d, gid=%d, egid=%d",
-	   petidomo_version.v_gnu, mode, listname, masterconfig_path, (g_is_approved) ? "true" : "false",
+	   petidomo_version.v_gnu, mode, (listname != NULL ? listname : "<none>"), masterconfig_path, (g_is_approved) ? "true" : "false",
 	   getuid(), geteuid(), getgid(), getegid());
 
     /* Init Petidomo's internal stuff. */
