@@ -79,7 +79,7 @@ install:	all
 	$(SHTOOL) mkdir -f -p -m 755 $(bindir)
 	$(SHTOOL) mkdir -f -p -m 755 $(sysconfdir)
 	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/lists
-	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/ack_queue
+	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/ack-queue
 	$(SHTOOL) mkdir -f -p -m 755 $(datadir)
 	$(SHTOOL) mkdir -f -p -m 755 $(libexecdir)
 	$(SHTOOL) mkdir -f -p -m 755 $(mandir)/man1

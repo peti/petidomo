@@ -41,7 +41,7 @@ static char*  help_file       = DATADIR "/petidomo.conf";
 static char*  acl_file        = SYSCONFDIR "/petidomo.acl";
 static char*  index_file      = LOCALSTATEDIR "/index";
 static char*  list_dir        = LOCALSTATEDIR "/lists";
-static char*  ack_queue_dir   = LOCALSTATEDIR "/ack_queue";
+static char*  ack_queue_dir   = LOCALSTATEDIR "/ack-queue";
 
 int InitPetidomo(const char* masterconfig)
     {
