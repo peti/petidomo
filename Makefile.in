@@ -46,10 +46,10 @@ acl_scan.c:		acl_scan.l acl_scan.h
 acl.c:			acl_scan.c
 
 $(LIBS):
-	$(MAKE) -C `echo $@ | sed -e 's@/.*@@'`
+	(cd `echo $@ | sed -e 's@/.*@@'` && $(MAKE))
 
 clean distclean realclean::
-	@for n in lib*; do $(MAKE) -C $$n $@; done
+	@for n in lib*; do (cd $$n && $(MAKE) $@); done
 
 clean::
 	rm -f petidomo listserv hermes
