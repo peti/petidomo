@@ -333,6 +333,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 	    !strncasecmp(currLine, "In-Reply-To:", 12) ||
 	    !strncasecmp(currLine, "References:", 11) ||
 	    !strncasecmp(currLine, "Message-Id:", 11) ||
+  	    !strncasecmp(currLine, "X-Spam-Flag:", 12) ||
 	    !strncasecmp(currLine, "Keywords:", 11) ||
 	    !strncasecmp(currLine, "Summary:", 11) ||
 	    !strncasecmp(currLine, "Received:", 9))
