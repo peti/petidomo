@@ -155,7 +155,7 @@ snap: distclean
 acl.o: libtext/text.h petidomo.h acl-scan.c acl-scan.h
 acl-scan.o: acl-scan.h
 address-db.o: libtext/text.h petidomo.h
-approve.o: petidomo.h
+approve.o: petidomo.h libtext/text.h
 archive.o: libtext/text.h petidomo.h
 authen.o: libtext/text.h petidomo.h
 config-files.o: libtext/text.h liblists/lists.h libconfigfile/configfile.h
