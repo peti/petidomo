@@ -90,24 +90,32 @@ main(int argc, char * argv[])
     argv_version_string = (char *)petidomo_version.v_gnu;
     argv_process(args, argc, argv);
 
+    /* Make sure we got all required parameters. */
+
+    if ((!strcasecmp(mode, "deliver") || !strcasecmp(mode, "dump")) && listname == NULL)
+	{
+	fprintf(stderr, "petidomo: %s mode requires a list name argument\n", mode);
+	exit(1);
+        }
+
     /* Member Dump Mode */
-    if (strcasecmp(mode, "dump") == 0) {
+
+    if (strcasecmp(mode, "dump") == 0)
+	{
         char *cp;
         const struct List_Config *ListConfig;
-        if (listname == NULL) {
-            fprintf(stderr, "petidomo: dump mode requires a list name argument\n");
-            exit(1);
-        }
-        if (InitPetidomo(masterconfig_path) != 0) {
+        if (InitPetidomo(masterconfig_path) != 0)
+	    {
             fprintf(stderr, "petidomo: failed load master configuration.\n");
             exit(1);
-        }
+	    }
         MasterConfig = getMasterConfig();
         ListConfig = getListConfig(listname);
-        if ((cp = loadfile(ListConfig->address_file)) == NULL) {
+        if ((cp = loadfile(ListConfig->address_file)) == NULL)
+	    {
             fprintf(stderr, "petidomo: failed to open file \"%s\"\n", ListConfig->address_file);
             exit(1);
-        }
+	    }
         fwrite(cp, strlen(cp), 1, stdout);
         free(cp);
         exit(0);
