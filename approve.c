@@ -26,13 +26,17 @@
 
 #include "petidomo.h"
 
-int approve_main(char* mail)
+void approve_main(char* mail)
     {
     const struct PD_Config* MasterConfig = getMasterConfig();
+    struct Mail*   MailStruct;
+    char*          originator;
     static const char* cookie_regex = "[0-9a-f]{32}";
     regex_t preg;
     regmatch_t match[3];
     int offset;
+    int number_of_hits            = 0;
+    int number_of_successful_hits = 0;
 
     if (chdir(MasterConfig->ack_queue_dir) == -1)
 	{
@@ -55,6 +59,8 @@ int approve_main(char* mail)
 	char* dst = buffer;
 	unsigned int i;
 
+	++number_of_hits;
+
 	/* Copy found string into buffer. */
 
 	src = mail + offset + match[0].rm_so;
@@ -73,6 +79,7 @@ int approve_main(char* mail)
 	    {
 	    char cmd[128];
 
+	    ++number_of_successful_hits;
 	    sprintf(cmd, "/bin/sh %s && /bin/rm -f %s", buffer, buffer);
 	    if (((signed char)system(cmd)) == -1)
 		{
@@ -80,8 +87,22 @@ int approve_main(char* mail)
 		exit(1);
 		}
 	    }
-
 	}
 
-    return 0;
+    /* Report results back to the originator */
+
+    if (ParseMail(&MailStruct, mail, MasterConfig->fqdn) != 0)
+	{
+	syslog(LOG_ERR, "Parsing the incoming mail failed.");
+	exit(-1);
+	}
+
+    if (MailStruct->From == NULL)
+	{
+        syslog(LOG_NOTICE, "Received mail without From: line.");
+        return;
+	}
+
+    originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
+
     }
