@@ -27,7 +27,7 @@ int
 handleACL(struct Mail * MailStruct, const char * listname, int operation, char * parameter)
 {
     const struct PD_Config *     MasterConfig;
-    const struct List_Config *   ListConfig;
+    const struct List_Config *   ListConfig = NULL;
     FILE *          fh;
     char *          buffer;
     char            envelope[1024];
