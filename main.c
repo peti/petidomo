@@ -4,14 +4,14 @@
 
    Copyright (C) 2000 by CyberSolutions GmbH, Germany.
 
-   This file is part of OpenPetidomo.
+   This file is part of Petidomo.
 
-   OpenPetidomo is free software; you can redistribute it and/or modify
+   Petidomo is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
-   OpenPetidomo is distributed in the hope that it will be useful, but
+   Petidomo is distributed in the hope that it will be useful, but
    WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
    General Public License for more details.
@@ -56,8 +56,8 @@ main(int argc, char * argv[])
 
     /* Parse the command line. */
 
-    argv_help_string = "OpenPetidomo Mailing List Server";
-    argv_version_string = "OpenPetidomo";
+    argv_help_string = "Petidomo Mailing List Server";
+    argv_version_string = "Petidomo";
     argv_process(args, argc, argv);
 
     /* Init Petidomo's internal stuff. */
