@@ -1,0 +1,126 @@
+##
+##  petidomo.pod -- Petidomo Unix Manual Page
+##  Copyright (c) 2001 Ralf S. Engelschall <rse@engelschall.com> 
+##
+##  This file is part of Petidomo.
+##
+##  Petidomo is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2, or (at your option)
+##  any later version.
+##
+##  Petidomo is distributed in the hope that it will be useful, but
+##  WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+##  General Public License for more details.
+##
+
+=pod
+
+=head1 NAME
+
+B<petidomo> -- Mailing List Manager
+
+=head1 VERSION
+
+OSSP Petidomo @V@
+
+=head1 SYNOPSIS
+
+B<petidomo>
+[B<--mode=>I<MODE>]
+[B<--listname=>I<NAME>]
+[B<--masterconf=>I<FILE>]
+[B<--approved>]
+
+=head1 DESCRIPTION
+
+B<Petidomo> is a mailing list manager very similar to the popular
+package B<Majordomo>. It handles both list un-/subscription and the
+address expansion of list postings. The actual delivery of postings is
+still performed by an MTA like B<Sendmail>.
+
+B<Petidomo> provides only the most important features of B<Majordomo>, but
+is 
+
+=head1 COMMAND LINE OPTIONS
+
+The C<petidomo> program provides the following command line options:
+
+=over 4
+
+=item B<--masterconf>=I<FILE>
+
+The path to the global B<Petidomo> configuration file.
+
+=item B<--mode>=I<MODE>
+
+...
+
+=item B<--listname>=I<NAME>
+
+...
+
+=item B<--approved>
+
+...
+
+=back
+
+=head1 CONFIGURATION
+
+=head2 Global Configuration
+
+The global B<Petidomo> configuration provides the following directives:
+
+=over 4
+
+=item B<Hostname> I<string>
+
+This entry specifies the fully qualified domain name, B<Petidomo>
+should use. This will usually be the FQDN of the machine the software
+is running on. This option is mandatory. B<Petidomo> will abort with an
+error, if it is unset. Example: C<Hostname petidomo.example.org>
+
+=item B<AdminPassword> I<string>
+
+This tag sets the master password, which authenticiates the
+administrator of the package. Please chose this password carefully.
+Knowledge of the master password will enable you to access ALL mailing
+lists running on this system. Passwords are always case-insensitive.
+This option is mandatory. B<Petidomo> will abort with an error, if it is
+unset. Example: C<AdminPassword "open sesame">
+
+=item ...
+
+=back
+
+=head2 List Configuration
+
+=head2 Access Control Lists (ACL)
+
+=head1 EXAMPLE
+
+=head2 Sendmail Configuration
+
+C<aliases>:
+
+=head2 Petidomo Global Configuration
+
+C<petidomo.conf>:
+
+C<petidomo.acl>:
+
+=head2 Petidomo List Configuration
+
+Petidomo C<foo.conf>:
+
+=head1 HISTORY
+
+=head1 AUTHOR
+
+Peter Simons
+<simons@computer.org>
+
+=cut
+

@@ -9,6 +9,7 @@ libexecdir	= @libexecdir@/petidomo
 datadir		= @datadir@/petidomo
 sysconfdir	= @sysconfdir@
 localstatedir	= @localstatedir@/petidomo
+mandir		= @mandir@
 
 CC		= @CC@
 AR		= ar
@@ -44,8 +45,18 @@ LIBS		= librfc822/librfc822.a libmpools/libmpools.a              \
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
+all: petidomo petidomo.1
+
 petidomo:	$(OBJS) $(LIBS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS) $(LIBS)
+
+petidomo.1:	petidomo.pod
+	V=`$(SHTOOL) version -lc -dlong version.c`; \
+	sed -e "s;@V@;$$V;g" <petidomo.pod >/tmp/petidomo.pod; \
+	pod2man --section=1 --date="$$V" \
+	        --center="Petidomo" --release="Petidomo" \
+	        /tmp/petidomo.pod >petidomo.1; \
+	rm -f /tmp/petidomo.pod
 
 acl.c acl_scan.h:	acl.y
 	$(YACC) -d -p acl acl.y
@@ -64,16 +75,18 @@ $(LIBS):
 	cd $$subdir && $(MAKE) $(FLAGS_TO_PASS); \
 	echo "<=== $$subdir"
 
-install:	petidomo
+install:	all
 	$(SHTOOL) mkdir -f -p -m 755 $(bindir)
 	$(SHTOOL) mkdir -f -p -m 755 $(sysconfdir)
 	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/lists
 	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/ack_queue
 	$(SHTOOL) mkdir -f -p -m 755 $(datadir)
 	$(SHTOOL) mkdir -f -p -m 755 $(libexecdir)
+	$(SHTOOL) mkdir -f -p -m 755 $(mandir)/man1
 	$(SHTOOL) install -c -s -m 555 petidomo $(bindir)
 	$(SHTOOL) install -c -m 755 petidomo-approve $(bindir)
 	$(SHTOOL) install -c -m 755 petidomo-kickout $(bindir)
+	$(SHTOOL) install -c -m 644 petidomo.1 $(mandir)/man1/petidomo.1
 	$(SHTOOL) install -c -m 644 config/petidomo.conf $(sysconfdir)/petidomo.conf-sample
 	$(SHTOOL) install -c -m 644 config/petidomo.acl $(sysconfdir)/petidomo.acl-sample
 	$(SHTOOL) install -c -m 444 config/help $(datadir)
@@ -99,6 +112,7 @@ clean distclean realclean::
 
 clean::
 	rm -f petidomo
+	rm -f petidomo.1
 	rm -f $(OBJS)
 	rm -f acl_scan.c acl_scan.h acl.c
 
