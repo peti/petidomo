@@ -25,4 +25,4 @@ ml-principle2.eps:	ml-principle2.fig
 directory-struct.eps:	directory-struct.fig
 
 clean distclean realclean:
-	rm -f petidomo.aux petidomo.dvi petidomo.idx petidomo.log petidomo.ps petidomo.toc
+	rm -f petidomo.aux petidomo.dvi petidomo.log petidomo.ps petidomo.toc

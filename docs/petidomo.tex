@@ -1,153 +1,54 @@
-\documentclass[a4paper]{report}
+\documentclass[a4paper,10pt]{scrreprt}
 %
 % Petidomo Manual
 %
 % $Header$
 %
-\usepackage{html}
-\usepackage{makeidx}
+\typearea[2cm]{12}
 \usepackage{graphicx}
-\makeindex
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\sl The Petidomo Mailing List Manager}
+\chead{}
+\rhead{Page \thepage\ of \pageref{LastPage}}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\fancypagestyle{plain}{}
+\fussy
 
 %
 % Self-defined macros
 %
 \newcommand{\PetidomoM}{{\scshape Peti\-domo Mail\-ing List Ma\-nager}}
 \newcommand{\Petidomo}{{\scshape Peti\-domo}}
-\newcommand{\PetidomoTwo}{{\scshape Peti\-domo 2.1}}
-\newcommand{\Def}[1]{{\index{#1}\sl #1}}
-\newcommand{\DefNI}[1]{{\tt #1}}
-\newcommand{\file}[1]{{\tt #1}}
-\newcommand{\Index}[1]{#1\index{#1}}
+\newcommand{\PetidomoTwo}{{\scshape Peti\-domo 2.2}}
+\newcommand{\Def}[1]{{\sl #1}}
+\newcommand{\file}[1]{{\sf #1}}
 
 %
 % Begin of document
 %
 \begin{document}
-\sloppy
-\pagestyle{empty}
 
 %
 % Titlepage
 %
-\title{The \PetidomoM}
+\title{The Petidomo Mailing List Manager}
 \author{Peter Simons $<$simons@petidomo.com$>$}
 \date{March, 7th 1999}
 \maketitle
 
 %
-% Copyright
-%
-\centerline{\huge\bf License Agreement}
-
-\bigskip
-
-\noindent
-The "Petidomo Mailing List Manager" is copyrighted \copyright{} 1996--99 by
-CyberSolutions GmbH, Germany. All rights are reserved.
-
-\medskip
-
-\noindent
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-\begin{enumerate}
-
-\item Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-\item Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-\item All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-
-     \centerline{This product includes software developed by CyberSolutions GmbH.}
-
-\item The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-\end{enumerate}
-
-\noindent
-You are not required to accept this License, since you have not signed
-it. However, nothing else grants you permission to use the program.
-These actions are prohibited by law if you do not accept this license.
-Therefore, by using the program, you indicate your acceptance of this
-license to do so, and all its terms and conditions.
-
-\medskip
-
-\noindent
-{\bf This software is provided by CyberSolutions GmbH ``as is'' and
-any express or implied warranties, including, but not limited to, the
-implied warranties of merchantability and fitness for a particular
-purpose are disclaimed. In no event shall CyberSolutions GmbH be
-liable for any direct, indirect, incidental, special, exemplary, or
-consequential damages (including, but not limited to, procurement of
-substitute goods or services; loss of use, data, or profits; or
-business interruption) however caused and on any theory of liability,
-whether in contract, strict liability, or tort (including negligence
-or otherwise) arising in any way out of the use of this software, even
-if advised of the possibility of such damage.}
-
-\newpage
-
-%
 % Table of contents
 %
-\pagenumbering{roman} \setcounter{page}{1} \pagestyle{headings}
 \tableofcontents
 \clearpage
-\pagenumbering{arabic} \setcounter{page}{1} \pagestyle{headings}
 
 %
 % Begin of actual text
 %
-\chapter{Quickstart for the impatient}
-\index{quickstart}
-
-We know you feel now. You just downloaded the new software
-package and are eager to see it work as fast as possible. So, even
-though it is kind of mad to write this long manual with the knowledge
-that the vast majority of users will never read it, here is a step by
-step quickstart guide.
-
-\begin{enumerate}
-
-\item Get the distribution for your Unix platform.
-
-\item Unpack the tar archive: {\tt gunzip <archivename | tar xf -}
-
-\item {\tt su} to the super user.
-
-\item Create a user {\tt petidomo} and a group {\tt petidomo}. The
-home directory of this user is the place where the whole package will
-be installed. The user doesn't need a valid password and shell.
-
-\item As superuser, {\tt cd} into the directory `petidomo-{\sl
-your-architecture-name}' and start {\tt ./install.sh} or {\tt sh
-install.sh}.
-
-\item Answer all questions asked by the script truthfully.
-
-\item If no error occurs, send an e-mail to the \PetidomoM: {\tt mail
-petidomo </dev/null} and see what happens.
-
-\item Now use your WWW browser to access
-\htmladdnormallink{`http://local\-host/cgi-bin/peti\-domo\-conf.cgi'}{http://localhost/cgi-bin/petidomoconf.cgi} and create any mailing
-lists you'd like to have.
-
-\item Be happy.
-
-\item Now read the blasted user manual. It was a lot of work to write
-it.
-
-\end{enumerate}
-
 \chapter{Introduction}
 
 Congratulations. Obviously you are a clever person. Not only
@@ -261,9 +162,11 @@ undocumented except for a totally outdated README file.
 A big ``thank you'' to Markus Fleck of the University of Bonn for
 providing us with an FTP mirror of the \Petidomo\ Beta distributions.
 
+\begin{sloppypar}
 Furthermore, our appreciation to Gray Watson for writing the excellent
 ``argv'' and ``dmalloc''-libraries, which have been used in the
 \PetidomoM\ during the beta testing phase.
+\end{sloppypar}
 
 And last, but not least, the developers would like to thank the team
 of CyberSolutions~GmbH for their support during the development,
@@ -305,8 +208,7 @@ replies to the wrong person, they have to keep their aliases
 up-to-date for the mail to reach the person, etc\dots{}
 
 To remedy these shortcomings, the idea of the mailing list was
-developed. A mailing list is \DefNI(hosted)\index{hosting a mailing
-list} on a central server, which has the addresses of the people who
+developed. A mailing list is \Def(hosted) on a central server, which has the addresses of the people who
 are on that mailing list. Then a special account is created, called
 the \Def{mailing list address}, to which people can send the mail they
 want to be distributed to all receivers.
@@ -446,7 +348,7 @@ Just follow the steps as described below:
 
 \item Become `root'. You will need super user privileges.
 
-\item Create a user \index{petidomo-user} `petidomo' using vipw(8),
+\item Create a user `petidomo' using vipw(8),
      adduser(8) or whatever method your system uses. The user should
      not have a valid shell, nor a valid password because it is very
      unlikely that anybody ever needs to log in as `petidomo'. The
@@ -463,8 +365,7 @@ Just follow the steps as described below:
      This means that all files belonging to \PetidomoTwo\ live in the
      \file{/usr/lo\-cal/pe\-ti\-domo} tree. The entry in the password file can be
      changed at any time. Hence it is very easy to move \Petidomo\
-     \index{Moving Petidomo} to a different location or to de-install
-     the whole package.
+     to a different location or to de-install the whole package.
 
 \item Create a group `petidomo' and make the `petidomo'-user a member of it.
      You should also add all users of your system, that will administrate
@@ -472,7 +373,7 @@ Just follow the steps as described below:
      these users full access to all configuration files, so be careful who
      to add.
 
-\item index{install.sh} \index{Install script} As `root', execute the
+\item As `root', execute the
      install script included in the distribution with `./install.sh'
      The script will ask you a couple of questions about your system
      and insert the appropriate values in the config files. Ones the
@@ -520,7 +421,7 @@ whole system.
 \end{figure}
 
 Before we dive into the details configuration of \Petidomo, it is
-necessary to describe the \Index{directory structure} of the package.
+necessary to describe the directory structure of the package.
 \Petidomo's base path, which we call \Def{\~{}petidomo} throughout the
 manual, is the home directory of the `petidomo' user. Relative to this
 directory, \Petidomo\ accesses its master config file as
@@ -537,20 +438,15 @@ list ``testlist'' can congruously be found under the path
 \file{lists/testlist/config}, relative to the base directory of
 course.
 
-\section{The Config-Files}
+\section{The Config Files}
 
 We will describe the master config file first now, followed by the
-options you can set on a per-list basis. You won't have to edit all
-these files yourself. The CGI manager, which is described in detail in
-section~\ref{using the cgi manager}, is usually a more comfortable way
-of configuring \Petidomo. You should read the following description
-nonetheless, because you need to know what an option \emph{means},
-even if you don't have to set it with a text editor.
+options you can set on a per-list basis.
 
 \subsection{Config File Syntax}
 
-All configuration files in the \Petidomo-package\index{Config file
-format}\label{Config file format}, have the following format:
+All configuration files in the \Petidomo-package\label{Config file
+format}, have the following format:
 \begin{verbatim}
 keyword         parameter
 \end{verbatim}
@@ -573,8 +469,7 @@ AdminPassword   "open sesame"
 Quoting the parameter is not strictly necessary, though, \Petidomo's
 config file parser will get it right anyway. You only have to quote
 the parameter, if it contains blanks as first or last character, what
-is rather unlikely to happen. If you're using the CGI manager for the
-configuration, you won't have to worry about quoting at all.
+is rather unlikely to happen.
 
 Furthermore all empty lines are ignored. So are lines that start with
 a `\#' sign. You can use this for writing comments for the reader into
@@ -591,10 +486,9 @@ recognized:
 \begin{description}
 
 \item[Hostname] \hfill ``hostname.domainname''
-\index{Hostname}
 
 This entry specifies the fully qualified domain name of the machine,
-\Petidomo\ is running on. A \Index{fully qualified domain name} is the
+\Petidomo\ is running on. A fully qualified domain name is the
 hostname of the machine with the domain name appended with a dot. The
 following, for example:
 \begin{verbatim}
@@ -613,7 +507,6 @@ This option is \emph{required}. \Petidomo\ will abort with an error,
 if the master config file doesn't set it.
 
 \item[AdminPassword] \hfill ``password''
-\index{AdminPassword}
 
 This tag sets the master password, which authenticiates the
 administrator of the \PetidomoM. Here is an example:
@@ -626,16 +519,15 @@ Please chose this password carefully. Knowledge of the master password
 will enable you to access \emph{all} mailing lists running on this
 system.
 
-The password comparison both \Petidomo\ and the CGI manager do, are
-always case insensitiv. That means, that the passwords ``Open
-SESAME'', ``open sesame'' and ``OPEN seSAme'' are all the same.
+Passwords are compared case-insensitively. That means, that the
+passwords ``Open SESAME'', ``open sesame'' and ``OPEN seSAme'' are all
+the same.
 
 This option is \emph{required}. \Petidomo\ will abort with an error,
 if the master config file doesn't set it.
 
 
 \item[MTA] \hfill \file{/path/to/sendmail}
-\index{MTA}\index{mail transport agent}
 
 The MTA tag tells \Petidomo\ which mail transport agent should be used
 to deliver outgoing emails. Normally this option has been set by the
@@ -654,7 +546,6 @@ if the master config file doesn't set it.
 
 
 \item[MTA\_Options] \hfill ``string''
-\index{MTA\_Options}
 
 This tag is a bit tricky and in ninety-nine out of hundred cases you
 should simply leave this option undefined as it is rarely required
@@ -675,7 +566,6 @@ a fine example. This parameter will tell the Allmann sendmail to queue
 all mail, instead of trying to deliver it immediately.
 
 \item[DetachImmediately] \hfill ``yes'' or ``no''
-\index{DetachImmediately}
 
 This option decides whether \Petidomo\ will run in syncronous or
 asyncronous mode. When a part of the package is called, it expects an
@@ -709,7 +599,6 @@ DetachImmediately       yes
 The default, if the option is unset, is to operate syncronously.
 
 \item[ShowStatistics] \hfill ``yes'' or ``no''
-\index{ShowStatistics}
 
 \Petidomo\ will append a small signature to all request-mails it
 processes. This signature looks like this:
@@ -734,7 +623,7 @@ You can switch this behavior off by setting this option to ``no''.
 \label{list config file}
 
 While the master config file sets options which are relevant for the
-\Petidomo\ package as a whole, the \Index{list config file} sets
+\Petidomo\ package as a whole, the list config file sets
 options which are valid only locally for the mailing list. Each
 mailing list expects its local config file to be found at
 \file{\~{}petidomo/lists/<listname>/config}, with ``$<$listname$>$''
@@ -747,7 +636,6 @@ describe the various settings here.
 \begin{description}
 
 \item[ListType] \hfill ``open'', ``closed'' or ``moderated''
-\index{ListType}
 
 There are three types of mailing lists \Petidomo\ knows about: ``Open
 lists'' (or ``public lists''), ``closed lists'' and ``moderated
@@ -815,7 +703,6 @@ This option is \emph{required}. \Petidomo\ will abort with an error,
 if the list config file doesn't set it.
 
 \item[AllowPublicSubscription] \hfill ``yes'' or ``no''
-\index{AllowPublicSubscription}
 
 Set this entry to either ``yes'' or ``no'', depending on whether you
 want the mailing list to be open for everybody to subscribe or not.
@@ -827,7 +714,6 @@ administrator for approval by \Petidomo.
 If this option is unset, the default to allow public subscription.
 
 \item[AllowAlienSubscription] \hfill ``yes'' or ``no''
-\index{AllowAlienSubscription}
 
 Please excuse the name of this tag, but no matter how hard we thought,
 we were unable to come up with a better name for it. If you have any
@@ -839,7 +725,6 @@ from. Set the option to ``yes'' to allow un-/subscribing a different
 address, or to ``no'' to disallow it.
 
 \item[AllowMembersCommand] \hfill ``yes'' or ``no''
-\index{AllowMembersCommand}
 
 \Petidomo\ knows a command ``members'' or ``who'', which can be sent
 to the server and it will reply with the complete list of subscribed
@@ -856,7 +741,6 @@ default if the option is not specified in the config file.)
 If you set it to ``yes'', the ``members''-comman will work.
 
 \item[ShowOnIndex]  \hfill ``yes'' or ``no''
-\index{ShowOnIndex}
 
 \Petidomo\ allows people to request a list of mailing list running on
 the server, using the ``index'' command. While it is generally a good
@@ -876,7 +760,7 @@ list, instead of the one configured in
 \file{\~{}petidomo/etc/petidomo.conf}. This feature is useful to do
 virtual hosting.
 
-\DefNI{Virtual hosting}\index{virtual hosting} is required when
+\Def{Virtual hosting} is required when
 several mailing lists run on the same server, but they have to look
 like they would coming from different machines. Let's use an example:
 The internet service provider ``Inter.Net'' offers its customers to
@@ -910,7 +794,7 @@ If this entry is unset, the name configured in the master config file
 will be used as hostname for this mailing list.
 
 \item[AdminPassword] \hfill ``password''
-\index{AdminPassword}\label{list admin password}
+\label{list admin password}
 
 This tag sets the master password, which authenticiates the
 administrator of this mailing list. The administrator has special
@@ -926,7 +810,7 @@ Leave this entry blank, if you don't want to enable remote
 administration of the mailing list.
 
 \item[PostingPassword] \hfill ``password''
-\index{PostingPassword}\label{posting password}
+\label{posting password}
 
 This tag sets the ``posting password''. The posting password allows to
 post an article to a moderated mailing list, but it does not allow any
@@ -956,7 +840,6 @@ subscribers can conveniently post simply by hitting the `reply'
 function in their mail reader.
 
 \item[PostingFilter] \hfill ``bourne shell command''
-\index{PostingFilter}
 
 If you specify a posting filter, this program or script will be
 started by \Petidomo\ before it sends a posting out to the
@@ -999,221 +882,21 @@ If this option is unset, posted articles will not be archived at all.
 
 \end{description}
 
-\section{The CGI Manager}
-
-\Petidomo\ comes with a CGI program, that lets you do all the
-configuration out of your favourite WWW-Browser. This program is
-called \Def{petidomoconf.cgi} and it is installed by the
-install-script into the \file{cgi-bin} directory of your HTTP daemon
---- unless you skipped that part, of course.
-
-\subsection{Installing the CGI Manager}
-
-If you did, you can still ``install'' the CGI manager simply by
-copying the \file{petidomoconf.cgi} binary from
-\file{\~{}petidomo/bin/petidomoconf.cgi} into the appropriate directory.
-The binary should be owned by `root:petidomo' and be installed with
-the ``setuid'' and ``setguid'' flag set. You can do this by executing
-the commands
-\begin{verbatim}
-$ chown root petidomoconf.cgi
-$ chgrp petidomo petidomoconf.cgi
-$ chmod 6555 petidomoconf.cgi
-\end{verbatim}
-
-Superuser privileges are required only when creating or removing a
-mailing list with the CGI manager. In all other cases, the program
-will give up the super user privileges immediately, to reduce the
-chance of any abuse.
-
-If you don't want to grant `root'-access to the CGI manager, you
-should install it with the `petidomo'-user as owner and still set the
-`setuid' and `setguid' flags. If you're creating a mailing list in
-such a setup, you will have to add the appropriate aliases manually,
-though. How this is done is explained in section~\ref{aliases} of the
-manual.
-
-The only way around this is to make the \file{/etc/aliases} file
-writable for the user or group `petidomo'. Then the CGI manager will
-be able to access the file without `root' privileges.
-
-It is recommended, though, to grant `root'-privileges to the CGI
-manager as this makes the administration of your mailing list server a
-great deal easier.
-
-It should be noted that the CGI manager will run the ``newaliases''
-command after you have created a new mailing lists, or removed an
-existing list with it, because these operations change the alias file
-and sendmail won't notive that until ``newaliases'' is run. For this
-to succeed, you must have this program into the execution path of your
-shell, because the CGI manager doesn't know about the full path where
-``newaliases'' is. On all systems we used to test this, the CGI
-manager ran ``newaliases'' successfully, so you probably shouldn't
-worry about this.
-
-But if you notice that the changes made with the CGI manager don't
-take effect immediately, you should either fix the {\tt \$PATH}
-variable on your system, or copy the ``newaliases'' into a directory,
-where the CGI manager can find it, for example \file{/usr/bin}.
-
-\subsection{Using the CGI manager}
-\label{using the cgi manager}\index{CGI Manager}
-
-\begin{figure}[bth]
-\begin{center}
-\includegraphics{cgi-manager1.ps}
-\caption{The CGI manager login screen.}
-\label{cgiman login}
-\end{center}
-\end{figure}
-
-The CGI manager is rather easy to use. Once it is propperly installed
-in the \file{cgi-bin} directory of your WWW server, you can access it
-under the URL:
-``\htmladdnormallink{http://localhost/cgi-bin/petidomoconf.cgi}{http://localhost/cgi-bin/petidomoconf.cgi}''.
-Please note that the CGI manager \emph{must} be installed on the same
-machine as the mailing list server. It has to modify the config files
-on the harddisk and obviously can't succeed when it is running on a
-different machine, say, a dedicated web server.
-
-If you access the CGI manager from your WWW browser, you'll see the
-login screen, as shown in figure~\ref{cgiman login}. The CGI manager
-prompts you for the password to authenticate yourself. Please enter
-the password, you specified to the install-script now, choose the
-``Configure Petidomo 2.1'' button and click on ``Submit Query''.
-
-Your WWW browser will now present you a page with several text fields,
-where you can enter the parameters you'd like to set. If you change
-and submit the changes, they will be written back to the master config
-file in \file{\~{}petidomo/etc/petidomo.conf}. The meaning of the
-parameters here is the same as described in section~\ref{master config
-file}.
-
-If you choose ``Configure an existing mailing list'', the CGI manager
-will present you a list of lists it has found. Select the list you''d
-like to configure and hit ``Submit Query'' to enter the actual
-configuration page.
-
-It should be noted that you will only see the mailing lists, that you
-password is valid for. If you entered the master password, which is
-configured in the master config file, you will have access to all
-mailing lists running on the machine. It is possible, though, to set
-an admin password (see section~\ref{list admin password}) for a
-mailing list, too. If you entered this password, instead of the master
-password, you'd see only this particular list at the moment. In case
-several mailing lists have the same admin password, you'll see all of
-them.
-
-This behavior is very useful if you are hosting mailing lists that are
-administrated by other people. Just tell the administrator of the hosted
-mailing lists ``their'' password and the URL of the CGI manager, and
-thez will be able to configure ``their'' mailing lists
-remotely\index{remote configuration} without gaining access to the
-other mailing lists running on the server.
-
-Anyway, select the ``testlist'' entry now and enter the configuration.
-As before, a page will be shown where you can customize all the
-options that have been described in the section~\ref{list config file}
-of the manual. The changes you make will then be written back into the
-list's config file. In our example, this would be
-\file{\~{}petidomo/lists/testlist/config}.
-
-The remaining two choices on the main page of the CGI manager are
-``Create a new mailing list'' and ``Remove an existing mailing list''.
-These two should be pretty self-explanatory. If you chose to remove a
-mailing list, you will be prompted for the list you'd like to remove
-and by submitting the selection, it will be deleted from the server.
-
-Creating a new mailing list works exactly like configuring a new
-mailing list except for the fact you'll notice four additional text
-fields at the top of the page, compared to the configuration page. The
-first text field is for entering the name of the mailing list.
-\index{mailing list names} You must choose a list name, that doesn't
-contain any special characters, like the slash ('/'), the colon (':')
-or the point ('.'), as these have special meanings to either the file
-system or to the mail transport agent. The best is to stick with
-normal characters and numbers, plus the minus (`-'), for example:
-``basketball-fans'' or ``petidomo-support''.
-
-In the second text field, you should enter a short \Index{description}
-of the purpose and topic of the mailing list. This text is displayed
-when a user requests the index of available mailing lists from the
-server and it can be requested by sending the command ``HELP
-listname'' to the list server. For our example mailing list
-``basketball-fans'', a good description would probably be:
-
-\begin{quotation}
-
-This mailing list is a public forum meant for discussion of the topic
-of ``basketball'' or all related topics. This is not a fan list for a
-particular basketball team or player, but a forum for all fans of the
-sport basketball.
-
-\end{quotation}
-
-A similar function has the third text field. Here you can enter an
-``\Index{introduction text}'', which is sent to all new subscribers of
-the mailing list automatically. This text should explain the topic and
-purpose of the mailing list plus the rules of the list and other
-important things, a new subscriber needs to know. Again an example for
-our ``basketball-fan'' mailing list:
-
-\begin{quotation}
-
-\centerline{Welcome to the ``basketball-fans'' mailing list!}
-
-\bigskip
-
-This forum is meant for discussion of the topic of ``basketball'' or
-related topics. This is not a fan list for a particular basketball
-team or player, we don't want any bashing of players or teams here.
-
-Also not welcome are postings which contain large binary data such as
-pictures, logos or sound files. Neither should you post articles that
-have been published on the WWW or in the news already, Please post
-just the URL where anybody interested in them can obtain the files
-himself.
-
-Other than that, you can talk about pretty much anything you like.
-Have fun! \texttt{:-)}
-
-\end{quotation}
-
-The last additional text field on this page finally is used to enter a
-\Index{signature} for the mailing list. This signature is appended to every
-article that is posted to the mailing list. Naturally, the signature
-should be short and contain only important information. You should
-actually consider whether you want to add a signature at all.
-Nonetheless, here is an example of a good signature:
-
-\begin{verbatim}
---
- Mailinglist Archive: http://www.nba.com/bbfans/ml-archive/
-\end{verbatim}
-
-It is recommended, to enter one or two blanks line before you start
-the actual text, because it looks better if there's a little space
-between the end of the posted article and the appended signature.
-
-The rest of the configuration options on the page are the same options
-again as on the ``Configure an existing mailing list'' page.
-
 \section{The Binaries}
 
-The \Petidomo\ package consists of mainly three binaries:
-\file{petidomoconf.cgi}, \file{hermes} and \file{listserv}. All three
+The \Petidomo\ package consists of mainly two binaries:
+\file{hermes} and \file{listserv}. Both
 files are located in the \file{\~{}petidomo/bin} directory. In fact,
 ``hermes'' and ``listserv'' are the same binary, but they do different
 things when called under the appropriate program name, like many other
 commands of the Unix operating system do. They are only links of the
-\file{petidomo}\index{\~{}petidomo/bin/petidomo}, which has no purpose
+\file{petidomo}, which has no purpose
 at all, but we thought it would be weird to deliver a package called
 \Petidomo\ without actually having a binary of that name in there.
 Since these three are all links to the same files, it doesn't consume
 any diskspace anyway.
 
 \subsection{listserv}
-\index{listserv}\index{\~{}petidomo/bin/listserv}
 
 The ``listserv'' program is the tool that handles incoming requests
 like subscribing an address to a list, unsubscribing it again or
@@ -1223,7 +906,6 @@ sendmail daemon. Further details on that can be found in
 section~\ref{aliases} of the user manual.
 
 \subsection{hermes}
-\index{hermes}\index{\~{}petidomo/bin/hermes}
 
 ``hermes'' is the program that processes and delivers an incoming
 e-mail. It does not understand any commands but simply takes an e-mail
@@ -1244,7 +926,7 @@ This is archieved with the ``alias''-function of your mail transport
 agent. Most MTAs, like sendmail, have a file where a list of special
 account names is given together with the instructions what to do with
 any mail received for that account. This file is usually located in
-\file{/etc/aliases}\index{/etc/aliases}.
+\file{/etc/aliases}.
 
 One thing, aliases can do is to pipe the mail into a program for
 processing. This is the mechanism \Petidomo\ uses. \Petidomo\ requires
@@ -1327,29 +1009,21 @@ to the address ``listname-owner''. Usually this will ultimately be the
 same person as the ``petidomo-manager'', but you are free to direct
 mail for this account to somebody else, or to several persons.
 
-These aliases are created automatically, when you add a mailing list
-with the CGI manager included in the distribution, but knowing how
-they work is very useful if you want to customize the settings for
-your needs manually. It is recommended to read the aliases(5) and the
-newaliases(1) man page of your system for further details.
-
-
 \chapter{Using Petidomo as user}
 \label{petidomo as user}
-\index{commands}\index{user commands}
 
 In this chapter, we will describe the commands, that are
 understood by the ``listserv'' program. ``listserv'' is the interface
 for the users of the mailing lists, where they can send their requests
 to in order to be subscribed to a mailing list, be unsubscribed again
 and similar things. The text here is mostly identical with the
-\Index{default help text}\index{help text} that is sent to the user
+default help text that is sent to the user
 whenever he or she issues a command that is syntactically incorrect.
 This text is stored in the file
-\file{\~{}petidomo/etc/help}\index{\~{}petidomo/etc/help} and can be
+\file{\~{}petidomo/etc/help} and can be
 customized to fit the requirements of your site.
 
-User commands always have to be sent to the \Index{request address} of
+User commands always have to be sent to the request address of
 the mailing list --- \emph{not} to the mailing list itself. \Petidomo\
 will try to recognize commands that are sent to the mailing list and
 redirect them to the ``listserv'' program, but naturally this will not
@@ -1365,7 +1039,6 @@ for the fact that the ``listserv'' will have a default listname for
 this address and thus understand a simpler command syntax.
 
 \section{SUBSCRIBE}
-\index{SUBSCRIBE}\index{ADD}
 
 The ``subscribe'' command will add the address of the user to a
 mailing list. When using the ``-request''-address, only the word
@@ -1393,7 +1066,6 @@ the one, the request is sent from, using the
 The command ``add'' is synonymous to ``subscribe''.
 
 \section{UNSUBSCRIBE}
-\index{UNSUBSCRIBE}\index{DELETE}\index{REMOVE}
 
 The syntax and usage of the ``unsubscribe`` command are the same as the
 ``subscribe'' command. The difference is, though, the the user's address
@@ -1402,7 +1074,6 @@ is removed from the mailing list rather than added to it.
 ``delete'' and ``remove'' can be used synonymously to ``unsubscribe''.
 
 \section{INDEX}
-\index{INDEX}\index{LISTS}\index{LONGINDEX}
 
 The ``index'' command does not need any parameters. Sending it to the
 server will return a list of available mailing lists on this server.
@@ -1412,7 +1083,6 @@ remember the exact name anymore.
 The commands ``lists'' and ``longindex'' are synonyms to ``index''.
 
 \section{HELP}
-\index{HELP}
 
 If the server receives the command ``help'', it will send the file
 \file{\~{}peti\-domo/etc/help} back. If ``help'' has a parameter,
@@ -1421,7 +1091,6 @@ mailing list, and if it is, it will return the description file for
 this mailing list, rather than the help-file.
 
 \section{MEMBERS}
-\index{WHO}\index{MEMBERS}
 
 The ``members'' command will return the addresses of all subscribers
 of the mailing list, if the administrator chose to allow this command.
@@ -1440,7 +1109,7 @@ The command ``who'' can be used synonymously to ``members''.
 
 On the ``other side'' of \Petidomo, from the user's
 perspective, is the administrator of the mailing list --- also called
-the \Def{mailing list owner}\index{owner}). Each mailing list has an
+the \Def{mailing list owner}). Each mailing list has an
 alias ``listname-owner'' (see section~\ref{aliases}), where the mail
 address of the person who is responsible for this mailing list should
 be specified. Per default, this is the user who is known as
@@ -1494,19 +1163,16 @@ barrier. How this is done is described in section~\ref{approve} later.
 If you have configured a mailing list to reject postings under certain
 circumstances, such as a closed or moderated mailing list, these
 rejected articles will be forwarded to you for approval. When you
-receive such a \Index{rejected article}, you can either silently
+receive such a rejected article, you can either silently
 discard it, contact the author or post it to the mailing list with
 your approval.
 
 You can approve an article with the master password for \Petidomo, the
 admin password of the mailing list in question or the posting password
-(see section~\ref{posting password} of that list. This is useful
-because you can give other people the posting password to allow them
-to approve articles, without them being able to access the
-configuration of that list through the CGI manager.
+(see section~\ref{posting password} of that list.
 
 \section{Approving requests}
-\label{approve}\index{Approval}
+\label{approve}
 
 To approve an article, you have several ways of specifying the
 appropriate password. They are all the same for \Petidomo\ and it is
@@ -1514,7 +1180,7 @@ only a matter of taste, which scheme you use.
 
 When sending a command to the ``listserv'' program, though the
 ``-request'' or ``petidomo''-address, it is easy. Just preface your
-commands with a ``password''\index{PASSWORD} command, like in the
+commands with a ``password'' command, like in the
 following example:
 \begin{verbatim}
 To: testlist-request@foo.bar
@@ -1543,7 +1209,6 @@ Instead of ``password'', you can also use the commands ``passwd'', or
 ``approve'', they are all synonymous.
 
 \section{Approving postings}
-\index{Approval}\index{APPROVE}
 
 If you want to approve a posting for a mailing list, just send the
 article to the mailing list and specify your password either in the
@@ -1607,15 +1272,15 @@ sons.
 
 In \Petidomo, two places exist to control who is allowed to do what:
 The global acl file
-\file{\~{}petidomo/etc/acl}\index{\~{}petidomo/etc/acl} and the acl
+\file{\~{}petidomo/etc/acl} and the acl
 file that is local to the mailing list:
-\file{\~{}petidomo/lists/listname/acl}. While the latter is valid only
+\file{\~{}petidomo/lists/list\-name/acl}. While the latter is valid only
 for the list in which's home directory it is stored, the globl acl
 file will be parsed for \emph{all} your mailing lists. ACL files are
 only relevant for mailing list postings, the ``listserv'' program does
 not use them.
 
-The syntax of an \Index{ACL file} is similar to the C programming
+The syntax of an ACL file is similar to the C programming
 language, as you can see in the following example:
 \begin{verbatim}
 if (envelope matches "mailer-daemon@") then
@@ -1912,9 +1577,9 @@ guarantee certain formal criteria, because you can hook a script or
 program of your into the posting process and use it to re-format or
 re-write the article that is going to be posted.
 
-\index{InsertNameInSubject.sh} We have included one
+We have included one
 script into the distribution,
-\file{\~{}peti\-domo/bin/Insert\-Name\-In\-Subject.sh}, which adds a string
+\file{\~{}peti\-domo/bin/Insert\-Name\-In\-Sub\-ject.sh}, which adds a string
 into the subject line of every posting. The script is pretty short and
 used sed(1) to perform its function.
 
@@ -1975,8 +1640,7 @@ follow the steps described below.
 
 \begin{enumerate}
 
-\item Get the PGP software package from
-\htmladdnormallink{`http://www.pgpi.com/'}{http://www.pgpi.com/}, you
+\item Get the PGP software package from `http://www.pgpi.com/', you
 will need the PGP 2.6.2 version or later --- 5.x won't work, as far as
 I know, maybe someone wants to adapt the PGP-mechanism to PGP 5.x, any
 volunteers are welcome, and install it.
@@ -2057,8 +1721,7 @@ Finally, make sure that you do this only with the correct versions of
 the software. \Petidomo\ needs to be version 2.1 or later, earlier
 versions won't work. The PGP binary needs to understand the {\tt -@}
 operator on the command line, which has been added in PGP 2.6i at some
-time. \footnote{Curious people might want to take the PGP source code
-and look up, who added this code back then. :-)}
+time.
 
 One last hint: If PGP-encryption or decryption doesn't work, it will
 usually help to remove the {\tt \$LOGFILE} parameter from the {\tt
@@ -2125,7 +1788,7 @@ immediately.
 We strongly recommend looking at MHonArc, if you want to offer a WWW
 archive of your mailing lists. You can find more information about
 MHonArc at the following location:
-\htmladdnormallink{`http://www.oac.uci.edu/indiv/ehood/mhonarc.html'}{http://www.oac.uci.edu/indiv/ehood/mhonarc.html}
+`http://www.oac.uci.edu/indiv/ehood/mhonarc.html'
 
 The installation of the tool itself is very easy. Once you have
 MHonArc running, just enable the archiving feature in Petidomo and
@@ -2219,195 +1882,6 @@ probably in your daily- or weekly script, which is run by cron.
 It might also be a good idea to take a look at the logfiles
 occasionally, even when \Petidomo\ is running fine, just to make sure
 it stays that way.
-
-
-% Appendix
-%
-\begin{appendix}
-% \chapter{Example master config file}
-% \chapter{Example list config file}
-\chapter{Humor}
-\index{humor}
-
-Here are some things to cheer you up when administrating
-mailing lists annoys the hell out of you.
-
-\section{Changing lightbulbs and mailinglists}
-\index{lightbulb}
-
-The following article was posted to various newsgroups and appeared on
-several WWW servers. Unfortunately the original author is unknown. We
-publish it here without explicit permission in the hope, that whoever
-wrote this extremely funny text, does not mind.
-
-\bigskip
-
-\begin{quotation}
-
-\noindent
-Question: How many internet mail list subscribers does it take to
-change a light bulb?
-
-\noindent
-Answer: 1\,331.
-
-\noindent
-Here's a detailed list why:
-
-\begin{description}
-
-\item[1] to change the light bulb and to post to the mail list that
-the light bulb has been changed
-
-\item[14] to share similar experiences of changing light bulbs and how
-the light bulb could have been changed differently.
-
-\item[7] to caution about the dangers of changing light bulbs.
-
-\item[27] to point out spelling/grammar errors in posts about changing
-light bulbs.
-
-\item[53] to flame the spell checkers
-
-\item[156] to write to the list administrator complaining about the
-light bulb discussion and its inappropriateness to this mail list.
-
-\item[41] to correct spelling in the spelling/grammar flames.
-
-\item[109] to post that this list is not about light bulbs and to
-please take this email exchange to ``alt.lite.bulb''.
-
-\item[203] to demand that cross posting to ``alt.grammar'',
-``alt.spelling'' and ``alt.punctuation'' about changing light bulbs be
-stopped.
-
-\item[111] to defend the posting to this list saying that we are all
-use light bulbs and therefore the posts \emph{are} relevant to
-this mail list.
-
-\item[306] to debate which method of changing light bulbs is superior,
-where to buy the best light bulbs, what brand of light bulbs work best
-for this technique, and what brands are faulty.
-
-\item[27] to post URLs where one can see examples of different light
-bulbs
-
-\item[14] to post that the URLs were posted incorrectly, and to post
-corrected URLs.
-
-\item[3] to post about links they found from the URLs that are
-relevant to this list which makes light bulbs relevant to this list.
-
-\item[33] to concatenate all posts to date, then quote them including
-all headers and footers, and then add ``Me Too''.
-
-\item[12] to post to the list that they are unsubscribing because they
-cannot handle the light bulb controversey.
-
-\item[19] to quote the ``Me Too''s to say, ``Me Three''.
-
-\item[4] to suggest that posters request the light bulb FAQ.
-
-\item[1] to propose new ``alt.change.lite.bulb'' newsgroup.
-
-\item[47] to say this is just what ``alt.physic.cold\_fusion'' was
-meant for, leave it here.
-
-\item[143] votes for ``alt.lite.bulb''.
-
-\end{description}
-
-\end{quotation}
-
-\section{Unsubscribe me}
-\index{unsubscribe me}
-
-Since the very first day mailing list existed, people did not get the
-difference between the mailing list address and the address where
-commands for the list server should be sent to. Because of that, every
-mailing list in the known universe receives an article with only the
-word ``unsubscribe'' in the body occasionally, usually followed by a
-lengthy flame war. (The only exception to this are mailing lists with
-no susbcribers at all --- they just receive postings with only the
-word ``subscribe'' in the body occasionally.)
-
-Anyway, a pretty good reply to people posting their unsubscribe
-command to the mailing list is the following text. It has supposedly
-been written by KJ Fisher $<$fisherkj@snydelab.delhi.edu$>$, but we
-were not able to verify this.
-
-\bigskip
-
-\begin{quotation}
-\ $>$ someonme get me off this fucking mailing list
-
-\medskip
-
-First, ask your Internet Provider to mail you an Unsubscribing Kit.
-Then follow these directions.
-
-The kit will most likely be the standard no-fault type. Depending on
-requirements, System A and/or System B can be used. When operating
-System A, depress lever and a plastic dalkron unsubscriber will be
-dispensed through the slot immediately underneath. When you have
-fastened the adhesive lip, attach connection marked by the large `X'
-outlet hose. Twist the silver- coloured ring one inch below the
-connection point until you feel it lock.
-
-The kit is now ready for use. The Cin-Eliminator is activated by the
-small switch on the lip. When securing, twist the ring back to its
-initial condition, so that the two orange lines meet. Disconnect.
-Place the dalkron unsubscriber in the vacuum receptacle to the rear.
-Activate by pressing the blue button.
-
-The controls for System B are located on the opposite side. The red
-release switch places the Cin-Eliminator into position; it can be
-adjusted manually up or down by pressing the blue manual release
-button. The opening is self- adjusting. To secure after use, press the
-green button, which simultaneously activates the evaporator and
-returns the Cin-Eliminator to its storage position.
-
-You may log off if the green exit light is on over the evaporator . If
-the red light is illuminated, one of the Cin-Eliminator requirements
-has not been properly implemented. Press the ``List Guy'' call button on
-the right of the evaporator . He will secure all facilities from his
-control panel.
-
-To use the Auto-Unsub, first undress and place all your clothes in the
-clothes rack. Put on the velcro slippers located in the cabinet
-immediately below. Enter the shower, taking the entire kit with you.
-On the control panel to your upper right upon entering you will see a
-``Shower seal'' button. Press to activate. A green light will then be
-illuminated immediately below. On the intensity knob, select the
-desired setting. Now depress the Auto-Unsub activation lever. Bathe
-normally.
-
-The Auto-Unsub will automatically go off after three minutes unless
-you activate the ``Manual off'' override switch by flipping it up. When
-you are ready to leave, press the blue ``Shower seal'' release button.
-The door will open and you may leave. Please remove the velcro
-slippers and place them in their container.
-
-If you prefer the ultrasonic log-off mode, press the indicated blue
-button. When the twin panels open, pull forward by rings A \& B. The
-knob to the left, just below the blue light, has three settings, low,
-medium or high. For normal use, the medium setting is suggested.
-
-After these settings have been made, you can activate the device by
-switching to the ``ON'' position the clearly marked red switch. If
-during the unsubscribing operation, you wish to change the settings,
-place the ``manual off'' override switch in the ``OFF'' position. You
-may now make the change and repeat the cycle. When the green exit
-light goes on, you may log off and have lunch. Please close the door
-behind you.
-\end{quotation}
-
-\end{appendix}
-
-%
-% Index
-%
-\addcontentsline{toc}{chapter}{Index} \printindex
 
 %
 % End of document
