@@ -18,7 +18,7 @@ SRCS		= acl.c archive.c argvSetDebugLevel.c authen.c config.c exit.c \
 		  mailer.c members.c parsearray.c password.c rfcparse.c \
 		  subscribe.c tool.c signature.c unsubscribe.c main.c
 OBJS		= ${SRCS:.c=.o}
-LIBS		= librfc822/librfc822.a liblists/liblists.a libmpools/libmpools.a \
+LIBS		= librfc822/librfc822.a liblists/liblists.a \
 		  libconfigfile/libconfigfile.a libtext/libtext.a libargv/libargv.a \
 		  libdebug/libdebug.a
 
@@ -61,7 +61,7 @@ clean-local::
 	rm -f acl_scan.c acl_scan.h acl.c
 
 distclean-local::	clean-local
-	rm -f config.log config.cache config.status GNUmakefile
+	rm -f config.log config.cache config.status Makefile
 
 realclean-local::	distclean-local
 	rm -f configure
