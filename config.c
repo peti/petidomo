@@ -148,7 +148,6 @@ static char*     ack_file;
 
 const struct List_Config* getListConfig(const char * listname)
     {
-    const struct PD_Config *  MasterConfig;
     struct List_Config *      ListConfig;
     Node                      node;
     int                       rc;
@@ -197,10 +196,6 @@ const struct List_Config* getListConfig(const char * listname)
     list_acl_file    = "acl";
     address_file     = "list";
     ack_file         = "acks";
-
-    /* Get the master configuration. */
-
-    MasterConfig = getMasterConfig();
 
     /* Did we read this config file already? */
 
