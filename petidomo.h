@@ -74,7 +74,6 @@ struct List_Config
     {
     unsigned int  listtype;
     int           allowpubsub;
-    int           allowaliensub;
     int           allowmembers;
     char *        fqdn;
     char *        admin_password;

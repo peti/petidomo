@@ -25,18 +25,6 @@ ListType	open
 #	subscription and unsubscription.
 AllowPublicSubscription	yes
 
-#  TAG: AllowAlienSubscription <yes|no>
-#	  yes -- Users are allowed to subscribe and unsubscribe addresses
-#		not equal to the address they're sending the mail from.
-#         no  -- Users can only add (or remove) the address they're sending
-#		the mail from to the list (from the list).
-#	This option has no effect if public subscription has been
-#	disallowed.
-#
-#	The default, if this option is unset, is to allow alien
-#	subscription and unsubscription.
-AllowAlienSubscription	yes
-
 #  TAG: AllowMembersCommand <yes|no>
 #	Does the 'members' or 'who' command work for this mailing list, or
 #	do you want to keep the addresses of the subscribers confidential?

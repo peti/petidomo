@@ -137,7 +137,6 @@ static char*     reply_to;
 static char*     postingfilter;
 static char*     archivepath;
 static bool      allowpubsub;
-static bool      allowaliensub;
 static bool      allowmembers;
 static char*     intro_file;
 static char*     sig_file;
@@ -163,7 +162,6 @@ const struct List_Config* getListConfig(const char * listname)
 	{
 	{ "ListType", CF_STRING, &listtype },
 	{ "AllowPublicSubscription", CF_YES_NO, &allowpubsub },
-	{ "AllowAlienSubscription", CF_YES_NO, &allowaliensub },
 	{ "AllowMembersCommand", CF_YES_NO, &allowmembers },
 	{ "ReplyTo", CF_STRING, &reply_to },
 	{ "Hostname", CF_STRING, &list_fqdn },
@@ -191,7 +189,6 @@ const struct List_Config* getListConfig(const char * listname)
     postingfilter    = NULL;
     archivepath      = NULL;
     allowpubsub      = TRUE;
-    allowaliensub    = TRUE;
     allowmembers     = FALSE;
     intro_file       = "introduction";
     sig_file         = "signature";
@@ -261,7 +258,6 @@ const struct List_Config* getListConfig(const char * listname)
 	exit(1);
 	}
     ListConfig->allowpubsub = allowpubsub;
-    ListConfig->allowaliensub = allowaliensub;
     ListConfig->allowmembers = allowmembers;
     ListConfig->fqdn = (list_fqdn) ? list_fqdn : MasterConfig->fqdn;
     ListConfig->reply_to = reply_to;
