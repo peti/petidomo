@@ -34,7 +34,7 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
     struct stat   sb;
     FILE *        fh;
     char *        filename;
-    u_int         counter;
+    unsigned int  counter;
     int           rc;
     struct tm *   timeptr;
     char *        date;
@@ -74,7 +74,7 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
 	else
 	    {
 	    if (errno != ENOENT)
-		syslog(LOG_ERR, "Failed to read file \"%s\": %m", filename);
+		syslog(LOG_ERR, "Failed to read file \"%s\": %s", filename,  strerror(errno));
 	    else
 		counter = 0;
 	    }
@@ -98,13 +98,13 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
 			rc = 0;
 			}
 		    else
-			syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %m", filename);
+			syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %s", filename, strerror(errno));
 		    break;
 		    }
 		else
 		    {
 		    syslog(LOG_ERR, "An error while trying to access the log " \
-			   "directory \"%s\": %m", ListConfig->archivepath);
+			   "directory \"%s\": %s", ListConfig->archivepath,  strerror(errno));
 		    break;
 		    }
 		}
@@ -122,7 +122,7 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
 	    fclose(fh);
 	    }
 	else
-	    syslog(LOG_ERR, "Failed to write to file \"%s\": %m", filename);
+	    syslog(LOG_ERR, "Failed to write to file \"%s\": %s", filename, strerror(errno));
 	}
     else
 	{
@@ -141,7 +141,7 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
 	    rc = 0;
 	    }
 	else
-	    syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %m", ListConfig->archivepath);
+	    syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %s", ListConfig->archivepath, strerror(errno));
 	}
 
     return rc;
