@@ -120,6 +120,8 @@ dist: distclean
 
 # Dependencies
 
+acl.o: libtext/text.h petidomo.h acl_scan.c acl_scan.h
+acl_scan.o: acl_scan.h
 address-db.o: libtext/text.h petidomo.h
 approve.o: petidomo.h
 archive.o: libtext/text.h petidomo.h
@@ -135,7 +137,7 @@ index.o: libtext/text.h petidomo.h
 io.o: petidomo.h
 listserv.o: libtext/text.h petidomo.h
 mailer.o: libtext/text.h petidomo.h
-main.o: libargv/argv.h libtext/text.h petidomo.h
+main.o: libargv/argv.h libtext/text.h petidomo.h version.c
 members.o: libtext/text.h petidomo.h
 parsearray.o: petidomo.h
 password.o: petidomo.h
