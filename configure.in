@@ -49,3 +49,5 @@ fi
 dnl Write results.
 dnl
 AC_OUTPUT(Makefile)
+AC_CONFIG_HEADERS(config.h)
+
