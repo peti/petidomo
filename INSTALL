@@ -1,0 +1,8 @@
+
+  INSTALL
+  =======
+
+  $ ./configure --prefix=/path/to/petidomo
+  $ make
+  $ make install
+
