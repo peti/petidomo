@@ -1,5 +1,5 @@
 /*
-**  version.c -- Version Information for Petidomo (syntax: C/C++)
+**  version.c -- Version Information for OSSP petidomo (syntax: C/C++)
 **  [automatically generated and maintained by GNU shtool]
 */
 
@@ -8,7 +8,7 @@
 #ifndef _VERSION_C_
 #define _VERSION_C_
 
-#define PETIDOMO_VERSION 0x400102
+#define PETIDOMO_VERSION 0x400103
 
 typedef struct {
     const int   v_hex;
@@ -32,13 +32,13 @@ extern petidomo_version_t petidomo_version;
 #undef  _VERSION_C_AS_HEADER_
 
 petidomo_version_t petidomo_version = {
-    0x400102,
-    "4.0b2",
-    "4.0b2 (24-Apr-2002)",
-    "This is Petidomo, Version 4.0b2 (24-Apr-2002)",
-    "Petidomo 4.0b2 (24-Apr-2002)",
-    "Petidomo/4.0b2",
-    "@(#)Petidomo 4.0b2 (24-Apr-2002)",
+    0x400103,
+    "4.0b3",
+    "4.0b3 (02-Feb-2004)",
+    "This is OSSP petidomo, Version 4.0b3 (02-Feb-2004)",
+    "OSSP petidomo 4.0b3 (02-Feb-2004)",
+    "OSSP petidomo/4.0b3",
+    "@(#)OSSP petidomo 4.0b3 (02-Feb-2004)",
     "$Id$"
 };
 

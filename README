@@ -1,45 +1,179 @@
-                          OSSP Petidomo 4.0
+   _        ___  ____ ____  ____              _   _     _                       
+  |_|_ _   / _ \/ ___/ ___||  _ \  _ __   ___| |_(_) __| | ___  _ __ ___   ___  
+  _|_||_| | | | \___ \___ \| |_) || '_ \ / _ \ __| |/ _` |/ _ \| '_ ` _ \ / _ \ 
+ |_||_|_| | |_| |___) |__) |  __/ | |_) |  __/ |_| | (_| | (_) | | | | | | (_) |
+  |_|_|_|  \___/|____/____/|_|    | .__/ \___|\__|_|\__,_|\___/|_| |_| |_|\___/ 
+                                  |_|                                            
+  OSSP petidomo - mailing list manager
+  Version 4.0b3 (02-Feb-2004)
 
-On December 12th, 2000, CyberSolutions GmbH published a version of
-Petidomo 2.2 under the GNU General Public License. The OSSP project
-enhanced that version significantly and hereby releases the result of
-its efforts as »OSSP Petidomo 4.0«. OSSP Petidomo is a small but
-powerful package that can be used to host and maintain mailing lists
-on an Unix machine. Its only requirement is that there is a working
-mail transport agent installed, such as sendmail.
+  ABSTRACT
 
-OSSP Petidomo has -- among other things -- the following features:
+    On December 12th, 2000, CyberSolutions GmbH published a version of
+    Petidomo 2.2 under the GNU General Public License. The OSSP project
+    enhanced that version significantly and hereby releases the result
+    of its efforts as »OSSP Petidomo 4.0«. OSSP Petidomo is a small but
+    powerful package that can be used to host and maintain mailing lists
+    on an Unix machine. Its only requirement is that there is a working
+    mail transport agent installed, such as sendmail.
 
- * A simple-to-use e-mail command interface, which can be used by
-   users and administrators of a mailing list to subscribe or
-   unsubscribe addresses, approve postings that have been deferred or
-   rejected, list all subscribed addresses of a list, etc.
+    OSSP Petidomo has -- among other things -- the following features:
 
- * Petidomo supports various modes of operation for a mailing list
-   such as open lists, closed lists, and moderated lists.
+  * A simple-to-use e-mail command interface, which can be used by users
+    and administrators of a mailing list to subscribe or unsubscribe
+    addresses, approve postings that have been deferred or rejected,
+    alist ll subscribed addresses of a list, etc.
+  
+  * Petidomo supports various modes of operation for a mailing list such
+    as open lists, closed lists, and moderated lists.
+  
+  * Mailing list subscriptions or postings can be verified by requiring
+    an acknowledgement. This feature is particularly useful when used
+    for mailing list postings as it will keep the vast majority of all
+    spam mail off the list.
+  
+  * Petidomo can host an arbitrary number of mailing lists in entirely
+    different domain name spaces -- also known as »Virtual Hosting«.
+  
+  * A powerful »Access Control Language« (ACL) can be used to reject,
+    approve, drop, or redirect postings or subscription attempts.
+  
+  * Mailing list postings can be piped through an external »Posting
+    Filter«, which can modify the article before it's delivered in any
+    way it sees fit.
 
- * Mailing list subscriptions or postings can be verified by requiring
-   an acknowledgement. This feature is particularly useful when used
-   for mailing list postings as it will keep the vast majority of all
-   spam mail off the list.
+  * Petidomo can be configured to add arbitrary headers to any mail
+    that's posted on a mailing list.
+  
+  * Petidomo can be configured to add a signature to any mail that's
+    posted on a mailing list.
 
- * Petidomo can host an arbitrary number of mailing lists in entirely
-   different domain name spaces -- also known as »Virtual Hosting«.
+    The whole package is written in ISO-C and should compile
+    out-of-the-box on any POSIX.1 compliant system that provides a mail
+    transport agent. It has been released under the GNU General Public
+    License.
 
- * A powerful »Access Control Language« (ACL) can be used to reject,
-   approve, drop, or redirect postings or subscription attempts.
+  COPYRIGHT AND LICENSE
 
- * Mailing list postings can be piped through an external »Posting
-   Filter«, which can modify the article before it's delivered in any
-   way it sees fit.
+  Copyright (c) 2004 The OSSP Project <http://www.ossp.org/>
 
- * Petidomo can be configured to add arbitrary headers to any mail
-   that's posted on a mailing list.
+  This file is part of OSSP petidomo, an application for managing
+  mailing lists which can found at http://www.ossp.org/pkg/lib/uuid/
 
- * Petidomo can be configured to add a signature to any mail that's
-   posted on a mailing list.
+  Permission to use, copy, modify, and distribute this software for
+  any purpose with or without fee is hereby granted, provided that
+  the above copyright notice and this permission notice appear in all
+  copies.
 
-The whole package is written in ISO-C and should compile
-out-of-the-box on any POSIX.1 compliant system that provides a mail
-transport agent. It has been released under the GNU General Public
-License.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE AUTHORS AND COPYRIGHT HOLDERS AND THEIR
+  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  SUCH DAMAGE.
+
+  HOME AND DOCUMENTATION
+
+  The documentation and latest release can be found on
+
+  o http://www.ossp.org/pkg/lib/uuid/
+  o  ftp://ftp.ossp.org/pkg/lib/uuid/
+
+  PETI's STATEMENT
+
+		    Petidomo Mailing List Manager
+			  Version 4.0b3 (02-Feb-2004)
+
+
+Greetings citizen,
+
+I know how  tedious reading "manuals"  is when you're eager to install
+the new  software,  so  I'll keep  it   as short as  possible.  Before
+Petidomo can  be   installed, either  from  a   binary or  a    source
+distribution, you -must- do the following:
+
+ 1) Create a user of the name "petidomo".
+
+    The petidomo-user is needed by the software,  but will usually not
+    be used to  log into  the system,  so you should  set the password
+    entry   to   "*"  and  the  login   shell   to "/usr/bin/true"  or
+    "/sbin/nologin" -- depending on what your system uses.
+
+
+ 2) Create a group of the name "petidomo".
+
+    This group should contain all users of your system who are allowed
+    to  administrate Petidomo or for  other reasons need access to the
+    installation. The  "petidomo" user  should be   a member  of  this
+    group, too, even though this is not strictly necessary.
+
+
+ 3) Create the home directory of the "petidomo" user.
+
+    The home directory  is the place  where  the package will  live. A
+    good  place   is "/usr/local/petidomo",   but   you  can  place it
+    wherever it suits your installation.
+
+
+Once  the user, the  group and  the directory  exist, you can  use the
+following mechanisms to do the actual installation.
+
+If you're upgrading  from  Petidomo 2.0 and  have  some  mailing lists
+installed  already, you  can safely use   these mechanisms, too. In no
+event  will the installation procedure  overwrite your config files or
+change anything except for the actual binaries.
+
+The installation itself works as follows:
+
+ Binary distribution:
+
+    Become 'root' and   start  the "install.sh" script,  which  can be
+    found in the same directory as this file. install.sh will populate
+    the home  directory of the  petidomo user and  insert the required
+    mail  aliases  into  /etc/aliases.  Then  it will install  the CGI
+    config manager and that's it: Petidomo is ready to run.
+
+
+ Source distribution:
+
+    Obviously you  need to compile the sources  first of all. In order
+    to compile Petidomo, you will need the following tools:
+
+     - a C compiler, preferably gcc or egcs
+
+     - a  version of   make(1)  that  understands   the "include"  and
+       ".PHONY" statement (use GNU make if your native make doesn't)
+
+     - flex, the GNU version of lex
+
+     - bison, the  GNU version of yacc,  at least version  1.25. Older
+       version -might- work,  but I had   problems with them,  because
+       they're lacking the YYERROR_VERBOSE mechanism.
+
+    If  you have all  these tools,  you can  compile Petidomo with the
+    following commands:
+
+      $ make
+      $ make install      (must be done as root)
+
+
+In  case you experience any  problems  you're not  able to fix, you're
+welcome to file a problem report  with the "send-pr" utility, included
+in  the distribution.   You   might  also  want    to check out    the
+petidomo-users mailing list, to which  you can subscribe by sending  a
+SUBSCRIBE command to the following address:
+
+   petidomo-users-request@petidomo.com
+
+Okay, I hope you'll find the Petidomo Mailing List Manager useful, and
+may the force be with you!
+
+
+                                    Peter Simons <simons@petidomo.com>
+

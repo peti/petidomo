@@ -8,10 +8,10 @@ AC_INIT(petidomo.h)
 
 dnl Print the standard OSSP.
 dnl
-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)
-V=`./etc/shtool version -lc -dlong version.c`
-./etc/shtool echo -e "Configuring %BOSSP Petidomo%b, Version %B${V}%b"
-AC_DIVERT_POP()
+dnl AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)
+V=`./shtool version -lc -dlong version.c`
+./shtool echo -e "Configuring %BOSSP Petidomo%b, Version %B${V}%b"
+dnl AC_DIVERT_POP()
 
 dnl Get rid of the lousy -g and -O defaults in CFLAGS.
 dnl

@@ -2,3 +2,8 @@ configure config.log config.cache config.status Makefile
 acl.c acl-scan.c acl-scan.h
 petidomo
 petidomo.1
+config.guess
+config.sub
+libtool.m4
+ltmain.sh
+shtool
