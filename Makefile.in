@@ -28,8 +28,8 @@ FLAGS_TO_PASS	= MFLAGS="$(MFLAGS)" CC="$(CC)" AR="$(AR)"		   \
 		  YACC="$(YACC)" CFLAGS="$(CFLAGS)"			   \
 		  CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
 
-OBJS		= acl.o archive.o authen.o config.o generate_cookie.o	   \
-		  filter.o handleacl.o help.o hermes.o index.o io.o	   \
+OBJS		= acl.o archive.o authen.o help.o io.o generate_cookie.o   \
+		  filter.o handleacl.o hermes.o index.o config-files.o	   \
 		  listserv.o mailer.o members.o parsearray.o password.o	   \
 		  rfcparse.o subscribe.o tool.o unsubscribe.o main.o	   \
 		  queue_command.o queue_posting.o approve.o address-db.o   \
@@ -127,8 +127,8 @@ address-db.o: libtext/text.h petidomo.h
 approve.o: petidomo.h
 archive.o: libtext/text.h petidomo.h
 authen.o: libtext/text.h petidomo.h
-config.o: libtext/text.h liblists/lists.h libconfigfile/configfile.h
-config.o: petidomo.h
+config-files.o: libtext/text.h liblists/lists.h libconfigfile/configfile.h
+config-files.o: petidomo.h
 filter.o: petidomo.h
 generate_cookie.o: petidomo.h
 handleacl.o: petidomo.h

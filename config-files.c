@@ -54,12 +54,12 @@ int InitPetidomo(const char* masterconfig_path)
 	{ "Hostname", CF_STRING, &fqdn },
 	{ "AdminPassword", CF_STRING, &master_password },
 	{ "MTA", CF_STRING, &mta },
-	{ "MTA_Options", CF_STRING, &mta_options },
-	{ "Help_File", CF_STRING, &help_file },
-	{ "Acl_File", CF_STRING, &acl_file },
-	{ "Index_File", CF_STRING, &index_file },
-	{ "List_Directory", CF_STRING, &list_dir },
-	{ "Ack_Queue_Directory", CF_STRING, &ack_queue_dir },
+	{ "MTAOptions", CF_STRING, &mta_options },
+	{ "HelpFile", CF_STRING, &help_file },
+	{ "AclFile", CF_STRING, &acl_file },
+	{ "IndexFile", CF_STRING, &index_file },
+	{ "ListDirectory", CF_STRING, &list_dir },
+	{ "AckQueueDirectory", CF_STRING, &ack_queue_dir },
 	{ NULL, 0, NULL}
 	};
 
