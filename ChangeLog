@@ -1,3 +1,793 @@
+2001-02-17  Peter Simons <simons@computer.org>
+
+	* Updated the documentation for the 4.x version.
+
+	* When posting to a list, Petidomo will now let the "Keywords:"
+	and "Summary:" headers pass. These headers are uncommon but have
+	been around for ages.
+
+	* Petidomo will not log to syslog() with level LOG_NOTICE anymore
+	unless it is an error or at least an unusual condition. Lowered
+	level of most messages to LOG_INFO or below.
+
+	* Fixed a type in the example master config file: MTAOptions
+	should have '-i' set, not '-v'.
+
+2001-01-21  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Added DESTDIR support to the Makefile.
+
+	* Added "dump" mode to Petidomo, which is used by the
+	petidomo-kickout script rather than messing in the config files
+	itself.
+
+2001-01-20  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Changed Petidomo so that it will send a separate mail to the
+	list owner when someone subscribes, rather than just sending a
+	carbon copy of the mail the user receives. This will prevent
+	unnecessary confusion.
+
+2001-01-20  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Added "dist" and "snap" target to the Makefile. These can be
+	used to build a distribution or a snapshot respectively.
+
+	* Added make targets for increasing or updating version
+	information the version information: "update-version" will update
+	the date but keep version number, "new-version" will let you
+	interactively specify new version number. To specify the new
+	version number for "new-version" on the command line, provide
+	"VERSION=0.8.15".
+
+2001-01-20  Peter Simons <simons@computer.org>
+
+	* Underscores in file names suck, because you need an extra
+	key-press to type them compared to the hyphen. For this reason
+	(and for consistency) I corrected this horrible, horrible mistake
+	of the past and renamed everything that contained an underscore.
+
+2001-01-20  Ralf S. Engelschall <rse@engelschall.com>
+
+	* .cvsignore, Makefile.in, petidomo.pod:
+	Add first cut for a petidomo(1) manual page.
+
+2001-01-20  Peter Simons <simons@computer.org>
+
+	* Makefile.in, config-files.c, config.c:
+	Renamed the followings tags in petidomo.conf
+
+	    MTA_Options         --> MTAOptions
+	    List_Directory      --> ListDirectory
+	    Ack_Queue_Directory --> AckQueueDirectory
+
+	for consistency reasons. While I was at it, I also renamed the source
+	file from config.c to config-files.c, because the module config.c is
+	generally associated with GNU autoconf and this has nothing to do with
+	it.
+
+2001-01-20  Ralf S. Engelschall <rse@engelschall.com>
+
+	* main.c:
+	Be careful, listname can be NULL in global operation mode and not
+	all printf implementations are as smart as BSD's variant. Instead of
+	printing "(null)" others just dump core.
+
+	* docs/.cvsignore:
+	Ignore LaTeX generated files
+
+2001-01-19  Peter Simons <simons@computer.org>
+
+	* Makefile.in: Cosmetic change.
+
+	* Makefile.in: Updated dependencies.
+
+	* archive.c:
+	Enhanced portability. This commit also contains an older
+	change made by Ralf, which I have to re-commit after
+	screwing up with the "cvs admin" command. Sorry!!!
+
+	* mailer.c:
+	Minor change to enhance portability.
+
+	* config.c:
+	The module contains the static variable MasterConfig, which all other
+	Petidomo routines can access via getMasterConfig(). The routine
+	getListConfig(), which is defined in config.c, too, used the "correct"
+	mechanism to access MasterConfig, even though it could access it
+	directly. Since I chose the same name ("MasterConfig" :->) for the
+	local copy of the pointer, gcc warns that this variable shadows the
+	static one. To get rid of this warning, and since it doesn't make one
+	bit a difference, getListConfig() accessse the static variable
+	directly now.
+
+	* hermes.c:
+	Changed ACL semantics: The ACL is processed only if the posting didn't
+	have a valid password. If it did, the mail is going through in any
+	case and the ACL is not tested.
+
+	* config/index, Makefile.in:
+	In case no index file is installed, "make install" will create an
+	example file at the correct location so that the admininstrator
+	hopefully figures out that there is some work to be done.
+
+	* acl.y:
+	- Added a warning message to be logged when no global ACL file exists.
+
+	- Reordered tests in check_local_acl_file: When no listname has been
+	  given, we don't need to initialize the lexer at all.
+
+	* hermes.c:
+	Petidomo used the mail's envelope to deliver the request for
+	confirmation. I have changed this to either reply-to or from (if
+	reply-to is unset), because sendmail will destroy the original
+	envelope under obscure circumstances.
+
+	* main.c: Removed unnecessary cast.
+
+	* config.c:
+	Due to a mix-up in the variable names, Petidomo expanded all list
+	config file paths incorrectly when the list has a flat hierarchy. That
+	is fixed now.
+
+2001-01-19  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Makefile.in:
+	Provide "make dist" command for rolling distribution tarball.
+
+2001-01-19  Peter Simons <simons@computer.org>
+
+	* main.c:
+	Added version information to the start-up log message.
+
+2001-01-19  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Makefile.in, main.c, version.c:
+	First step in GNu shtool version support:
+	Add version.c and use it for "petidomo --version".
+	Support for handling version.c in Makefile.in is coming later.
+
+	* libconfigfile/config.c, librfc822/address.y, librfc822/decomment.c, libargv/argv.c, acl.y, address-db.c, approve.c, config.c, filter.c, hermes.c, index.c, io.c, mailer.c, members.c, password.c, queue_command.c, queue_posting.c, subscribe.c, unsubscribe.c:
+	Get rid of all complaints from GCC 2.97
+	(except for two things which I do not want to change on my own)
+
+2001-01-19  Peter Simons <simons@computer.org>
+
+	* queue_command.c, queue_posting.c:
+	Incorporated the cookie into the end-of-mail-marker used in the
+	ack-script, so that the whole mechanism doesn't break when somebody
+	has the words '[end-of-mail-marker]' in the mail body itself.
+
+	* subscribe.c, unsubscribe.c:
+	Fixed the spelling of the newly added syslog messages.
+
+	* main.c:
+	Moved the initial startup log message up so that it is logged before
+	the main config file is parsed. Also added the path of the main config
+	file to the message so that people can see where Petidomo locks for it
+	in case parsing fails.
+
+	* hermes.c, subscribe.c, unsubscribe.c:
+	Greatly enhanced the log messages Petidomo writes. Made the existing
+	messages more helpful, added lots of new ones, generally made things
+	real perfect. Remember: Life is BEAUTIFUL.
+
+2001-01-19  Ralf S. Engelschall <rse@engelschall.com>
+
+	* Makefile.in:
+	Do not show subdir walking commands
+
+2001-01-19  Peter Simons <simons@computer.org>
+
+	* main.c:
+	Added a message that is logged every time Petidomo starts up. This
+	message will "dump" the configuration of Petidomo so that the user has
+	a clue which Petidomo instance is doing what.
+
+	* subscribe.c, unsubscribe.c:
+	When a un-/subscribe command needs confirmation, the request for
+	confirmation is sent to the address that is supposed to added to or
+	removed from the list. If, and only if, this address is different than
+	the one from which the request came, a short mail is sent to the
+	requestor to inform him what is going on.
+
+	* tool.c, config.c:
+	Mailing list config files may now have the suffix ".config" or
+	".conf". Similarly, if the list config file is in a separate
+	directory, it may be called <listname>/config or <listname>/conf.
+
+	* main.c:
+	Added code that will set the real user id of the process equal to the
+	effective user id.
+
+	* Makefile.in:
+	- Word-wrapped long lines to fit into 80 characters per line.
+	- Updated dependencies.
+	- Removed BINDIR from FLAGS_TO_PASS as it isn't needed anymore.
+
+	* main.c, petidomo.h, queue_command.c, queue_posting.c:
+	Petidomo needs to know the path to the executable in order to write
+	the ack-spool file, which starts Petidomo again to process the
+	acknowledged command or posting. I used BINDIR for that, but realized
+	that this sucks when somebody manually moves the binary. Hence, I am
+	using the contents of argv[0] now, normalized to an absolute path.
+	This value is stored in the global variable who_am_i, which the
+	queue_*() routines now use.
+
+2001-01-19  Ralf S. Engelschall <rse@engelschall.com>
+
+	* generate_cookie.c:
+	Get rid of the following GCC complains:
+	generate_cookie.c: In function `generate_cookie':
+	generate_cookie.c:58: warning: implicit declaration of function `strlen'
+	generate_cookie.c: In function `MD5Update':
+	generate_cookie.c:245: warning: declaration of `index' shadows global declaration
+	generate_cookie.c:260: warning: implicit declaration of function `memcpy'
+	generate_cookie.c: In function `MD5Final':
+	generate_cookie.c:286: warning: declaration of `index' shadows global declaration
+	generate_cookie.c:303: warning: implicit declaration of function `memset'
+
+	* archive.c:
+	As GCC complained: There is an ISO 9899:1990 (``ISO C'') function
+	clock(3), so we have a symbol conflict here. Get rid of this by renaming
+	our symbol.
+
+	* libtext/text.h:
+	Do not use C++ comments in ANSI C
+
+2001-01-18  Ralf S. Engelschall <rse@engelschall.com>
+
+	* README, acl.y, acl_scan.l, address-db.c, approve.c, archive.c, authen.c, config.c, filter.c, generate_cookie.c, handleacl.c, help.c, hermes.c, index.c, io.c, listserv.c, mailer.c, main.c, members.c, parsearray.c, password.c, petidomo.h, queue_command.c, queue_posting.c, rfcparse.c, subscribe.c, tool.c, unsubscribe.c:
+	As we agreed today, Petidomo is now open because licensed under GPL and
+	always will be licensed under GPL, so use "Petidomo" as the program name
+	everywhere and consistently.
+
+	* Makefile.in:
+	Install petidomo-xxxx tools
+
+	* Makefile.in: Show were we are operating
+
+	* ChangeLog: Start filling ChangeLog...
+
+	* README: *** empty log message ***
+
+2001-01-18  Peter Simons <simons@computer.org>
+
+	* petidomo-approve, petidomo-kickout:
+	Add old RSE admin scripts
+
+2001-01-18  Ralf S. Engelschall <rse@engelschall.com>
+
+	* config.c: ListACLFile -> ACLFile
+
+	* Makefile.in: New layout
+
+	* configure.in, Makefile.in:
+	Switch to GNU shtool
+
+	* etc/install-sh:
+	Remove obsolete install-sh
+
+	* etc/shtool: Add GNU shtool
+
+	* Makefile.in:
+	fix install-testlist target
+
+2001-01-16  Peter Simons <simons@computer.org>
+
+	* subscribe.c, unsubscribe.c:
+	When a request for confirmation is required, the originator of the
+	command will receive a short mail, telling him that this is so, so
+	that he knows what's going on.
+
+	* subscribe.c, unsubscribe.c:
+	Delayed the processing of the acknowledgment-requirement so that you
+	don't have to ack commands that will fail anyways.
+
+	* Makefile.in, address-db.c, hermes.c, petidomo.h:
+	Implemented the acked-once feature.
+
+	* acl.y, acl_scan.l, handleacl.c, petidomo.h:
+	Added new action keyword to the Access Control Language: approve. This
+	keyword will -- unlike to "pass" -- not only pass the mail, but will
+	also make sure that the mail passes all other authorization controls.
+	This means, the mail will be treated as if the Petidomo master
+	password had been given in the header.
+
+	* approve.c:
+	Added include of sys/types.h. Required on some systems to be able to
+	include regex.h.
+
+	* hermes.c:
+	Moved the call to checkACL() before anything else is tested regarding
+	authorization. Combined with the new "approve" action in the ACL file,
+	this allows to pass all other authentication mechanisms with the ACL.
+
+2001-01-15  Peter Simons <simons@computer.org>
+
+	* hermes.c:
+	Added code that will request confirmation when posting to a list that
+	is set to "acknowledged".
+
+	* Makefile.in, approve.c, main.c, petidomo.h:
+	Implemented the approve mode, where incoming mails are searched for
+	confirmation cookies and the apropriate queue entries will be
+	executed.
+
+	* subscribe.c:
+	The call to queue_command() had the command wrong.
+
+	* subscribe.c, unsubscribe.c:
+	Added code that will send the "request for confirmation" mail out when
+	apropriate.
+
+	* hermes.c:
+	Cosmetic change: Reformatted the source.
+
+	* config.c, config/list-config:
+	- ListType is no longer a required parameter; it now defaults to "open".
+
+	* hermes.c, listserv.c, main.c, petidomo.h:
+	Had to make is_approved a global variable, because it is actually
+	tested in subroutines of listserv_main() and hermes_main(), like
+	subscribe(), which's parameter list I don't want to change.
+
+	* petidomo.h, queue_command.c, queue_posting.c:
+	queue_command() and queue_posting() will now return the cookie used as
+	filename, so that the calling code can mail back the request for
+	confirmation.
+
+	* config.c, config/list-config, petidomo.h, subscribe.c, unsubscribe.c:
+	List's "AllowPublicSubscripiton" does not exist anymore. Now we have
+	"SubscriptionType" with valid values "public", "admin" or
+	"acknowledged".
+
+	* config/petidomo.conf:
+	- Added Ack_Queue_Dir keyword.
+
+	- Changed default of List_Directory from LOCALSTATEDIR to
+	  LOCALSTATEDIR/lists.
+
+	* config/list-config, unsubscribe.c, config.c, petidomo.h, subscribe.c:
+	Removed the whole concept of "alien subscription". It was stupid to
+	begin with and now that we'll have acknowledged subscriptions, it is
+	useless, too.
+
+	* Makefile.in, config.c, petidomo.h, queue_command.c, queue_posting.c:
+	Implemented spooling mechanism for requests and postings that need an
+	acknowledgement to be processed. The code is there, it just isn't
+	called yet.
+
+	* hermes.c, listserv.c, main.c:
+	Added --approved command line parameter, which is treated as a
+	boolean. Whether it is set or not will be passed through to
+	listserv_main() and to hermes_main(). The parameter will be used by
+	the spooling mechanism.
+
+2001-01-11  Peter Simons <simons@computer.org>
+
+	* config.c, config/list-config, petidomo.h:
+	Added config entry "AcknowledgementFile" to the mailing list's config file.
+
+	* Makefile.in, configure.in, generate_cookie.c, petidomo.h:
+	Added generate_cookie() routine taken from mapSoN.
+
+	* unsubscribe.c:
+	The requestor will now receive a mail telling him something went wrong
+	when he tries to unsubscribe an address without specifying a list
+	name.
+
+2001-01-10  Peter Simons <simons@computer.org>
+
+	* help.c, members.c, subscribe.c, unsubscribe.c:
+	Set the right margin for word-wrapping to 70 characters instead of 75.
+
+	* subscribe.c:
+	The requestor will now receive a mail telling him something went wrong
+	when he tries to subscribe an address without specifying a list name.
+
+	* acl.y:
+	When running in listserv mode, there is no 'listname' which can be
+	used to get the mailing list's configuration. Thus, the routine
+	shouldn't try to got one. Fixed it.
+
+	* config.c: Removed debugging output.
+
+2001-01-08  Peter Simons <simons@computer.org>
+
+	* acl.y:
+	Changed the ACL code to use the configured locations of the list's ACL
+	file rather than the hard-coded one.
+
+	* Makefile.in:
+	Completed the install-testlist target.
+
+	* acl.y, archive.c, config.c, help.c, hermes.c, index.c, mailer.c, main.c, members.c, petidomo.h, subscribe.c, tool.c, unsubscribe.c:
+	Rewrote Petidomo so that virtually any file's path can be configured
+	at run-time now.
+
+	* config/petidomo.conf:
+	Added example entries for the new keywords "List_Directory",
+	"Help_File", "ACL_File", and "Index_File".
+
+	* config/list-config:
+	Added example entries for the new keywords "IntroductionFile",
+	"DescriptionFile", "ACLFile", "HeaderFile", "SignatureFile", and
+	"AddressFile".
+
+	* config/petidomo.acl:
+	Removed the path of the file in the comment header, since it doesn't
+	fit anymore anyway.
+
+	* Makefile.in: Added dependencies.
+
+	* config.c, main.c, petidomo.h:
+	Petidomo will now expect its master config file at
+	SYSCONFDIR/petidomo.conf. This location can be changed at run-time
+	with the command line parameter --masterconf.
+
+	* Makefile.in:
+	Added preliminary install and install-testlist target.
+
+	* configure.in:
+	Removed the ETCDIR stuff again. We use sysconfdir instead.
+
+2001-01-06  Peter Simons <simons@computer.org>
+
+	* Makefile.in, config.c, configure.in, petidomo.h:
+	Replaced the old basedir-mechanism in Petidomo, which used to be the
+	home directory of the petidomo user. Now, Petidomo expects its master
+	config file in ETCDIR, which is '/etc' per default. All other paths
+	will be set there at run-time.
+
+	* handleacl.c, help.c, hermes.c, index.c, members.c, subscribe.c, unsubscribe.c:
+	- Added a "Petidomo:" prefix to all subject lines, to distinguish them
+	  from regular mail. Rejection mails furthermore have the prefix
+	  "BOUNCE <listaddress>:", mails that need approval have the prefix
+	  "APROVE <listaddress>:".
+
+	- When a mail is rejected due to ACL, the mail body will tell you
+	  whether the global acl file or the list's local acl file hit.
+
+	- If a file "lists/<listname>/header" exists, it contents will be
+	  added to the headers of the article posted to the list. Be careful
+	  not to have blank lines in there, as this will screw the whole
+	  message up.
+
+	- When generating the index of available mailing lists, the list type
+	  will now be typeset in brackets, e.g.: "(public mailing list)".
+
+	- The index will no longer contain tabs in the mail body.
+
+	* handleacl.c:
+	The local List_Config variable was potentially used uninitialized.
+	Fixed that.
+
+2000-12-16  Peter Simons <simons@computer.org>
+
+	* librfc822/Makefile:
+	Added dependency to stop parallel make from messing up with the
+	yacc/lex targets.
+
+	* librfc822/decomment.c:
+	Fixed parsing bug.
+
+	* librfc822/address.y:
+	Added definition of YYSTYPE.
+
+	* configure.in:
+	Use petidomo.h file to determine $srcdir, rather than main.c.
+
+	* Makefile.in, main.c, petidomo.h:
+	Reversed all changes concerning C++ in Petidomo ... it isn't worth the
+	major rewrite.
+
+	* librfc822/.cvsignore:
+	Ignore yacc and lex files
+
+	* librfc822/Makefile, librfc822/address.c, librfc822/address.y, librfc822/address_scan.c, librfc822/address_scan.h, librfc822/address_scan.l, librfc822/address_sep.c, librfc822/decomment.c, librfc822/parse_address.c, librfc822/rfc822.h, librfc822/test.c, libmpools/Makefile, libmpools/mpools.c, libmpools/mpools.h:
+	- Added GNU GPL copyright headers.
+	- Cleaned build process up.
+
+	* libmpools/Makefile, libmpools/mpools.c, libmpools/mpools.h:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* libmpools/Makefile, libmpools/mpools.c, libmpools/mpools.h:
+	New file.
+
+	* librfc822/address_scan.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* librfc822/address_scan.c: New file.
+
+	* librfc822/address.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* librfc822/address.c: New file.
+
+	* librfc822/decomment.c, librfc822/parse_address.c, librfc822/rfc822.h, librfc822/test.c, librfc822/testaddresslines:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* librfc822/decomment.c, librfc822/parse_address.c, librfc822/rfc822.h, librfc822/test.c, librfc822/testaddresslines:
+	New file.
+
+	* librfc822/Makefile, librfc822/address.y, librfc822/address_scan.h, librfc822/address_scan.l, librfc822/address_sep.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* librfc822/Makefile, librfc822/address.y, librfc822/address_scan.h, librfc822/address_scan.l, librfc822/address_sep.c:
+	New file.
+
+	* Makefile.in:
+	Added preliminary install target.
+
+	* config/petidomo.conf:
+	Removed reference to firepower altogether; MTA is a required keyword.
+
+2000-12-15  Peter Simons <simons@computer.org>
+
+	* config/petidomo.conf:
+	Removed note about Firepore MTA.
+
+	* config.c:
+	Hardcoded the base directory /usr/local/petidomo for the moment.
+
+	* libtext/text.h:
+	Wrapped the header's contents in "extern C" linkage when compiling in
+	a C++ module.
+
+	* Makefile.in:
+	The petidomo binary will now be linked with $(CXX).
+	Updated dependencies.
+
+	* Makefile.in, config.c, help.c, index.c, members.c, signature.c, subscribe.c, unsubscribe.c:
+	Removed the signature code and all code that depended on it. In the
+	new Petidomo, the signature mechanism for server mails will work
+	differently.
+
+	* config.c, config/petidomo.conf, signature.c:
+	Removed the global configuration options "DetachImmediately" and
+	"ShowStatistics". Consequently removed all code that deals with these
+	options, too.
+
+	* libargv/Makefile:
+	The clean target will now erase the argv.info file.
+
+	* libargv/.cvsignore:
+	Ignore the argv.info file.
+
+	* Makefile.in, exit.c:
+	Removed the mail rescue mechanism and all relating code. I guess
+	_nobody_ ever used that mechanism anyway, not even me. :-)
+
+	* Makefile.in, acl.y, archive.c, argvSetDebugLevel.c, authen.c, config.c, debug.h, exit.c, filter.c, handleacl.c, help.c, hermes.c, index.c, listserv.c, mailer.c, members.c, password.c, rfcparse.c, subscribe.c, tool.c, unsubscribe.c:
+	 - Removed all debugging code. Now that Petidomo will be "rewritten"
+	   in C++, I need a new paradigm for debugging anyway and the old
+	   solution of mine was to messy for my taste anyway.
+
+	 - Petidomo no longer cares under what name it has been started. The
+	   different modes of operation will now be distinguished by a
+	   mandatory command line parameter.
+
+	* Makefile.in:
+	Added support for C++ source modules within Petidomo.
+
+2000-12-14  Peter Simons <simons@computer.org>
+
+	* Makefile.in:
+	Modified the main Makefile so that it will pass the values determined
+	by Autoconf down to the libraries.
+
+	* Makefile.in:
+	FreeBSD's make again: That stupid thing really doesn't grasp $< targets.
+
+	* Makefile.in:
+	FreeBSD's make sucks big time: It doesn't honor the -C flag. Hence we
+	have to change into the target directory before calling make.
+
+	* Makefile.in:
+	BSD make doesn't understand $< like GNU make does, thus it is better
+	to explicitely name the targets for the sake of portability.
+
+	* Makefile.in:
+	Rewrote the makefile to not require GNU make.
+
+	* libargv/Makefile, libconfigfile/Makefile, liblists/Makefile, libtext/Makefile:
+	Removed unused suffix .a from the .SUFFIXES target.
+
+	* .cvsignore, configure.in:
+	 - Libraries do not need Autoconf anymore, thus I removed the
+	   AC_CONFIG_SUBDIRS call.
+
+	 - Added -O3 to CFLAGS for the sake of good optimization.
+
+	* Makefile.in: Updated dependencies.
+
+	* libargv/.cvsignore, libargv/Makefile, libconfigfile/Makefile, libconfigfile/SMakefile, libconfigfile/configure.in, liblists/Makefile, liblists/SMakefile, liblists/configure.in, liblists/lists.h, liblists/lists.h.in, libtext/Makefile, libtext/SMakefile, libtext/configure.in, libtext/test.txt:
+	 - Removed smake build and autoconf from the libraries.
+	 - Removed unused files.
+
+	* libargv/Makefile, libargv/SMakefile, libargv/configure.in:
+	Added a real makefile.
+
+	* libargv/argvSetDebugLevel.c:
+	The file is never used here.
+
+2000-12-13  Peter Simons <simons@computer.org>
+
+	* libargv/argvSetDebugLevel.c, libargv/test.c, libconfigfile/config.c, libconfigfile/configfile.h, liblists/lists.c, liblists/lists.h.in, libtext/easy_pattern_match.c, libtext/easy_sprintf.c, libtext/find_next_line.c, libtext/find_string.c, libtext/text.h, libtext/transform_text.c, libtext/wordwrap.c:
+	Added correct GPL copyright headers.
+
+	* libtext/CustomTokenIterator.cpp, libtext/RegexTokenizer.cpp, libtext/RegexTokenizer_test.cpp, libtext/TokenIterator.cpp, libtext/TokenIterator_test.cpp, libtext/text.hpp, libtext/tokenizer_test.cpp:
+	Removed unused C++ code.
+
+	* Makefile.in:
+	Cosmetic changes to the Makefile ... nothing important.
+
+	* Makefile.in, configure.in:
+	After changing librfc822 to get along without libmpools, the library
+	can (and has been) removed from Petidomo.
+
+	* debug.h:
+	This header file defines the debug modules Petidomo supports.
+
+	* configure.in:
+	The source for the configure script generated by Autoconf.
+
+	* petidomo.h:
+	All internal prototypes and definitions.
+
+	* etc/install-sh:
+	Autoconf needs this script in order to run sub-configure scripts.
+
+	* liblists/lists.h.in, libtext/CustomTokenIterator.cpp, libtext/RegexTokenizer.cpp, libtext/RegexTokenizer_test.cpp, libtext/TokenIterator.cpp, libtext/TokenIterator_test.cpp, libtext/test.txt, libtext/text.hpp, libtext/tokenizer_test.cpp, liblists/Makefile, liblists/SMakefile, liblists/configure.in, liblists/lists.c, liblists/lists.h, libtext/Makefile, libtext/SMakefile, libtext/configure.in, libtext/easy_pattern_match.c, libtext/easy_sprintf.c, libtext/find_next_line.c, libtext/find_string.c, libtext/text.h, libtext/transform_text.c, libtext/wordwrap.c:
+	Imported latest version.
+
+	* libconfigfile/Makefile, libconfigfile/SMakefile, libconfigfile/config.c, libconfigfile/configfile.h, libconfigfile/configure.in:
+	Imported latest version of the library.
+
+	* libargv/NEWS, libargv/SMakefile, libargv/argv.texi, libargv/argv_loc.h, libargv/configure.in, libargv/Makefile, libargv/Makefile.inc, libargv/_argv.h, libargv/argv.c, libargv/argv.h, libargv/argvSetDebugLevel.c, libargv/test.c:
+	Imported libargv version 2.4.0.
+
+	* acl.y, acl_scan.l, archive.c, argvSetDebugLevel.c, authen.c, config.c, exit.c, filter.c, handleacl.c, help.c, hermes.c, index.c, io.c, listserv.c, mailer.c, main.c, members.c, parsearray.c, password.c, rfcparse.c, signature.c, subscribe.c, tool.c, unsubscribe.c:
+	 - Added correct GNU GPL copyright statements to the files.
+	 - Removed unnecessary include statements.
+
+	* Makefile, Makefile.in:
+	Rewrote the build process from the scratch.
+
+	* version.h:
+	The old versioning mechanism needs to be replaced any time soon.
+
+	* archive.h, authen.h, filter.h, mailer.h, rfcparse.h:
+	The contents of these headers is now included in petidomo.h.
+
+	* signature.c, unregsig.c, unregsig.h:
+	Renamed unregsig module to signature. Now that Petidomo is released
+	under GPL, there is no such thing as an "unregistered" version
+	anymore.
+
+	* acl.c, acl_scan.c, acl_scan.h:
+	Removed dependent files from CVS repository.
+
+	* etc/mail2news.c:
+	The program isn't tested, it isn't documented ... so away with it.
+
+	* docs/Makefile, docs/petidomo.tex:
+	 - Removed all use of html.sty.
+
+	 - Removed all references to the CGI manager.
+
+	 - Removed autoconf support.
+
+	 - Removed the index.
+
+	 - Reformatted the document to look good and to compile without
+	   warnings.
+
+	* docs/Makefile:
+	Don't erase the EPS files at 'clean'.
+
+	* docs/directory-struct.eps, docs/ml-principle1.eps, docs/ml-principle2.eps:
+	Adding EPS files to repository, because those are really hard to
+	generate correctly.
+
+	* docs/GNUmakefile, docs/Makefile:
+	Renamed GNUmakefile to Makefile; there's nothing in this makefile
+	that's specific to GNU make.
+
+	* docs/GNUmakefile:
+	Added '-f' flag to the 'rm' call in the clean target.
+
+	* docs/GNUmakefile:
+	Cleaned the Makefile up a lot. Removed explicit targets whereever an
+	implicit target will do.
+
+	* docs/GNUmakefile, docs/Xstation.bm, docs/directory-struct.fig, docs/ml-principle1.fig, docs/ml-principle2.fig, docs/petidomo.tex, docs/router.bm, docs/world.bm:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* docs/GNUmakefile, docs/Xstation.bm, docs/directory-struct.fig, docs/ml-principle1.fig, docs/ml-principle2.fig, docs/petidomo.tex, docs/router.bm, docs/world.bm:
+	New file.
+
+	* acl.c, acl_scan.c, acl_scan.h:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* acl.c, acl_scan.c, acl_scan.h:
+	New file.
+
+	* subscribe.c, tool.c, unregsig.c, unregsig.h, unsubscribe.c, version.h:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* subscribe.c, tool.c, unregsig.c, unregsig.h, unsubscribe.c, version.h:
+	New file.
+
+	* mailer.c, mailer.h, main.c, members.c, parsearray.c, password.c, rfcparse.c, rfcparse.h:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* mailer.c, mailer.h, main.c, members.c, parsearray.c, password.c, rfcparse.c, rfcparse.h:
+	New file.
+
+	* filter.c, filter.h, handleacl.c, help.c, hermes.c, index.c, io.c, listserv.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* filter.c, filter.h, handleacl.c, help.c, hermes.c, index.c, io.c, listserv.c:
+	New file.
+
+	* Makefile, acl.y, acl_scan.l, archive.c, archive.h, argvSetDebugLevel.c, authen.c, authen.h, config.c, exit.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* Makefile, acl.y, acl_scan.l, archive.c, archive.h, argvSetDebugLevel.c, authen.c, authen.h, config.c, exit.c:
+	New file.
+
+	* filter/pgp-decrypt.sh, filter/pgp-encrypt.sh:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* filter/pgp-decrypt.sh, filter/pgp-encrypt.sh:
+	New file.
+
+	* filter/insert-name-in-subject.sh, filter/rfc2369.sh:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* filter/insert-name-in-subject.sh, filter/rfc2369.sh:
+	New file.
+
+	* libargv/argv.c, libargv/argv.h, libargv/argvSetDebugLevel.c, libargv/test.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* libargv/argv.c, libargv/argv.h, libargv/argvSetDebugLevel.c, libargv/test.c:
+	New file.
+
+	* libargv/Makefile, libargv/Makefile.inc, libargv/_argv.h, libconfigfile/Makefile, libconfigfile/config.c, libconfigfile/configfile.h, libtext/transform_text.c, libtext/wordwrap.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* libargv/Makefile, libargv/Makefile.inc, libargv/_argv.h, libconfigfile/Makefile, libconfigfile/config.c, libconfigfile/configfile.h, libtext/transform_text.c, libtext/wordwrap.c:
+	New file.
+
+	* liblists/Makefile, liblists/lists.c, liblists/lists.h, libtext/Makefile, libtext/easy_pattern_match.c, libtext/easy_sprintf.c, libtext/find_next_line.c, libtext/find_string.c, libtext/text.h:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* liblists/Makefile, liblists/lists.c, liblists/lists.h, libtext/Makefile, libtext/easy_pattern_match.c, libtext/easy_sprintf.c, libtext/find_next_line.c, libtext/find_string.c, libtext/text.h:
+	New file.
+
+	* config/petidomo.acl, config/petidomo.conf, etc/mail2news.c:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* config/petidomo.acl, config/petidomo.conf, etc/mail2news.c:
+	New file.
+
+	* README, config/help, config/list-acl, config/list-config:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* README, config/help, config/list-acl, config/list-config:
+	New file.
+
+	* COPYING, ChangeLog:
+	Imported Petidomo 2.2 as found on www.petidomo.com.
+
+	* COPYING, ChangeLog:
+	New file.
+
+
+
 
 Petidomo v4
 ===========

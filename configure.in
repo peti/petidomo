@@ -5,12 +5,17 @@ dnl $Header$
 dnl
 
 AC_INIT(petidomo.h)
-AC_REVISION($Revision$)dnl
 
+dnl Print the standard OSSP.
+dnl
 AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)
 V=`./etc/shtool version -lc -dlong version.c`
 ./etc/shtool echo -e "Configuring %BOSSP Petidomo%b, Version %B${V}%b"
 AC_DIVERT_POP()
+
+dnl Get rid of the lousy -g and -O defaults in CFLAGS.
+dnl
+CFLAGS=${CFLAGS:-}
 
 dnl Checks for paths and programs.
 dnl
@@ -40,14 +45,6 @@ dnl
 if test "$GCC" = yes; then
     CFLAGS="$CFLAGS -Wall -pedantic -pipe"
 fi
-
-dnl Remove '-g' from the compile flags.
-dnl
-CFLAGS=`echo $CFLAGS | sed -e "s/-g//"`
-
-dnl Turn '-O2' to '-O3'.
-dnl
-CFLAGS=`echo $CFLAGS | sed -e "s/-O2/-O3/"`
 
 dnl Write results.
 dnl
