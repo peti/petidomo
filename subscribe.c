@@ -179,7 +179,7 @@ AddAddress(struct Mail * MailStruct,
 	    {
 	    /* Require confirmation. */
 
-	    char* command = text_easy_sprintf("unsubscribe %s %s", address, listname);
+	    char* command = text_easy_sprintf("subscribe %s %s", address, listname);
 	    char* cookie  = queue_command(MailStruct, command);
 
 	    /* Notify the owner. */
