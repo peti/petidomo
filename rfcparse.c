@@ -53,16 +53,12 @@ isRFC822Address(const char * buffer)
 
     rc = rfc822_parse_address(buffer, &address, NULL, NULL);
     if (rc == RFC822_OK) {
-	debug((DEBUG_RFCPARSE, 3, "'%s' is a valid rfc address.", address));
-	if (address) {
+	if (address)
 	    free(address);
-	}
 	return TRUE;
     }
-    else {
-	debug((DEBUG_RFCPARSE, 4, "'%s' is not a valid rfc address", buffer));
+    else
 	return FALSE;
-    }
 }
 
 int
@@ -82,8 +78,6 @@ ParseAddressLine(char * buffer)
     sep_state.address_line = buffer;
     sep_state.group_nest   = 0;
 
-    debug((DEBUG_RFCPARSE, 2, "Original address is \"%s\".", buffer));
-
     /* We want only the first address, if multiple are there. */
 
     while ((p = rfc822_address_sep(&sep_state)) != NULL) {
@@ -98,11 +92,8 @@ ParseAddressLine(char * buffer)
 	return -1;
     }
 
-    debug((DEBUG_RFCPARSE, 2, "First part is \"%s\".", p));
-
     rc = rfc822_parse_address(p, &address, NULL, NULL);
     if (rc == RFC822_OK && address != NULL) {
-	debug((DEBUG_RFCPARSE, 2, "Parsed address is: '%s'", address));
 	strcpy(buffer, address);
 	free(address);
 	return 0;
@@ -128,8 +119,6 @@ ParseMessageIdLine(char * buffer)
 {
     int   rc;
 
-    debug((DEBUG_RFCPARSE, 2, "Unparsed Message-Id: '%s'", buffer));
-
     rc = ParseAddressLine(buffer);
     if (rc != 0)
       return rc;		/* Error! */
@@ -137,8 +126,6 @@ ParseMessageIdLine(char * buffer)
     memmove(buffer+1, buffer, strlen(buffer)+1);
     buffer[0] = '<';
     strcat(buffer, ">");
-
-    debug((DEBUG_RFCPARSE, 2, "Parsed Message-Id: '%s'", buffer));
 
     return rc;
 }
@@ -198,13 +185,9 @@ CanonizeAddress(char ** buffer, const char * fqdn)
     if (buffer == NULL || *buffer == NULL)
       return;
 
-    debug((DEBUG_RFCPARSE, 3, "Check whether \"%s\" is a canon address.", *buffer));
-
     rc = rfc822_parse_address(*buffer, NULL, &local, &host);
     if (rc == RFC822_OK) {
         if (local != NULL && host == NULL) {
-	    debug((DEBUG_RFCPARSE, 3, "'%s' is a local address, appending my hostname.",
-		   *buffer));
 	    if (fqdn == NULL) {
 		MasterConfig = getMasterConfig();
 		fqdn = MasterConfig->fqdn;
@@ -213,10 +196,7 @@ CanonizeAddress(char ** buffer, const char * fqdn)
 	    sprintf(newbuf, "%s@%s", local, fqdn);
 	    free(local);
 	    *buffer = newbuf;
-	    debug((DEBUG_RFCPARSE, 3, "Canonized address: '%s'.", *buffer));
         }
-	else
-	  debug((DEBUG_RFCPARSE, 3, "\"%s\" is a full address.", *buffer));
     }
 }
 
@@ -268,7 +248,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	  currLine++;
 	*currLine = '\0';
 	CanonizeAddress(&(MailStruct->Envelope), fqdn);
-	debug((DEBUG_RFCPARSE, 5, "Envelope is \"%s\".", MailStruct->Envelope));
 	currLine = nextLine;
     }
 
@@ -288,10 +267,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	if (nextLine[-1] == '\n')
 	  nextLine[-1] = '\0';
 
-	/* Log contents of current line. */
-
-	debug((DEBUG_RFCPARSE, 6, "Parsing line \"%s\".", currLine));
-
 	/* Check whether it is a header we're interested in. */
 
 	if (strncasecmp("From:", currLine, strlen("From:")) == 0) {
@@ -304,7 +279,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    if (rc != 0)
 	      return rc;
 	    CanonizeAddress(&(MailStruct->From), fqdn);
-	    debug((DEBUG_RFCPARSE, 5, "From: is \"%s\".", MailStruct->From));
 	} else if (strncasecmp("Reply-To:", currLine, strlen("Reply-To:")) == 0) {
 	    if (MailStruct->Reply_To != NULL) {
 		syslog(LOG_NOTICE, "Received mail with multiple Reply-To: lines.");
@@ -315,7 +289,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    if (rc != 0)
 	      return rc;
 	    CanonizeAddress(&(MailStruct->Reply_To), fqdn);
-	    debug((DEBUG_RFCPARSE, 5, "Reply-To: is \"%s\".", MailStruct->Reply_To));
 	} else if (strncasecmp("Message-Id:", currLine, strlen("Message-Id:")) == 0) {
 	    if (MailStruct->Message_Id != NULL) {
 		syslog(LOG_NOTICE, "Received mail with multiple Message-Id: lines.");
@@ -325,7 +298,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    rc = ParseMessageIdLine(MailStruct->Message_Id);
 	    if (rc != 0)
 	      return rc;
-	    debug((DEBUG_RFCPARSE, 5, "Message-Id: is \"%s\".", MailStruct->Message_Id));
 	}
 	else if (strncasecmp("Approve:", currLine, strlen("Approve:")) == 0) {
 	    if (MailStruct->Approve != NULL)
@@ -334,7 +306,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    rc = ParseApproveLine(MailStruct->Approve);
 	    if (rc != 0)
 	      return rc;
-	    debug((DEBUG_RFCPARSE, 5, "Approve: is \"%s\".", MailStruct->Approve));
 	}
 	else if (strncasecmp("Approved:", currLine, strlen("Approved:")) == 0) {
 	    if (MailStruct->Approve != NULL)
@@ -343,7 +314,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    rc = ParseApproveLine(MailStruct->Approve);
 	    if (rc != 0)
 	      return rc;
-	    debug((DEBUG_RFCPARSE, 5, "Approve: is \"%s\".", MailStruct->Approve));
 	}
 	else if (strncasecmp("Subject:", currLine, strlen("Subject:")) == 0) {
 	    if (MailStruct->Subject != NULL)
@@ -351,7 +321,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    MailStruct->Subject = &currLine[strlen("Subject:")];
 	    if (*MailStruct->Subject == ' ')
 	      MailStruct->Subject += 1;
-	    debug((DEBUG_RFCPARSE, 5, "Subject: is \"%s\".", MailStruct->Subject));
 	}
 	else if (strncasecmp("Sender:", currLine, strlen("Sender:")) == 0) {
 	    if (MailStruct->Envelope != NULL)
@@ -359,7 +328,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    MailStruct->Envelope = &currLine[strlen("Sender:")];
 	    if (*MailStruct->Envelope == ' ')
 	      MailStruct->Envelope += 1;
-	    debug((DEBUG_RFCPARSE, 5, "Sender: is \"%s\".", MailStruct->Envelope));
 	}
 	else if (strncasecmp("Return-Path:", currLine, strlen("Return-Path:")) == 0 &&
 		 MailStruct->Envelope == NULL)
@@ -369,7 +337,6 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 	    MailStruct->Envelope = &currLine[strlen("Return-Path:")];
 	    if (*MailStruct->Envelope == ' ')
 	      MailStruct->Envelope += 1;
-	    debug((DEBUG_RFCPARSE, 5, "Return-Path: is \"%s\".", MailStruct->Envelope));
 	}
     }
 

@@ -32,8 +32,6 @@ setPassword(struct Mail * MailStruct,
     char *         p;
     char *         q;
 
-    debug((DEBUG_COMMAND, 3, "setPassword(\"%s\").", param1));
-
     /* Find the beginning of the parameter. */
 
     p = g_currLine;
@@ -63,7 +61,6 @@ setPassword(struct Mail * MailStruct,
 
     /* Store the result. */
 
-    debug((DEBUG_COMMAND, 2, "Setting current password to \"%s\".", p));
     s_password = p;
 
     return 0;

@@ -51,7 +51,6 @@ listserv_main(char * incoming_mail, char * default_list)
 	syslog(LOG_ERR, "Parsing the incoming mail failed.");
 	exit(rc);
     }
-    debug((DEBUG_LISTSERV, 3, "Parsed incoming mail successfully."));
 
     /* Do sanity checks. */
 
@@ -103,10 +102,8 @@ listserv_main(char * incoming_mail, char * default_list)
 
 	if (*g_currLine == '\0' || *g_currLine == '#')
 	    continue;
-	if (!strcmp(g_currLine, "-- ")) {
-	    debug((DEBUG_LISTSERV, 6, "Ignoring trailing signature."));
+	if (!strcmp(g_currLine, "-- "))
 	    break;
-	}
 
 	/* Log contents of current line. */
 
@@ -118,10 +115,8 @@ listserv_main(char * incoming_mail, char * default_list)
 	for (j = 0; !isspace((int)g_currLine[j]) && j < (sizeof(keyword)-1); j++)
 	  keyword[j] = g_currLine[j];
 	keyword[j] = '\0';
-	debug((DEBUG_LISTSERV, 5, "command is \"%s\".", keyword));
 	for (i = 0; (&(ParseArray[i]))->keyword != NULL; i++) {
 	    if (strcasecmp(keyword, (&(ParseArray[i]))->keyword) == 0) { /* hit */
-		debug((DEBUG_LISTSERV, 4, "Recognized command \"%s\".", keyword));
 		rc = sscanf(g_currLine, "%*s%511s%511s", param1, param2);
 		rc = ((&(ParseArray[i]))->handleCommand)(MailStruct,
 							 ((rc >= 1) ? param1 : NULL),
@@ -140,7 +135,6 @@ listserv_main(char * incoming_mail, char * default_list)
 
 	    /* No valid command. */
 
-	    debug((DEBUG_LISTSERV, 4, "Unrecognized command \"%s\".", keyword));
 	    junklines++;
 	}
     }

@@ -45,9 +45,6 @@ GenIndex(struct Mail * MailStruct,
     struct dirent *  entry;
     unsigned int     entry_num;
 
-    debug((DEBUG_COMMAND, 3, "GenIndex(\"%s\", \"%s\") with default list \"%s\".",
-	   param1, param2, defaultlist));
-
     address = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
     /* Initialize internal stuff. */
@@ -96,14 +93,10 @@ GenIndex(struct Mail * MailStruct,
 	  continue;
 	if (isValidListName(entry->d_name) == FALSE)
 	  continue;
-	debug((DEBUG_COMMAND, 5, "Found entry \"lists/%s\".", entry->d_name));
 
 	ListConfig = getListConfig(entry->d_name);
-	if (ListConfig->showonindex == FALSE) {
-	    debug((DEBUG_COMMAND, 5, "List \"%s\" won't appear on the index.",
-		   entry->d_name));
+	if (ListConfig->showonindex == FALSE)
 	    continue;
-	}
 	entry_num++;
 
 	/* Print stuff to the mail. */

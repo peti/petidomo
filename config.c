@@ -73,17 +73,14 @@ InitPetidomo(void)
     /* First of all, determine the home directory of the "petidomo"
        user. This will be our base directory for all operations. */
 
-    debug((DEBUG_CONFIG, 9, "Looking for the home directory of user petidomo."));
     pwd = getpwnam("petidomo");
     if (pwd != NULL) {
-	debug((DEBUG_CONFIG, 8, "Home directory of petidomo is \"%s\".", pwd->pw_dir));
 	if (strcmp(basedir, pwd->pw_dir) != 0)
 	  basedir = xstrdup(pwd->pw_dir); /* Replace the default above. */
 	endpwent();
     }
     else
       syslog(LOG_WARNING, "User \"petidomo\" not found.");
-    debug((DEBUG_CONFIG, 8, "Will use basedir \"%s\".", basedir));
 
     /* chdir() into the base directory. */
 
@@ -186,7 +183,6 @@ getListConfig(const char * listname)
     /* No? Then read the config file. */
 
     sprintf(buffer, "lists/%s/config", listname);
-    debug((DEBUG_CONFIG, 6, "getListConfig(): Loading config file \"%s\".", buffer));
     rc = ReadConfig(buffer, ListCF);
     if (rc != 0) {
 	syslog(LOG_ERR, "Failed to parse the list \"%s\"'s config file.", listname);
@@ -207,8 +203,6 @@ getListConfig(const char * listname)
 	syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct List_Config));
 	exit(1);
     }
-    debug((DEBUG_CONFIG, 6, "Loaded config file successfully."));
-    debug((DEBUG_CONFIG, 4, "Read listtype is \"%s\".", listtype));
     if (!strcasecmp(listtype, "open"))
       ListConfig->listtype = LIST_OPEN;
     else if (!strcasecmp(listtype, "closed"))

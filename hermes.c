@@ -43,7 +43,6 @@ hermes_main(char * incoming_mail, const char * listname)
     int             rc, len, operation;
 
     assert(listname != NULL);
-    debug((DEBUG_HERMES, 5, "Received article for the \"%s\" mailing list", listname));
 
     /* Initialize internals. */
 
@@ -56,8 +55,6 @@ hermes_main(char * incoming_mail, const char * listname)
 	syslog(LOG_ERR, "Parsing the incoming mail failed.");
 	exit(rc);
     }
-
-    debug((DEBUG_HERMES, 3, "Parsed incoming mail successfully."));
 
     /* Do sanity checks. */
 
@@ -86,8 +83,6 @@ hermes_main(char * incoming_mail, const char * listname)
     sprintf(owner, "%s-owner@%s", listname, ListConfig->fqdn);
 
     /* Check for authorization. */
-
-    debug((DEBUG_HERMES, 5, "Checking whether posting is authorized."));
 
     if (FindBodyPassword(MailStruct) != 0)
       exit(1);
@@ -125,9 +120,6 @@ hermes_main(char * incoming_mail, const char * listname)
 	if (ListConfig->listtype == LIST_CLOSED) {
 	    /* Only subscribers may post */
 	    if (isSubscribed(listname, MailStruct->From, NULL, NULL, TRUE) == FALSE) {
-		debug((DEBUG_HERMES, 5, "\"%s\" is not a subscriber of \"%s\". Rejecting.",
-		       MailStruct->From, listname));
-
 		fh = vOpenMailer(envelope, owner, NULL);
 		if (fh != NULL) {
 		    fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
@@ -156,7 +148,6 @@ hermes_main(char * incoming_mail, const char * listname)
 	    exit(1);
 	}
 	rc = handleACL(MailStruct, listname, operation, parameter);
-	debug((DEBUG_HERMES, 8, "handleACL() returned %d.", rc));
 	switch(rc) {
 	  case -1:
 	      syslog(LOG_ERR, "handleACL() failed with an error.");
@@ -166,18 +157,11 @@ hermes_main(char * incoming_mail, const char * listname)
 	  case 1:
 	      return 0;
 	}
-
-	debug((DEBUG_HERMES, 3, "\"%s\" is authorized to post to \"%s\".",
-	       MailStruct->From, listname));
-    }
-    else {
-	debug((DEBUG_HERMES, 5, "Listtype doesn't require authorization."));
     }
 
     /* Copy the desired headers from the original mail to our own
        buffer. */
 
-    debug((DEBUG_HERMES, 9, "Preparing headers for posting."));
     for(len = 0, currLine = MailStruct->Header, dst = PostingHeaders;
 	*currLine != '\0';
 	currLine = nextLine) {
@@ -205,7 +189,6 @@ hermes_main(char * incoming_mail, const char * listname)
 	    len = nextLine - currLine;
 	    memmove(dst, currLine, len);
 	    dst += len;
-	    debug((DEBUG_HERMES, 9, "Copied line."));
 	}
     }
 
@@ -255,19 +238,14 @@ hermes_main(char * incoming_mail, const char * listname)
     /* Add the signature if there is one. */
 
     buffer = text_easy_sprintf("lists/%s/signature", listname);
-    debug((DEBUG_HERMES, 6, "Checking whether \"%s\" exists.", buffer));
     if (stat(buffer, &sb) == 0) {
-	debug((DEBUG_HERMES, 3, "Appending signature \"%s\".", buffer));
 	buffer = loadfile(buffer);
 	if (buffer == NULL) {
 	    syslog(LOG_ERR, "Failed reading the signature file for list \"%s\".", listname);
 	    exit(1);
 	}
 	MailStruct->ListSignature = buffer;
-	debug((DEBUG_HERMES, 7, "Signature is: \"%s\".", buffer));
     }
-    else
-      debug((DEBUG_HERMES, 3, "No signature file \"%s\".", buffer));
 
     /* No more modifications will be made. Now copy the posting
        headers into the structure instead of the original ones. */
@@ -277,14 +255,12 @@ hermes_main(char * incoming_mail, const char * listname)
     /* Apply the posting filter. */
 
     if (ListConfig->postingfilter != NULL) {
-	debug((DEBUG_HERMES, 3, "Applying posting filter for list \"%s\".", listname));
 	rc = MailFilter(MailStruct, ListConfig->postingfilter);
 	if (rc != 0) {
 	    syslog(LOG_ERR, "Postingfilter \"%s\" returned error %d while processing posting " \
 	    "for list \"%s\".", ListConfig->postingfilter, rc, listname);
 	    exit(1);
 	}
-	debug((DEBUG_HERMES, 6, "Filter was successful: returncode = %d.", rc));
     }
 
     /* Deliver the article to all recipients. */

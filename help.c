@@ -49,8 +49,6 @@ SendHelp(struct Mail * MailStruct,
 
 	    /* Send list's description back. */
 
-	    debug((DEBUG_COMMAND, 5, "Sending \"%s\" list \"%s\" description.",
-		   originator, param1));
 	    ListConfig = getListConfig(param1);
 	    sprintf(envelope, "%s-owner@%s", param1, MasterConfig->fqdn);
 	    fh = vOpenMailer(envelope, originator, NULL);
@@ -86,8 +84,6 @@ SendHelp(struct Mail * MailStruct,
 
 	    /* List does not exist, I am afraid. */
 
-	    debug((DEBUG_COMMAND, 5, "Received HELP command for non-existing list \"%s\".",
-		   param1));
 	    fh = vOpenMailer(envelope, originator, NULL);
 	    if (fh == NULL) {
 		syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
@@ -123,7 +119,6 @@ SendHelp(struct Mail * MailStruct,
 
 	/* Send help text to the originator. */
 
-	debug((DEBUG_COMMAND, 5, "Sending helpfile to \"%s\".", originator));
 	fh = vOpenMailer(envelope, originator, NULL);
 	if (fh == NULL) {
 	    syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
@@ -182,7 +177,6 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
 
     /* Send the help file out. */
 
-    debug((DEBUG_COMMAND, 5, "Sending helpfile to \"%s\".", replyto));
     fh = vOpenMailer(envelope, replyto, NULL);
     if (fh == NULL) {
 	syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.", replyto);

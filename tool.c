@@ -43,9 +43,6 @@ isSubscribed(const char * listname, const char * address,
     if (list == NULL)
       return FALSE;
 
-    debug((DEBUG_COMMAND, 3, "Searching for subscriber \"%s\" in list \"%s\".",
-	   address, listname));
-
     for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p)) {
 	if (strncasecmp(p, address, len) == 0 &&
 	    (p == list || p[-1] == '\n') &&
@@ -55,7 +52,6 @@ isSubscribed(const char * listname, const char * address,
     }
 
     if (*p == '\0' && dofuzzy == TRUE) {
-	debug((DEBUG_COMMAND, 3, "No success, trying fuzzy matching."));
 	address = buildFuzzyMatchAddress(address);
 	if (address != NULL) {
 	    for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p)) {
@@ -67,14 +63,6 @@ isSubscribed(const char * listname, const char * address,
 	}
     }
 
-#ifdef DEBUG
-    if (*p != '\0') {
-	debug((DEBUG_COMMAND, 3, "Found address: \"%s\".", p));
-    }
-    else {
-	debug((DEBUG_COMMAND, 3, "Nope, couldn't find address."));
-    }
-#endif
 
     /* Save the returncode now, because p may be invalid in a few
        moments. */
@@ -102,8 +90,6 @@ buildFuzzyMatchAddress(const char * address)
     char *   fuzzyaddress;
     int      rc;
 
-    debug((DEBUG_COMMAND, 5, "Turning \"%s\" into a fuzzy match address.", address));
-
     fuzzyaddress = xmalloc(strlen(address)+16);
     rc = text_transform_text(fuzzyaddress, address, "([^@]+)@[^\\.]+\\.([^\\.]+\\..*)",
 		       "\\1@([^\\\\.]+\\\\.)?\\2");
@@ -120,12 +106,10 @@ buildFuzzyMatchAddress(const char * address)
       case TEXT_REGEX_TRANSFORM_DIDNT_MATCH:
 	  break;
       case TEXT_REGEX_OK:
-	  debug((DEBUG_COMMAND, 4, "Fuzzy-match address is \"%s\".", fuzzyaddress));
 	  return fuzzyaddress;
       default:
 	  syslog(LOG_CRIT, "Internal error: Unexpected returncode in ParseMessageIdLine().");
     }
-    debug((DEBUG_COMMAND, 3, "No fuzzy match address could be built."));
     free(fuzzyaddress);
     return NULL;
 }
@@ -140,10 +124,8 @@ isValidListName(const char * listname)
 
     assert(listname != NULL);
 
-    if ((strchr(listname, '/') != NULL) || (strchr(listname, ':') != NULL)) {
-	debug((DEBUG_COMMAND, 1, "listname '%s' contains a slash or colon!", listname));
+    if ((strchr(listname, '/') != NULL) || (strchr(listname, ':') != NULL))
 	return FALSE;
-    }
 
     buffer = text_easy_sprintf("lists/%s", listname);
     if (stat(buffer, &sb) != 0)

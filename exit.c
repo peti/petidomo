@@ -74,7 +74,6 @@ RescueMail(const char * mail)
 
     for (buffer = xmalloc(64), counter = 0; ; counter++) {
 	sprintf(buffer, "crash/mail%04d", counter);
-	debug((DEBUG_MAIN, 8, "Trying rescue file \"%s\".", buffer));
 	fd = open(buffer, O_WRONLY | O_CREAT | O_EXCL, 0666);
 	if (fd == -1) {
 	    if (errno == EEXIST)
@@ -87,8 +86,6 @@ RescueMail(const char * mail)
 	else
 	  break;
     }
-    debug((DEBUG_MAIN, 8, "Saving read file to \"%s\" in case something goes wrong.",
-	   buffer));
 
     lock.l_start  = 0;
     lock.l_len    = 0;
@@ -111,7 +108,6 @@ void
 RemoveRescueMail()
 {
     if (s_crash_filename) {
-	debug((DEBUG_MAIN, 8, "Removing crash rescue file \"%s\".", s_crash_filename));
 	remove(s_crash_filename);
 	s_crash_filename = NULL;
     }

@@ -2,6 +2,20 @@
 # Petidomo Makefile
 #
 
+prefix 		= @prefix@
+exec_prefix 	= @exec_prefix@
+bindir 		= @bindir@
+sbindir 	= @sbindir@
+libexecdir 	= @libexecdir@
+datadir 	= @datadir@
+sysconfdir 	= @sysconfdir@
+sharedstatedir	= @sharedstatedir@
+localstatedir 	= @localstatedir@
+libdir 		= @libdir@
+infodir 	= @infodir@
+mandir 		= @mandir@
+includedir 	= @includedir@
+
 CC		= @CC@
 CXX		= @CXX@
 AR		= ar
@@ -14,13 +28,12 @@ CXXFLAGS	= @CXXFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@
 LDFLAGS		= @LDFLAGS@
 
-OBJS		= acl.o archive.o argvSetDebugLevel.o authen.o config.o exit.o \
+OBJS		= acl.o archive.o authen.o config.o exit.o \
 		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
 		  mailer.o members.o parsearray.o password.o rfcparse.o \
 		  subscribe.o tool.o signature.o unsubscribe.o main.o
 LIBS		= librfc822/librfc822.a liblists/liblists.a libargv/libargv.a \
-		  libconfigfile/libconfigfile.a libtext/libtext.a \
-		  libdebug/libdebug.a
+		  libconfigfile/libconfigfile.a libtext/libtext.a
 
 FLAGS_TO_PASS	= CC="$(CC)" CXX="$(CXX)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
 		  YACC="$(YACC)" CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" \
@@ -35,14 +48,8 @@ FLAGS_TO_PASS	= CC="$(CC)" CXX="$(CXX)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
-all:	hermes listserv
-
 petidomo:	$(OBJS) $(LIBS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS) $(LIBS)
-
-hermes listserv:	petidomo
-	@rm -f $@
-	ln -s petidomo $@
 
 acl.c acl_scan.h:	acl.y
 	$(YACC) -d -p acl acl.y
@@ -62,7 +69,7 @@ clean distclean realclean::
 	@for n in lib*; do (cd $$n && $(MAKE) $@); done
 
 clean::
-	rm -f petidomo listserv hermes
+	rm -f petidomo
 	rm -f $(OBJS)
 	rm -f acl_scan.c acl_scan.h acl.c
 
@@ -74,29 +81,28 @@ realclean::	distclean
 
 # Dependencies
 
-acl.o: libtext/text.h petidomo.h libargv/argv.h debug.h acl_scan.c acl_scan.h
+acl.o: libtext/text.h petidomo.h libargv/argv.h acl_scan.c acl_scan.h
 acl_scan.o: acl_scan.h
-archive.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-argvSetDebugLevel.o: debug.h libargv/argv.h
-authen.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+archive.o: libtext/text.h petidomo.h libargv/argv.h
+authen.o: libtext/text.h petidomo.h libargv/argv.h
 config.o: liblists/lists.h libconfigfile/configfile.h petidomo.h
-config.o: libargv/argv.h debug.h
-exit.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-filter.o: petidomo.h libargv/argv.h debug.h
-handleacl.o: petidomo.h libargv/argv.h debug.h
-help.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-hermes.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-index.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-io.o: petidomo.h libargv/argv.h debug.h
-listserv.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-mailer.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-main.o: petidomo.h libargv/argv.h debug.h
-members.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-parsearray.o: petidomo.h libargv/argv.h debug.h
-password.o: petidomo.h libargv/argv.h debug.h
+config.o: libargv/argv.h
+exit.o: libtext/text.h petidomo.h libargv/argv.h
+filter.o: petidomo.h libargv/argv.h
+handleacl.o: petidomo.h libargv/argv.h
+help.o: libtext/text.h petidomo.h libargv/argv.h
+hermes.o: libtext/text.h petidomo.h libargv/argv.h
+index.o: libtext/text.h petidomo.h libargv/argv.h
+io.o: petidomo.h libargv/argv.h
+listserv.o: libtext/text.h petidomo.h libargv/argv.h
+mailer.o: libtext/text.h petidomo.h libargv/argv.h
+main.o: petidomo.h libargv/argv.h
+members.o: libtext/text.h petidomo.h libargv/argv.h
+parsearray.o: petidomo.h libargv/argv.h
+password.o: petidomo.h libargv/argv.h
 rfcparse.o: librfc822/rfc822.h libtext/text.h petidomo.h libargv/argv.h
-rfcparse.o: debug.h
-signature.o: petidomo.h libargv/argv.h debug.h
-subscribe.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-tool.o: libtext/text.h petidomo.h libargv/argv.h debug.h
-unsubscribe.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+rfcparse.o:
+signature.o: petidomo.h libargv/argv.h
+subscribe.o: libtext/text.h petidomo.h libargv/argv.h
+tool.o: libtext/text.h petidomo.h libargv/argv.h
+unsubscribe.o: libtext/text.h petidomo.h libargv/argv.h

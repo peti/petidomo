@@ -155,7 +155,6 @@ dofilter(const char * filter)
     FILE *  fh;
     int     rc;
 
-    debug((DEBUG_ACL, 2, "Starting ACL-filter \"%s\".", filter));
     fh = popen(filter, "w");
     if (fh == NULL) {
         syslog(LOG_ERR, "Failed to open ACL-filter \"%s\": %m", filter);
@@ -171,10 +170,8 @@ dofilter(const char * filter)
     rc = WEXITSTATUS(rc);
     switch(rc) {
       case 0:
-          debug((DEBUG_ACL, 2, "Filter returned %d (TRUE).", rc));
           return TRUE;
       case 1:
-          debug((DEBUG_ACL, 2, "Filter returned %d (FALSE).", rc));
           return FALSE;
       default:
           syslog(LOG_ERR, "ACL-filter \"%s\" returned unexpected value %d.", filter, rc);
@@ -213,20 +210,16 @@ domatch(int qualifier, int oper, char * string)
     switch(oper) {
       case TOK_EQUAL:
           if (left != NULL && strcasecmp(left, string) == 0) {
-              debug((DEBUG_ACL, 1, "ACL: \"%s\" == \"%s\" == TRUE", left, string));
               return TRUE;
           }
           else {
-              debug((DEBUG_ACL, 1, "ACL: \"%s\" == \"%s\" == FALSE", left, string));
               return FALSE;
           }
       case TOK_MATCH:
           if (left != NULL && text_easy_pattern_match(left, string) == TRUE) {
-              debug((DEBUG_ACL, 1, "ACL: \"%s\" match \"%s\" == TRUE", left, string));
               return TRUE;
           }
           else {
-              debug((DEBUG_ACL, 1, "ACL: \"%s\" match \"%s\" == FALSE", left, string));
               return FALSE;
           }
       default:
@@ -260,13 +253,11 @@ int checkACL(struct Mail *   MailStruct,
 
     /* First check the mail against the master acl file. */
 
-    debug((DEBUG_ACL, 2, "Testing mail against \"~petidomo/etc/acl\"."));
     yyin = fopen("etc/acl", "r");
     if (yyin == NULL) {
         switch(errno) {
           case ENOENT:
               /* no master acl file */
-              debug((DEBUG_ACL, 1, "No master acl file found."));
               goto check_local_acl_file;
           default:
               syslog(LOG_ERR, "Couldn't open \"~petidomo/etc/acl\" acl file.: %m");
@@ -306,13 +297,11 @@ check_local_acl_file:
       goto finished;
 
     filename = text_easy_sprintf("lists/%s/acl", listname);
-    debug((DEBUG_ACL, 2, "Testing mail against \"~petidomo/%s\".", filename));
     yyin = fopen(filename, "r");
     if (yyin == NULL) {
         switch(errno) {
           case ENOENT:
               /* no list acl file */
-              debug((DEBUG_ACL, 1, "No acl file for list \"%s\".", listname));
 	      goto finished;
           default:
               syslog(LOG_ERR, "Couldn't open \"~petidomo/%s\" file: %m", filename);

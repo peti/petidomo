@@ -41,9 +41,6 @@ SendSubscriberList(struct Mail * MailStruct,
     char *         p;
     int            i;
 
-    debug((DEBUG_COMMAND, 3, "SendSubscriberList(\"%s\") with default list \"%s\".",
-	   param1, defaultlist));
-
     /* Try to find out, which parameter is what. */
 
     if (param1 != NULL) {
@@ -102,9 +99,6 @@ SendSubscriberList(struct Mail * MailStruct,
     }
 
     /* Okay, send the address list back. */
-
-    debug((DEBUG_COMMAND, 1, "Sending list of subscribed addresses for list "
-	   "\"%s\" to \"%s\".", listname, address));
 
     buffer = text_easy_sprintf("lists/%s/list", listname);
     buffer = loadfile(buffer);

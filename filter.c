@@ -53,8 +53,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
     assert(MailStruct != NULL);
     assert(filter != NULL);
 
-    debug((DEBUG_FILTER, 2, "Starting mail filter \"%s\".", filter));
-
     /* Sanity checks. */
 
     if (MailStruct == NULL || filter == NULL)
@@ -89,7 +87,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	  }
 	  close(child_in[READ]);
 	  close(child_out[WRITE]);
-	  debug((DEBUG_FILTER, 2, "Child process is set up. Executing filter."));
 	  execl("/bin/sh", "sh", "-c", filter, NULL);
 	  return -1;
       case -1:
@@ -130,7 +127,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	syslog(LOG_ERR, "Couldn't set flags for write-pipe descriptor: %m");
 	goto error_exit;
     }
-    debug((DEBUG_FILTER, 4, "Pipes are in non-blocking mode now."));
 
     /* Now write the mail into the pipe and read the result from the
        child. This has to happen parallely or we risk that the child
@@ -161,11 +157,9 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	    rc = write(child_in[WRITE], p  + byte_written,
 		       (strlen(p + byte_written) > IO_BLOCKSIZE) ?
 		       IO_BLOCKSIZE : strlen(p + byte_written));
-	    debug((DEBUG_FILTER, 4, "Write returned '%d'.", rc));
 	    if (rc >= 0) {
 		byte_written += rc;
 		if (p[byte_written] == '\0') {
-		    debug((DEBUG_FILTER, 2, "New write state"));
 		    write_state++; /* new state */
 		    byte_written = 0;
 		    if (write_state == STATE_FINISHED)
@@ -182,7 +176,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 
 	if ((newmail_size - byte_read) <= (IO_BLOCKSIZE)) {
 	    newmail_size += 10*1024;
-	    debug((DEBUG_FILTER, 4, "Allocting new read buffer: %d byte", newmail_size));
 	    newmail = realloc(newmail, newmail_size);
 	    if (newmail == NULL) {
 		syslog(LOG_ERR, "Failed to allocate %d byte of memory: %m", newmail_size);
@@ -190,7 +183,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	    }
 	}
 	rc = read(child_out[READ], newmail + byte_read, IO_BLOCKSIZE);
-	debug((DEBUG_FILTER, 4, "Read returned '%d'.", rc));
 	if (rc > 0)
 	  byte_read += rc;
 	else if (rc == 0) {
@@ -200,9 +192,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	else if (errno != EAGAIN) {
 	    syslog(LOG_ERR, "Reading from filter process failed: %m");
 	    goto error_exit;
-	}
-	else {
-	    debug((DEBUG_FILTER, 4, "read would block"));
 	}
     }
     newmail[byte_read] = '\0';
@@ -218,8 +207,6 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	    break;
 	}
     }
-    debug((DEBUG_FILTER, 5, "New header is:\n%s", MailStruct->Header));
-    debug((DEBUG_FILTER, 5, "New body is:\n%s", MailStruct->Body));
 
     /* Get returncode. */
 
@@ -227,10 +214,7 @@ MailFilter(struct Mail * MailStruct, const char * filter)
     if (!WIFEXITED(rc))
       return -1;
 
-    debug((DEBUG_FILTER, 4, "Filter \"%s\" returned %d.", filter, WEXITSTATUS(rc)));
     return WEXITSTATUS(rc);
-
-    return 0;
 
 error_exit:
     close(child_in[WRITE]);

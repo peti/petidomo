@@ -63,10 +63,6 @@ vOpenMailer(const char * envelope, ...)
 
     MasterConfig = getMasterConfig();
 
-    debug((DEBUG_MAILER, 2, "MTA is \"%s\".", MasterConfig->mta));
-    debug((DEBUG_MAILER, 2, "MTA options are \"%s\".", MasterConfig->mta_options));
-    debug((DEBUG_MAILER, 2, "Envelope is \"%s\".", envelope));
-
     /* Determine the length of the required buffer. */
 
     cmdline_len = strlen(MasterConfig->mta);
@@ -74,12 +70,10 @@ vOpenMailer(const char * envelope, ...)
     cmdline_len += strlen(envelope);
     va_start(ap, envelope);
     while ((q = va_arg(ap, const char *)) != NULL) {
-	debug((DEBUG_MAILER, 2, "Recipient: \"%s\".", q));
 	cmdline_len += strlen(q) + 1;
     }
     va_end(ap);
     cmdline = xmalloc(cmdline_len+8); /* we don't take any risks :) */
-    debug((DEBUG_MAILER, 3, "Command line will be %u byte long.", cmdline_len));
 
     /* Copy the mta's path and name into the buffer. */
 
@@ -91,7 +85,6 @@ vOpenMailer(const char * envelope, ...)
 
     for (options = MasterConfig->mta_options; *options != '\0'; )
 	{
-	debug((DEBUG_MAILER, 4, "Parsing '%c' character.", *options));
 	if (options[0] == '%' && options[1] == 's')
 	    {
 	    p = my_strcpy(p, envelope);
@@ -101,7 +94,6 @@ vOpenMailer(const char * envelope, ...)
 	    }
 	else
 	    {
-	    debug((DEBUG_MAILER, 4, "Wrote '%c' to aray.", *options));
 	    *p++ = *options++;
 	    }
 	}
@@ -117,8 +109,6 @@ vOpenMailer(const char * envelope, ...)
 	}
     p[-1] = '\0';
     va_end(ap);
-
-    debug((DEBUG_MAILER, 1, "Starting up \"%s\".", cmdline));
 
     fh = popen(cmdline, "w");
     if (fh == NULL)
@@ -187,19 +177,14 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
 	/* Set up the call to the MTA, including options. */
 
 	arguments[counter++] = MasterConfig->mta;
-	debug((DEBUG_MAILER, 5, "MTA is \"%s\".", arguments[0]));
 	sprintf(buffer, MasterConfig->mta_options, envelope);
-	debug((DEBUG_MAILER, 5, "MTA options are \"%s\".", buffer));
 	for (p = buffer, arguments[counter++] = buffer; *p != '\0'; p++)
 	    {
-	    debug((DEBUG_MAILER, 9, "Left to parse: \"%s\".", p));
 	    if (isspace((int)*p))
 		{
 		*p++ = '\0';
-		debug((DEBUG_MAILER, 9, "Left to parse: \"%s\".", p));
 		while(*p != '\0' && isspace((int)*p))
 		    p++;
-		debug((DEBUG_MAILER, 9, "Left to parse: \"%s\".", p));
 		arguments[counter++] = p;
 		}
 	    }
@@ -213,22 +198,14 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
 	    nextAddress = text_find_next_line(currAddress);
 	    len = my_strlen(currAddress);
 	    if (address_byte + len > max_address_byte)
-		{
-		debug((DEBUG_MAILER, 1, "Sending early, command line exceeds %d characters.", ARG_MAX));
 		break;
-		}
 	    if (counter > ARG_NUM_MAX)
-		{
-		debug((DEBUG_MAILER, 1, "Sending early, command line exceeds %d arguments.", ARG_NUM_MAX));
 		break;
-		}
 	    currAddress[len] = '\0';
-	    debug((DEBUG_MAILER, 8, "Address \"%s\" is %u byte long.", currAddress, len));
 	    address_byte += len;
 	    arguments[counter++] = currAddress;
 	    if (counter+8 >= arguments_num)
 		{
-		debug((DEBUG_MAILER, 1, "Enlarging internal array."));
 		arguments_num += 256;
 		arguments = realloc(arguments, (arguments_num+1) * sizeof(char *));
 		if (arguments == NULL)

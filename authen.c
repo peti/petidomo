@@ -43,7 +43,6 @@ FindBodyPassword(struct Mail * MailStruct)
 	    syslog(LOG_ERR, "Failed to parse the approve statement in the mail body.");
 	    return -1;
 	}
-	debug((DEBUG_HERMES, 3, "Found password \"%s\" in mail body.", currLine));
 	MailStruct->Approve = currLine;
     }
     return 0;
@@ -69,9 +68,6 @@ isValidAdminPassword(const char * password, const char * listname)
 	if (ListConfig->admin_password == NULL)
 	  return FALSE;
 
-	debug((DEBUG_AUTHEN, 5, "Comparing provided password '%s' to correct one '%s'.",
-	       ListConfig->admin_password, password));
-
 	if (!strcasecmp(ListConfig->admin_password, password))
 	  return TRUE;
     }
@@ -80,33 +76,25 @@ isValidAdminPassword(const char * password, const char * listname)
 
 bool
 isValidPostingPassword(const char * password, const char * listname)
-{
+    {
     const struct List_Config *   ListConfig;
 
     if (password == NULL)
-      return FALSE;
+	return FALSE;
 
     if (isValidAdminPassword(password, listname) == TRUE)
-      return TRUE;
+	return TRUE;
 
-    if (listname != NULL) {
+    if (listname != NULL)
+	{
 	ListConfig = getListConfig(listname);
 
 	if (ListConfig->posting_password == NULL)
-	  return FALSE;
+	    return FALSE;
 
-	debug((DEBUG_AUTHEN, 5, "provided password '%s' to correct one '%s'.",
-	       ListConfig->posting_password, password));
-
-	if (!strcasecmp(ListConfig->posting_password, password)) {
-	    debug((DEBUG_AUTHEN, 2, "Provided password is correct!"));
+	if (!strcasecmp(ListConfig->posting_password, password))
 	    return TRUE;
 	}
-	else {
-	    debug((DEBUG_AUTHEN, 2, "Provided password is incorrect!"));
-	}
-
-    }
 
     return FALSE;
-}
+    }

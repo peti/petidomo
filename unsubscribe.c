@@ -38,9 +38,6 @@ DeleteAddress(struct Mail * MailStruct,
     char *         p;
     char *         list;
 
-    debug((DEBUG_COMMAND, 3, "DeleteAddress(\"%s\", \"%s\") with default list \"%s\".",
-	   param1, param2, defaultlist));
-
     /* Try to find out, which parameter is what. */
 
     if (param1 != NULL) {
@@ -74,8 +71,6 @@ DeleteAddress(struct Mail * MailStruct,
     sprintf(owner, "%s-owner@%s", listname, ListConfig->fqdn);
     sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
     originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
-
-    debug((DEBUG_COMMAND, 1, "Unsubscribing \"%s\" to list \"%s\".", address, listname));
 
     /* Check whether the request is authorized at all. */
 
@@ -213,11 +208,6 @@ DeleteAddress(struct Mail * MailStruct,
     /* Okay, remove the address from the list. */
 
     if (isSubscribed(listname, address, &list, &p, FALSE) == FALSE) {
-
-	/* Address is not subscribed. */
-
-	debug((DEBUG_COMMAND, 2, "\"%s\" is not subscribed to list \"%s\".",
-	       address, listname));
 
 	/* Notify the originator, that the address is not subscribed at
 	   all. */

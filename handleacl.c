@@ -51,18 +51,14 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 
     switch(operation) {
       case ACL_NONE:
-	  debug((DEBUG_ACL, 4, "No ACL statement matched the mail."));
 	  break;
       case ACL_PASS:
-	  debug((DEBUG_ACL, 4, "Mail passed access control."));
 	  break;
       case ACL_DROP:
-	  syslog(LOG_INFO, "Mail is dropped due to access control.");
 	  return 1;
       case ACL_REJECTWITH:
 	  assert(parameter != NULL);
       case ACL_REJECT:
-	  syslog(LOG_INFO, "Mail is rejected due to access control.");
 	  fh = vOpenMailer(envelope, owner, (MailStruct->Reply_To) ?
 			   (MailStruct->Reply_To) : (MailStruct->From), NULL);
 	  if (fh == NULL) {
@@ -132,7 +128,6 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 	  syslog(LOG_INFO, "Mail is filtered through \"%s\" due to access control.",
 	      parameter);
 	  rc = MailFilter(MailStruct, parameter);
-	  debug((DEBUG_ACL, 3, "Mail filter \"%s\" returned %d.", parameter, rc));
 	  if (rc != 0) {
 	      syslog(LOG_ERR, "Mail filter \"%s\" returned error code %d.", parameter, rc);
 	      return -1;
@@ -145,16 +140,6 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
     }
     if (parameter != NULL)
       free(parameter);
-
-#ifdef DEBUG
-    if (listname != NULL) {
-	debug((DEBUG_ACL, 3, "\"%s\" is authorized to post to \"%s\".",
-	       MailStruct->From, listname));
-    }
-    else {
-	debug((DEBUG_ACL, 3, "Request from \"%s\" is okay, says ACL", MailStruct->From));
-    }
-#endif
 
     return 0;
 }

@@ -38,9 +38,6 @@ AddAddress(struct Mail * MailStruct,
     char *         originator;
     char *         p;
 
-    debug((DEBUG_COMMAND, 3, "AddAddress(\"%s\", \"%s\") with default list \"%s\".",
-	   param1, param2, defaultlist));
-
     /* Try to find out, which parameter is what. */
 
     if (param1 != NULL) {
@@ -75,16 +72,11 @@ AddAddress(struct Mail * MailStruct,
     sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
     originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
-    debug((DEBUG_COMMAND, 1, "Subscribing \"%s\" to list \"%s\".", address, listname));
-
     /* Check whether the request is authorized at all. */
 
     if (isValidAdminPassword(getPassword(), listname) == FALSE) {
 
 	/* No valid password, check further. */
-
-	debug((DEBUG_COMMAND, 5, "The mail didn't contain any admin password. " \
-	       "Checking for authorization..."));
 
 	if (ListConfig->allowpubsub == FALSE) {
 
@@ -215,8 +207,6 @@ AddAddress(struct Mail * MailStruct,
     /* Check whether the address is subscribed already. */
 
     if (isSubscribed(listname, address, NULL, NULL, FALSE) == TRUE) {
-	debug((DEBUG_COMMAND, 2, "\"%s\" is already subscribed to list \"%s\".",
-	       address, listname));
 
 	/* Notify the originator, that the address is already a
            member. */
@@ -310,8 +300,6 @@ AddAddress(struct Mail * MailStruct,
     if (p != NULL) {
 	fh = vOpenMailer(envelope, address, NULL);
 	if (fh != NULL) {
-	    debug((DEBUG_COMMAND, 5, "Sending \"%s\" as welcome mail to the new " \
-		   "subscriber.", buffer));
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", address);
