@@ -231,10 +231,9 @@ AddAddress(struct Mail * MailStruct,
 
     /* Okay, add the address to the list. */
 
-    buffer = text_easy_sprintf("lists/%s/list", listname);
-    fh = fopen(buffer, "a");
+    fh = fopen(ListConfig->address_file, "a");
     if (fh == NULL) {
-	syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", buffer);
+	syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", ListConfig->address_file);
 	return -1;
     }
     fprintf(fh, "%s\n", address);
@@ -289,8 +288,7 @@ AddAddress(struct Mail * MailStruct,
 
     /* Send introduction text to the new member. */
 
-    buffer = text_easy_sprintf("lists/%s/introduction", listname);
-    p = loadfile(buffer);
+    p = loadfile(ListConfig->intro_file);
     if (p != NULL) {
 	fh = vOpenMailer(envelope, address, NULL);
 	if (fh != NULL) {

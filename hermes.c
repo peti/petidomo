@@ -235,12 +235,11 @@ hermes_main(char * incoming_mail, const char * listname)
     dst += len;
     *dst = '\0';
 
-    /* Add custom headers if there are some. */
+    /* Add custom headers if there are any. */
 
-    buffer = text_easy_sprintf("lists/%s/header", listname);
-    if (stat(buffer, &sb) == 0)
+    if (stat(ListConfig->header_file, &sb) == 0)
 	{
- 	char* p = loadfile(buffer);
+ 	char* p = loadfile(ListConfig->header_file);
  	if (p == NULL)
 	    {
  	    syslog(LOG_ERR, "Failed reading the header file for list \"%s\".", listname);
@@ -249,14 +248,12 @@ hermes_main(char * incoming_mail, const char * listname)
 	strcpy(dst, p);
 	dst += strlen(p);
 	free(p);
-	free(buffer);
 	}
 
     /* Add the signature if there is one. */
 
-    buffer = text_easy_sprintf("lists/%s/signature", listname);
-    if (stat(buffer, &sb) == 0) {
-	buffer = loadfile(buffer);
+    if (stat(ListConfig->sig_file, &sb) == 0) {
+	buffer = loadfile(ListConfig->sig_file);
 	if (buffer == NULL) {
 	    syslog(LOG_ERR, "Failed reading the signature file for list \"%s\".", listname);
 	    exit(1);

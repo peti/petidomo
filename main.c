@@ -42,8 +42,8 @@ main(int argc, char * argv[])
     argv_t        args[] =
 	{
         {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, or approve."},
+        {ARGV_MAYBE, "listname", ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
         {ARGV_MAYBE, "masterconf", ARGV_CHAR_P, &masterconfig_path, "masterconf", "Path to petidomo.conf."},
-        {ARGV_MAYBE, 0L, ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
         {ARGV_LAST}
 	};
 
@@ -65,8 +65,6 @@ main(int argc, char * argv[])
 	exit(1);
     }
     MasterConfig = getMasterConfig();
-
-    return 0;
 
     /* Load the file from standard input and save it, so that it isn't
        lost in case of an error. */

@@ -99,12 +99,12 @@ SendSubscriberList(struct Mail * MailStruct,
 
     /* Okay, send the address list back. */
 
-    buffer = text_easy_sprintf("lists/%s/list", listname);
-    buffer = loadfile(buffer);
-    if (buffer == NULL) {
-	syslog(LOG_ERR, "Failed to open file \"~petidomo/lists/%s/list\"", listname);
+    buffer = loadfile(ListConfig->address_file);
+    if (buffer == NULL)
+	{
+	syslog(LOG_ERR, "Failed to open file \"%s\"", ListConfig->address_file);
 	return -1;
-    }
+	}
 
     fh = vOpenMailer(envelope, address, NULL);
     if (fh != NULL) {

@@ -141,6 +141,7 @@ int
 ListMail(const char * envelope, const char * listname, const struct Mail * MailStruct)
     {
     const struct PD_Config * MasterConfig = getMasterConfig();
+    const struct List_Config * ListConfig = getListConfig(listname);
     char **   arguments;
     u_int     arguments_num = 256;
     char      buffer[256];
@@ -164,8 +165,7 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
 
     /* Load the list of recipients. */
 
-    sprintf(buffer, "lists/%s/list", listname);
-    listfile = loadfile(buffer);
+    listfile = loadfile(ListConfig->address_file);
     if (listfile == NULL)
 	return 1;
 

@@ -32,18 +32,11 @@ GenIndex(struct Mail * MailStruct,
 		const char * defaultlist)
 {
     const struct PD_Config * MasterConfig = getMasterConfig();
-    const struct List_Config * ListConfig;
     FILE *           fh;
     const char *     address = NULL;
     char             from[4096];
     char             envelope[4096];
-    char *           description;
-    char *           currLine;
-    char *           nextLine;
-    char *           buffer;
-    DIR *            dirp;
-    struct dirent *  entry;
-    unsigned int     entry_num;
+    char *           p;
 
     address = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
@@ -71,84 +64,17 @@ GenIndex(struct Mail * MailStruct,
     fprintf(fh, "Precedence: junk\n");
     fprintf(fh, "Sender: %s\n", envelope);
     fprintf(fh, "\n");
-    fprintf(fh, "Index of available lists:\n");
-    fprintf(fh, "=========================\n\n");
-
-    /* Scan the directory. */
-
-    entry_num = 0;
-    dirp = opendir("lists");
-    if (dirp == NULL) {
-	fprintf(fh, \
-"An internal error has occured while processing your request. The\n" \
-"server administrator has been notified. You don't need to re-submit\n" \
-"your request, it will be processed as soon as the problem has been\n" \
-"remedied.\n");
-        CloseMailer(fh);
-	syslog(LOG_ERR, "Failed to read directory \"lists\": %m");
-	return -1;
-    }
-    while((entry = readdir(dirp)) != NULL) {
-	if (!strcasecmp(entry->d_name, ".") || !strcasecmp(entry->d_name, ".."))
-	  continue;
-	if (isValidListName(entry->d_name) == FALSE)
-	  continue;
-
-	ListConfig = getListConfig(entry->d_name);
-	if (ListConfig->showonindex == FALSE)
-	    continue;
-	entry_num++;
-
-	/* Print stuff to the mail. */
-
-	fprintf(fh, "%s", entry->d_name);
+    p = loadfile(MasterConfig->index_file);
+    if (p != NULL)
 	{
-	    int  i;
-	    i = 40 - strlen(entry->d_name);
-	    if (i < 1)
-	      i = 1;
-	    while(i-- > 0)
-	      fputc(' ', fh);
+        fprintf(fh, "%s\n", p);
+        free(p);
 	}
-	if (ListConfig->allowpubsub == TRUE) {
-	    if (ListConfig->listtype == LIST_MODERATED)
-	      fprintf(fh, "(moderated mailing list)\n");
-	    else
-	      fprintf(fh, "(public mailing list)\n");
+    else
+	{
+        syslog(LOG_ERR, "There is no index file for Petidomo!");
+        fprintf(fh, "No index available.\n");
 	}
-	else
-	  fprintf(fh, "(closed mailing list)\n");
-
-	buffer = text_easy_sprintf("lists/%s/description", entry->d_name);
-	description = loadfile(buffer);
-	if (description == NULL) {
-	    fprintf(fh, "    no description available\n\n");
-	    continue;
-	}
-
-	for (currLine = description; *currLine != '\0'; currLine = nextLine) {
-	    nextLine = text_find_next_line(currLine);
-	    if (nextLine[-1] == '\n')
-	      nextLine[-1] = '\0';
-	    fprintf(fh, "    %s\n", currLine);
-	}
-	fprintf(fh, "\n");
-	free(description);
-    }
-    closedir(dirp);
-
-    switch (entry_num) {
-      case 0:
-	  fprintf(fh, "No mailing lists found.\n");
-	  break;
-      case 1:
-	  fprintf(fh, "Found %d mailing list.\n", entry_num);
-	  break;
-      default:
-	  fprintf(fh, "Found %d mailing lists.\n", entry_num);
-    }
-
     CloseMailer(fh);
-
     return 0;
 }

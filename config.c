@@ -20,7 +20,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 
+#include "libtext/text.h"
 #include "liblists/lists.h"
 #include "libconfigfile/configfile.h"
 #include "petidomo.h"
@@ -33,8 +35,12 @@ List ListConfigs;
 
 static char*  fqdn            = NULL;
 static char*  master_password = NULL;
-static char*  mta             = "/usr/sbin/sendmail";
+static char*  mta             = NULL;
 static char*  mta_options     = "-i -f%s";
+static char*  help_file       = DATADIR "/petidomo.conf";
+static char*  acl_file        = SYSCONFDIR "/petidomo.acl";
+static char*  index_file      = LOCALSTATEDIR "/index";
+static char*  list_dir        = LOCALSTATEDIR;
 
 int InitPetidomo(const char* masterconfig_path)
     {
@@ -48,6 +54,10 @@ int InitPetidomo(const char* masterconfig_path)
 	{ "AdminPassword", CF_STRING, &master_password },
 	{ "MTA", CF_STRING, &mta },
 	{ "MTA_Options", CF_STRING, &mta_options },
+	{ "Help_File", CF_STRING, &help_file },
+	{ "Acl_File", CF_STRING, &acl_file },
+	{ "Index_File", CF_STRING, &index_file },
+	{ "List_Directory", CF_STRING, &list_dir },
 	{ NULL, 0, NULL}
 	};
 
@@ -80,6 +90,11 @@ int InitPetidomo(const char* masterconfig_path)
 	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the host name.", masterconfig_path);
 	return -1;
 	}
+    if (mta == NULL)
+	{
+	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the MTA.", masterconfig_path);
+	return -1;
+	}
     if (master_password == NULL)
 	{
 	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the admin password.", masterconfig_path);
@@ -97,6 +112,10 @@ int InitPetidomo(const char* masterconfig_path)
     MasterConfig->master_password = master_password;
     MasterConfig->mta = mta;
     MasterConfig->mta_options = mta_options;
+    MasterConfig->help_file = help_file;
+    MasterConfig->acl_file = acl_file;
+    MasterConfig->index_file = index_file;
+    MasterConfig->list_dir = list_dir;
 
     return 0;
     }
@@ -107,17 +126,22 @@ const struct PD_Config* getMasterConfig(void)
     }
 
 
-static char*     list_fqdn = NULL;
-static char*     admin_password = NULL;
-static char*     posting_password = NULL;
-static char*     listtype = NULL;
-static char*     reply_to = NULL;
-static char*     postingfilter = NULL;
-static char*     archivepath = NULL;
-static bool      allowpubsub = TRUE;
-static bool      allowaliensub = TRUE;
-static bool      allowmembers = FALSE;
-static bool      showonindex = TRUE;
+static char*     list_fqdn;
+static char*     admin_password;
+static char*     posting_password;
+static char*     listtype;
+static char*     reply_to;
+static char*     postingfilter;
+static char*     archivepath;
+static bool      allowpubsub;
+static bool      allowaliensub;
+static bool      allowmembers;
+static char*     intro_file;
+static char*     sig_file;
+static char*     desc_file;
+static char*     header_file;
+static char*     list_acl_file;
+static char*     address_file;
 
 const struct List_Config* getListConfig(const char * listname)
     {
@@ -125,7 +149,9 @@ const struct List_Config* getListConfig(const char * listname)
     struct List_Config *      ListConfig;
     Node                      node;
     int                       rc;
-    char                      buffer[4096];
+    char *                    buffer;
+    struct stat               sb;
+    char*                     list_dir;
 
     /* Format description of our global config file. */
 
@@ -135,15 +161,39 @@ const struct List_Config* getListConfig(const char * listname)
 	{ "AllowPublicSubscription", CF_YES_NO, &allowpubsub },
 	{ "AllowAlienSubscription", CF_YES_NO, &allowaliensub },
 	{ "AllowMembersCommand", CF_YES_NO, &allowmembers },
-	{ "ShowOnIndex", CF_YES_NO, &showonindex },
 	{ "ReplyTo", CF_STRING, &reply_to },
 	{ "Hostname", CF_STRING, &list_fqdn },
 	{ "AdminPassword", CF_STRING, &admin_password },
 	{ "PostingPassword", CF_STRING, &posting_password },
 	{ "PostingFilter", CF_STRING, &postingfilter },
 	{ "Archive", CF_STRING, &archivepath },
+	{ "IntroductionFile", CF_STRING, &intro_file },
+	{ "SignatureFile", CF_STRING, &sig_file },
+	{ "DescriptionFile", CF_STRING, &desc_file },
+	{ "HeaderFile", CF_STRING, &header_file },
+	{ "ListACLFile", CF_STRING, &list_acl_file },
+	{ "AddressFile", CF_STRING, &address_file },
 	{ NULL, 0, NULL}
 	};
+
+    /* Set the defaults. */
+
+    list_fqdn        = NULL;
+    admin_password   = NULL;
+    posting_password = NULL;
+    listtype         = NULL;
+    reply_to         = NULL;
+    postingfilter    = NULL;
+    archivepath      = NULL;
+    allowpubsub      = TRUE;
+    allowaliensub    = TRUE;
+    allowmembers     = FALSE;
+    intro_file       = "introduction";
+    sig_file         = "signature";
+    desc_file        = "description";
+    header_file      = "header";
+    list_acl_file    = "acl";
+    address_file     = "list";
 
     /* Get the master configuration. */
 
@@ -157,7 +207,19 @@ const struct List_Config* getListConfig(const char * listname)
 
     /* No? Then read the config file. */
 
-    sprintf(buffer, "lists/%s/config", listname);
+    buffer = text_easy_sprintf("%s/%s/config", MasterConfig->list_dir, listname);
+    list_dir = text_easy_sprintf("%s/%s", MasterConfig->list_dir, listname);
+    if (stat(buffer, &sb) != 0)
+	{
+	free(buffer);
+	buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
+	list_dir = MasterConfig->list_dir;
+	if (stat(buffer, &sb) != 0)
+	    {
+	    syslog(LOG_ERR, "Can't find a config file for list \"%s\".", listname);
+	    exit(1);
+	    }
+	}
     rc = ReadConfig(buffer, ListCF);
     if (rc != 0)
 	{
@@ -195,7 +257,6 @@ const struct List_Config* getListConfig(const char * listname)
     ListConfig->allowpubsub = allowpubsub;
     ListConfig->allowaliensub = allowaliensub;
     ListConfig->allowmembers = allowmembers;
-    ListConfig->showonindex = showonindex;
     ListConfig->fqdn = (list_fqdn) ? list_fqdn : MasterConfig->fqdn;
     ListConfig->reply_to = reply_to;
     if (reply_to != NULL && strcasecmp(reply_to, "none"))
@@ -203,7 +264,32 @@ const struct List_Config* getListConfig(const char * listname)
     ListConfig->admin_password = admin_password;
     ListConfig->posting_password = posting_password;
     ListConfig->postingfilter = postingfilter;
-    ListConfig->archivepath = archivepath;
+
+    ListConfig->list_dir      = list_dir;
+
+#define EXPAND(dst, src)                  \
+    if (src == NULL || src[0] == '/')     \
+	ListConfig->dst = src;            \
+    else                                  \
+	ListConfig->dst = text_easy_sprintf("%s/%s", ListConfig->list_dir, src);
+
+    EXPAND(archivepath, archivepath);
+    EXPAND(intro_file, intro_file);
+    EXPAND(desc_file, desc_file);
+    EXPAND(sig_file, sig_file);
+    EXPAND(header_file, header_file);
+    EXPAND(acl_file, list_acl_file);
+    EXPAND(address_file, address_file);
+
+    printf("archivepath: %s\n", ListConfig->archivepath);
+    printf("intro_file: %s\n", ListConfig->intro_file);
+    printf("desc_file: %s\n", ListConfig->desc_file);
+    printf("sig_file: %s\n", ListConfig->sig_file);
+    printf("header_file: %s\n", ListConfig->header_file);
+    printf("acl_file: %s\n", ListConfig->acl_file);
+    printf("address_file: %s\n", ListConfig->address_file);
+
+
     AppendNode(ListConfigs, xstrdup(listname), ListConfig);
 
     return ListConfig;

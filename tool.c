@@ -28,40 +28,50 @@
 bool
 isSubscribed(const char * listname, const char * address,
 	     char ** listfile, char ** subscriber, bool dofuzzy)
-{
+    {
+    const struct List_Config * ListConfig;
     struct stat    sb;
-    char *         buffer;
     char *         list;
     char *         p;
     unsigned int   len;
-    bool            rc;
+    bool           rc;
 
-    buffer = text_easy_sprintf("lists/%s/list", listname);
-    if (stat(buffer, &sb) != 0)
-      return FALSE;
-    list = loadfile(buffer);
+    if (isValidListName(listname))
+	ListConfig = getListConfig(listname);
+    else
+	return FALSE;
+
+    if (stat(ListConfig->address_file, &sb) != 0)
+	return FALSE;
+    list = loadfile(ListConfig->address_file);
     if (list == NULL)
-      return FALSE;
+	return FALSE;
 
-    for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p)) {
+    for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p))
+	{
 	if (strncasecmp(p, address, len) == 0 &&
 	    (p == list || p[-1] == '\n') &&
-	    (isspace((int)p[len]) || p[len] == '\0')) {
+	    (isspace((int)p[len]) || p[len] == '\0'))
+	    {
 	    break;
+	    }
 	}
-    }
 
-    if (*p == '\0' && dofuzzy == TRUE) {
+    if (*p == '\0' && dofuzzy == TRUE)
+	{
 	address = buildFuzzyMatchAddress(address);
-	if (address != NULL) {
-	    for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p)) {
+	if (address != NULL)
+	    {
+	    for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p))
+		{
 		if (text_easy_pattern_match(p, address) == TRUE &&
-		    (p == list || p[-1] == '\n')) {
+		    (p == list || p[-1] == '\n'))
+		    {
 		    break;
+		    }
 		}
 	    }
 	}
-    }
 
 
     /* Save the returncode now, because p may be invalid in a few
@@ -71,18 +81,19 @@ isSubscribed(const char * listname, const char * address,
 
     /* Did the caller want results back? Then give them to him. */
 
-    if (listfile != NULL) {
+    if (listfile != NULL)
+	{
 	*listfile = list;
 	if (subscriber != NULL)
-	  *subscriber = (*p != '\0') ? p : NULL;
-    }
+	    *subscriber = (*p != '\0') ? p : NULL;
+	}
     else
-      free(list);
+	free(list);
 
     /* Return the result. */
 
     return rc;
-}
+    }
 
 char *
 buildFuzzyMatchAddress(const char * address)
@@ -118,24 +129,27 @@ buildFuzzyMatchAddress(const char * address)
 
 bool
 isValidListName(const char * listname)
-{
+    {
     struct stat   sb;
     char *        buffer;
+    const struct PD_Config * MasterConfig = getMasterConfig();
 
     assert(listname != NULL);
 
     if ((strchr(listname, '/') != NULL) || (strchr(listname, ':') != NULL))
 	return FALSE;
 
-    buffer = text_easy_sprintf("lists/%s", listname);
+    buffer = text_easy_sprintf("%s/%s/config", MasterConfig->list_dir, listname);
     if (stat(buffer, &sb) != 0)
-      return FALSE;		/* Doesn't exist at all. */
-    else if ((sb.st_mode & S_IFDIR) == 0)
-      return FALSE;		/* Entry isn't a directory. */
-    else {
-	buffer = text_easy_sprintf("lists/%s/config", listname);
+	{
+	free(buffer);
+	buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
 	if (stat(buffer, &sb) != 0)
-	  return FALSE;
-    }
+	    {
+	    free(buffer);
+	    return FALSE;
+	    }
+	}
+    free(buffer);
     return TRUE;
-}
+    }

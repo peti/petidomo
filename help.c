@@ -67,8 +67,7 @@ SendHelp(struct Mail * MailStruct,
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
 	    fprintf(fh, "Description of list \"%s\":\n\n", param1);
-	    buffer = text_easy_sprintf("lists/%s/description", param1);
-	    p = loadfile(buffer);
+	    p = loadfile(ListConfig->desc_file);
 	    if (p != NULL) {
 		fprintf(fh, "%s\n", p);
 		free(p);
@@ -136,7 +135,7 @@ SendHelp(struct Mail * MailStruct,
 	fprintf(fh, "Precedence: junk\n");
 	fprintf(fh, "Sender: %s\n", envelope);
 	fprintf(fh, "\n");
-	p = loadfile("etc/help");
+	p = loadfile(MasterConfig->help_file);
 	if (p != NULL) {
 	    fprintf(fh, "%s\n", p);
 	    free(p);
@@ -192,7 +191,7 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
     fprintf(fh, "Precedence: junk\n");
     fprintf(fh, "Sender: %s\n", envelope);
     fprintf(fh, "\n");
-    p = loadfile("etc/help");
+    p = loadfile(MasterConfig->help_file);
     if (p != NULL) {
 	fprintf(fh, "%s\n", p);
 	free(p);

@@ -236,6 +236,7 @@ int checkACL(struct Mail *   MailStruct,
              int *           operation_ptr,
              char **         parameter_ptr)
 {
+    const struct PD_Config * MasterConfig;
     char *  filename;
     int     rc;
 
@@ -243,6 +244,7 @@ int checkACL(struct Mail *   MailStruct,
     assert(operation_ptr != NULL);
     assert(parameter_ptr != NULL);
 
+    MasterConfig = getMasterConfig();
     g_MailStruct = MailStruct;
     g_parameter = NULL;
 
@@ -253,14 +255,14 @@ int checkACL(struct Mail *   MailStruct,
 
     /* First check the mail against the master acl file. */
 
-    yyin = fopen("etc/acl", "r");
+    yyin = fopen(MasterConfig->acl_file, "r");
     if (yyin == NULL) {
         switch(errno) {
           case ENOENT:
               /* no master acl file */
               goto check_local_acl_file;
           default:
-              syslog(LOG_ERR, "Couldn't open \"~petidomo/etc/acl\" acl file.: %m");
+              syslog(LOG_ERR, "Couldn't open \"%s\" acl file.: %m", MasterConfig->acl_file);
               return -1;
         }
     }
@@ -273,7 +275,7 @@ int checkACL(struct Mail *   MailStruct,
         yyin = NULL;
     }
     if (rc != 0) {
-        syslog(LOG_ERR, "Parsing \"~petidomo/etc/acl\" file returned with an error.");
+        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", MasterConfig->acl_file);
         return -1;
     }
 

@@ -50,32 +50,45 @@
 
 /********** config.c **********/
 
-struct PD_Config {
+struct PD_Config
+    {
     char *    fqdn;
     char *    master_password;
     char *    mta;
     char *    mta_options;
-};
+    char *    list_dir;
+    char *    help_file;
+    char *    acl_file;
+    char *    index_file;
+    };
 
-enum {
+enum
+    {
     LIST_OPEN,
     LIST_CLOSED,
     LIST_MODERATED
-};
+    };
 
-struct List_Config {
+struct List_Config
+    {
     unsigned int  listtype;
     int           allowpubsub;
     int           allowaliensub;
     int           allowmembers;
-    int           showonindex;
     char *        fqdn;
     char *        admin_password;
     char *        posting_password;
     char *        postingfilter;
     char *        archivepath;
     char *        reply_to;
-};
+    char *        intro_file;
+    char *        desc_file;
+    char *        sig_file;
+    char *        header_file;
+    char *        acl_file;
+    char *        list_dir;
+    char *        address_file;
+    };
 
 int InitPetidomo(const char* masterconfig_path);
 const struct PD_Config *getMasterConfig(void);
@@ -83,7 +96,8 @@ const struct List_Config *getListConfig(const char* listname);
 
 /********** rfcparse.c **********/
 
-struct Mail {
+struct Mail
+    {
     char *     Header;
     char *     Body;
     char *     Envelope;
@@ -93,7 +107,7 @@ struct Mail {
     char *     Message_Id;
     char *     Approve;
     char *     ListSignature;
-};
+    };
 
 void RemoveCarrigeReturns(char *buffer);
 int isRFC822Address(const char *buffer);
@@ -128,8 +142,8 @@ int MailFilter(struct Mail *MailStruct, const char *filter);
 /********** acl.c **********/
 
 int checkACL(struct Mail *, const char *, int *, char **);
-
-enum {
+enum
+    {
     ACL_DROP,
     ACL_PASS,
     ACL_REDIRECT,
@@ -138,7 +152,7 @@ enum {
     ACL_REJECTWITH,
     ACL_FILTER,
     ACL_NONE
-};
+    };
 
 /********** handleacl.c **********/
 
@@ -199,10 +213,11 @@ int AddAddress(struct Mail *MailStruct, const char *param1, const char *param2, 
 
 /********** parsearray.c **********/
 
-struct Parse {
+struct Parse
+    {
     const char *    keyword;
     int             (*handleCommand)(struct Mail *, const char *, const char *, const char *);
-};
+    };
 extern struct Parse ParseArray[];
 
 #endif /* !defined(__PETIDOMO_H__) */

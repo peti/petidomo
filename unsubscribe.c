@@ -230,10 +230,9 @@ DeleteAddress(struct Mail * MailStruct,
 	    }
     }
     else {
-	buffer = text_easy_sprintf("lists/%s/list", listname);
-	fh = fopen(buffer, "w");
+	fh = fopen(ListConfig->address_file, "w");
 	if (fh == NULL) {
-	    syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", buffer);
+	    syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", ListConfig->address_file);
 	    return -1;
 	}
 	*p++ = '\0';
