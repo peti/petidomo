@@ -103,6 +103,11 @@ main(int argc, char * argv[])
 	exit(1);
     }
 
+    /* Log a few helpful facts about this Petidomo instance. */
+
+    syslog(LOG_DEBUG, "Petidomo starting up; mode=%s, listname=%s, approved=%s, ruid=%d, euid=%d, gid=%d, egid=%s",
+	   mode, listname, (g_is_approved) ? "true" : "false", getuid(), geteuid(), getgid(), getegid());
+
     /* Now decide what we actually do with the mail. */
 
     if (strcasecmp("listserv", mode) == 0)
