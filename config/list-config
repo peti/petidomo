@@ -1,6 +1,4 @@
 #
-# ~petidomo/lists/<listname>/config
-#
 # $Header$
 #
 
@@ -48,14 +46,6 @@ AllowAlienSubscription	yes
 #       The default, if the option is unset, is NOT to allow the 'members'-
 #	command.
 AllowMembersCommand	no
-
-#  TAG: ShowOnIndex <yes|no>
-#	Specify either "yes" or "no", depending on whether you want
-#	this mailing list to be shown on the index of available lists.
-#
-#       The default, if the option is unset, is to show the mailing
-#	list on the index.
-ShowOnIndex yes
 
 #  TAG: Hostname <string>
 #       This entry specifies the fully qualified domain name, Petidomo
@@ -133,3 +123,69 @@ ShowOnIndex yes
 #	If this option is unset, no archives of the posted articles will be
 #	kept.
 #Archive		"log"
+
+
+#  TAG: IntroductionFile <string>
+#	This entry sets the path to the introduction file, which
+#	Petidomo will send to every new subscriber. If the path is not
+#	absolute -- not beginning with a '/' character, that is --, it
+#	will be interpreted relative to the directory where this
+#	config file has been found.
+#
+#	If this option has not been set, the default value is
+#	"introduction".
+#IntroductionFile	introduction
+
+#  TAG: DescriptionFile <string>
+#	This entry sets the path to the description file, which
+#	Petidomo will send back to a "help listname" command. If the
+#	path is not absolute -- not beginning with a '/' character,
+#	that is --, it will be interpreted relative to the directory
+#	where this config file has been found.
+#
+#	If this option has not been set, the default value is
+#	"description".
+#DescriptionFile	description
+
+#  TAG: ACLFile <string>
+#	This entry sets the path to the ACL file, which Petidomo will
+#	use to check whether a posting to this list is allowed. If the
+#	path is not absolute -- not beginning with a '/' character,
+#	that is --, it will be interpreted relative to the directory
+#	where this config file has been found.
+#
+#	If this option has not been set, the default value is "acl".
+#ACLFile	acl
+
+#  TAG: HeaderFile <string>
+#	This entry sets the path to the header file, which's contents
+#	Petidomo will add to the header of every posting on this list.
+#	If the path is not absolute -- not beginning with a '/'
+#	character, that is --, it will be interpreted relative to the
+#	directory where this config file has been found.
+#
+#	If this option has not been set, the default value is
+#	"header".
+#HeaderFile	header
+
+#  TAG: SignatureFile <string>
+#	This entry sets the path to the signature file, which's
+#	contents Petidomo will append to every posting on this list.
+#	If the path is not absolute -- not beginning with a '/'
+#	character, that is --, it will be interpreted relative to the
+#	directory where this config file has been found.
+#
+#	If this option has not been set, the default value is
+#	"signature".
+#SignatureFile	signature
+
+#  TAG: AddressFile <string>
+#	This entry sets the path to the address database file, which
+#	uses to store the addresses of the list's subscribers. If the
+#	path is not absolute -- not beginning with a '/' character,
+#	that is --, it will be interpreted relative to the directory
+#	where this config file has been found.
+#
+#	If this option has not been set, the default value is
+#	"list".
+#AddressFile	list
