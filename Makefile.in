@@ -2,38 +2,40 @@
 # Petidomo Makefile
 #
 
-prefix 		= @prefix@
-exec_prefix 	= @exec_prefix@
-bindir 		= @bindir@
-libexecdir 	= @libexecdir@/petidomo
-datadir 	= @datadir@/petidomo
-sysconfdir 	= @sysconfdir@
-localstatedir 	= @localstatedir@/petidomo
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+bindir		= @bindir@
+libexecdir	= @libexecdir@/petidomo
+datadir		= @datadir@/petidomo
+sysconfdir	= @sysconfdir@
+localstatedir	= @localstatedir@/petidomo
 
 CC		= @CC@
 AR		= ar
 RANLIB		= @RANLIB@
 LEX		= @LEX@
 YACC		= @YACC@
-SHTOOL          = ./etc/shtool
+SHTOOL		= ./etc/shtool
 
 CFLAGS		= @CFLAGS@
-CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(libexecdir)\" \
-		  -DDATADIR=\"$(datadir)\" -DLOCALSTATEDIR=\"$(localstatedir)\" \
-		  -DBINDIR=\"$(bindir)\"
+
+CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\"	   \
+		  -DLIBEXECDIR=\"$(libexecdir)\" -DDATADIR=\"$(datadir)\"  \
+		  -DLOCALSTATEDIR=\"$(localstatedir)\"
 LDFLAGS		= @LDFLAGS@
-
-OBJS		= acl.o archive.o authen.o config.o generate_cookie.o \
-		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
-		  mailer.o members.o parsearray.o password.o rfcparse.o \
-		  subscribe.o tool.o unsubscribe.o main.o queue_command.o \
-	 	  queue_posting.o approve.o address-db.o
-LIBS		= librfc822/librfc822.a libmpools/libmpools.a liblists/liblists.a libargv/libargv.a \
-		  libconfigfile/libconfigfile.a libtext/libtext.a
-
-FLAGS_TO_PASS	= MFLAGS="$(MFLAGS)" CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
-		  YACC="$(YACC)" CFLAGS="$(CFLAGS)" \
+FLAGS_TO_PASS	= MFLAGS="$(MFLAGS)" CC="$(CC)" AR="$(AR)"		   \
+		  RANLIB="$(RANLIB)" LEX="$(LEX)"			   \
+		  YACC="$(YACC)" CFLAGS="$(CFLAGS)"			   \
 		  CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
+
+OBJS		= acl.o archive.o authen.o config.o generate_cookie.o	   \
+		  filter.o handleacl.o help.o hermes.o index.o io.o	   \
+		  listserv.o mailer.o members.o parsearray.o password.o	   \
+		  rfcparse.o subscribe.o tool.o unsubscribe.o main.o	   \
+		  queue_command.o queue_posting.o approve.o address-db.o
+LIBS		= librfc822/librfc822.a libmpools/libmpools.a              \
+		  liblists/liblists.a libargv/libargv.a                    \
+		  libconfigfile/libconfigfile.a libtext/libtext.a
 
 .SUFFIXES:
 .SUFFIXES:	.c .o
@@ -106,8 +108,8 @@ realclean::	distclean
 
 # Dependencies
 
-acl.o: libtext/text.h petidomo.h acl_scan.c acl_scan.h
-acl_scan.o: acl_scan.h
+address-db.o: libtext/text.h petidomo.h
+approve.o: petidomo.h
 archive.o: libtext/text.h petidomo.h
 authen.o: libtext/text.h petidomo.h
 config.o: libtext/text.h liblists/lists.h libconfigfile/configfile.h
@@ -121,10 +123,12 @@ index.o: libtext/text.h petidomo.h
 io.o: petidomo.h
 listserv.o: libtext/text.h petidomo.h
 mailer.o: libtext/text.h petidomo.h
-main.o: libargv/argv.h petidomo.h
+main.o: libargv/argv.h libtext/text.h petidomo.h
 members.o: libtext/text.h petidomo.h
 parsearray.o: petidomo.h
 password.o: petidomo.h
+queue_command.o: libtext/text.h petidomo.h
+queue_posting.o: libtext/text.h petidomo.h
 rfcparse.o: librfc822/rfc822.h libtext/text.h petidomo.h
 subscribe.o: libtext/text.h petidomo.h
 tool.o: libtext/text.h petidomo.h
