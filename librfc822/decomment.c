@@ -140,7 +140,7 @@ rfc822_decomment(const char *  source	/* String containing a formatted rfc822 ad
     assert(source != NULL);
     if (!source || *source == '\0') {
 	errno = EINVAL;
-	return NULL;
+	return 0;
     }
 
     /* Allocate buffer. */
@@ -197,7 +197,7 @@ rfc822_decomment(const char *  source	/* String containing a formatted rfc822 ad
 	    angel_bracket_count--;
 	    break;
 	}
-	else if (!in_quote && *s == '\\') {
+	else if (*s == '\\') {
 	    if (s[1] != '\0') {
 		*p++ = *s++;
 	    }
