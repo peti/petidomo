@@ -54,6 +54,9 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 	  break;
       case ACL_PASS:
 	  break;
+      case ACL_APPROVE:
+	  MailStruct->Approve = MasterConfig->master_password;
+	  break;
       case ACL_DROP:
 	  return 1;
       case ACL_REJECTWITH:

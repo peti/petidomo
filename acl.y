@@ -45,7 +45,7 @@ struct Mail * g_MailStruct;
 %}
 %token TOK_IF TOK_EQUAL TOK_EQUAL TOK_FROM TOK_SUBJECT
 %token TOK_ENVELOPE TOK_HEADER TOK_BODY TOK_AND TOK_OR TOK_NOT
-%token TOK_THEN TOK_MATCH TOK_STRING TOK_DROP TOK_PASS
+%token TOK_THEN TOK_MATCH TOK_STRING TOK_DROP TOK_PASS TOK_APPROVE
 %token TOK_REDIRECT TOK_FORWARD TOK_REJECT TOK_REJECTWITH
 %token TOK_FILTER
 %left TOK_AND
@@ -97,6 +97,7 @@ qualifier: TOK_FROM                       { $$ = TOK_FROM; }
 ;
 
 action:   TOK_PASS                        { $$ = ACL_PASS; }
+        | TOK_APPROVE                     { $$ = ACL_APPROVE; }
         | TOK_DROP                        { $$ = ACL_DROP; }
         | TOK_REJECT                      { $$ = ACL_REJECT; }
         | TOK_REJECTWITH TOK_STRING       {

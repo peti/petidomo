@@ -47,6 +47,7 @@ match(es)?	return TOK_MATCH;
 		}
 drop		return TOK_DROP;
 pass		return TOK_PASS;
+approve		return TOK_APPROVE;
 redirect	return TOK_REDIRECT;
 forward		return TOK_FORWARD;
 reject		return TOK_REJECT;

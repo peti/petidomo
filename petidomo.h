@@ -160,6 +160,7 @@ enum
     {
     ACL_DROP,
     ACL_PASS,
+    ACL_APPROVE,
     ACL_REDIRECT,
     ACL_FORWARD,
     ACL_REJECT,
