@@ -245,7 +245,6 @@ int checkACL(struct Mail *   MailStruct,
     assert(parameter_ptr != NULL);
 
     MasterConfig = getMasterConfig();
-    ListConfig = getListConfig(listname);
     g_MailStruct = MailStruct;
     g_parameter = NULL;
 
@@ -299,6 +298,7 @@ check_local_acl_file:
     if (listname == NULL)
       goto finished;
 
+    ListConfig = getListConfig(listname);
     yyin = fopen(ListConfig->acl_file, "r");
     if (yyin == NULL) {
         switch(errno) {
