@@ -23,7 +23,7 @@ LIBS		= librfc822/librfc822.a liblists/liblists.a libargv/libargv.a \
 .SUFFIXES:	.c .o
 
 .c.o:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 all:	hermes listserv
 
@@ -40,7 +40,7 @@ acl.c acl_scan.h:	acl.y
 	mv y.tab.h acl_scan.h
 
 acl_scan.c:		acl_scan.l acl_scan.h
-	$(LEX) -i -Pacl $<
+	$(LEX) -i -Pacl acl_scan.l
 	mv lex.acl.c acl_scan.c
 
 acl.c:			acl_scan.c
