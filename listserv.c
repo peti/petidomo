@@ -64,7 +64,21 @@ void listserv_main(char * incoming_mail, char * default_list)
 
     /* Do access control. */
 
-    if (checkACL(MailStruct, NULL, &operator, &parameter) != 0) {
+    if (checkACL(MailStruct, NULL, &operator, &parameter, ACL_PRE) != 0) {
+	syslog(LOG_ERR, "checkACL() failed with an error.");
+	exit(1);
+    }
+    rc = handleACL(MailStruct, NULL, operator, parameter);
+    switch(rc) {
+      case -1:
+	  syslog(LOG_ERR, "handleACL() failed with an error.");
+	  exit(1);
+      case 0:
+	  break;
+      case 1:
+	  return;
+    }
+    if (checkACL(MailStruct, NULL, &operator, &parameter, ACL_POST) != 0) {
 	syslog(LOG_ERR, "checkACL() failed with an error.");
 	exit(1);
     }

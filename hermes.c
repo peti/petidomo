@@ -101,7 +101,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 	   processing is over. That's why we check the posting
 	   password again below. */
 
-	if (checkACL(MailStruct, listname, &operation, &parameter) != 0)
+	if (checkACL(MailStruct, listname, &operation, &parameter, ACL_PRE) != 0)
 	    {
 	    syslog(LOG_ERR, "checkACL() failed with an error.");
 	    exit(1);
@@ -285,6 +285,27 @@ void hermes_main(char * incoming_mail, const char * listname)
 		}
 	    }
 	}
+
+    /* additional ACL check */
+    if (isValidPostingPassword(MailStruct->Approve, listname) == FALSE)
+	{
+        if (checkACL(MailStruct, listname, &operation, &parameter, ACL_POST) != 0)
+            {
+            syslog(LOG_ERR, "checkACL() failed with an error.");
+            exit(1);
+            }
+        rc = handleACL(MailStruct, listname, operation, parameter);
+        switch(rc)
+            {
+            case -1:
+                syslog(LOG_ERR, "handleACL() failed with an error.");
+                exit(1);
+            case 0:
+                break;
+            case 1:
+                return;
+            }
+        }
 
     /* Copy the desired headers from the original mail to our own
        buffer. */

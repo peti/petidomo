@@ -38,7 +38,8 @@ static char*  master_password = NULL;
 static char*  mta             = NULL;
 static char*  mta_options     = "-i -f%s";
 static char*  help_file       = DATADIR "/help";
-static char*  acl_file        = SYSCONFDIR "/petidomo.acl";
+static char*  acl_file_pre    = SYSCONFDIR "/petidomo.acl-pre";
+static char*  acl_file_post   = SYSCONFDIR "/petidomo.acl-post";
 static char*  index_file      = LOCALSTATEDIR "/index";
 static char*  list_dir        = LOCALSTATEDIR "/lists";
 static char*  ack_queue_dir   = LOCALSTATEDIR "/ack-queue";
@@ -56,7 +57,8 @@ int InitPetidomo(const char* masterconfig)
 	{ "MTA", CF_STRING, &mta },
 	{ "MTAOptions", CF_STRING, &mta_options },
 	{ "HelpFile", CF_STRING, &help_file },
-	{ "AclFile", CF_STRING, &acl_file },
+	{ "AclFilePre", CF_STRING, &acl_file_pre },
+	{ "AclFilePost", CF_STRING, &acl_file_post },
 	{ "IndexFile", CF_STRING, &index_file },
 	{ "ListDirectory", CF_STRING, &list_dir },
 	{ "AckQueueDirectory", CF_STRING, &ack_queue_dir },
@@ -115,7 +117,8 @@ int InitPetidomo(const char* masterconfig)
     MasterConfig->mta = mta;
     MasterConfig->mta_options = mta_options;
     MasterConfig->help_file = help_file;
-    MasterConfig->acl_file = acl_file;
+    MasterConfig->acl_file_pre = acl_file_pre;
+    MasterConfig->acl_file_post = acl_file_post;
     MasterConfig->index_file = index_file;
     MasterConfig->list_dir = list_dir;
     MasterConfig->ack_queue_dir = ack_queue_dir;
@@ -142,7 +145,8 @@ static char*     intro_file;
 static char*     sig_file;
 static char*     desc_file;
 static char*     header_file;
-static char*     list_acl_file;
+static char*     list_acl_file_pre;
+static char*     list_acl_file_post;
 static char*     address_file;
 static char*     ack_file;
 
@@ -172,7 +176,8 @@ const struct List_Config* getListConfig(const char * listname)
 	{ "SignatureFile", CF_STRING, &sig_file },
 	{ "DescriptionFile", CF_STRING, &desc_file },
 	{ "HeaderFile", CF_STRING, &header_file },
-	{ "ACLFile", CF_STRING, &list_acl_file },
+	{ "ACLFilePre", CF_STRING, &list_acl_file_pre },
+	{ "ACLFilePost", CF_STRING, &list_acl_file_post },
 	{ "AddressFile", CF_STRING, &address_file },
 	{ "AcknowledgementFile", CF_STRING, &ack_file },
 	{ NULL, 0, NULL}
@@ -193,7 +198,8 @@ const struct List_Config* getListConfig(const char * listname)
     sig_file         = "signature";
     desc_file        = "description";
     header_file      = "header";
-    list_acl_file    = "acl";
+    list_acl_file_pre  = "acl-pre";
+    list_acl_file_post = "acl-post";
     address_file     = "list";
     ack_file         = "acks";
 
@@ -301,7 +307,8 @@ const struct List_Config* getListConfig(const char * listname)
     EXPAND(desc_file, desc_file);
     EXPAND(sig_file, sig_file);
     EXPAND(header_file, header_file);
-    EXPAND(acl_file, list_acl_file);
+    EXPAND(acl_file_pre, list_acl_file_pre);
+    EXPAND(acl_file_post, list_acl_file_post);
     EXPAND(address_file, address_file);
     EXPAND(ack_file, ack_file);
 

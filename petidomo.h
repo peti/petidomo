@@ -64,7 +64,8 @@ struct PD_Config
     char *    list_dir;
     char *    ack_queue_dir;
     char *    help_file;
-    char *    acl_file;
+    char *    acl_file_pre;
+    char *    acl_file_post;
     char *    index_file;
     };
 
@@ -76,6 +77,12 @@ enum list_type_t
     LIST_ACKED,
     LIST_ACKED_ONCE
     };
+
+typedef enum 
+    {
+    ACL_PRE,
+    ACL_POST
+    } acl_type_t;
 
 enum subscription_type_t
     {
@@ -99,7 +106,8 @@ struct List_Config
     char *        desc_file;
     char *        sig_file;
     char *        header_file;
-    char *        acl_file;
+    char *        acl_file_pre;
+    char *        acl_file_post;
     char *        list_dir;
     char *        address_file;
     char *        ack_file;
@@ -156,7 +164,7 @@ int MailFilter(struct Mail *MailStruct, const char *filter);
 
 /********** acl.c **********/
 
-int checkACL(struct Mail *, const char *, int *, char **);
+int checkACL(struct Mail *, const char *, int *, char **, acl_type_t);
 enum
     {
     ACL_DROP,

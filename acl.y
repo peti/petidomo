@@ -235,7 +235,8 @@ domatch(int qualifier, int oper, char * string)
 int checkACL(struct Mail *   MailStruct,
              const char *    listname,
              int *           operation_ptr,
-             char **         parameter_ptr)
+             char **         parameter_ptr,
+             acl_type_t      type)
 {
     const struct PD_Config * MasterConfig;
     const struct List_Config * ListConfig;
@@ -256,15 +257,17 @@ int checkACL(struct Mail *   MailStruct,
 
     /* First check the mail against the master acl file. */
 
-    yyin = fopen(MasterConfig->acl_file, "r");
+    yyin = fopen((type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post), "r");
     if (yyin == NULL) {
         switch(errno) {
           case ENOENT:
               /* no master acl file */
-              syslog(LOG_WARNING, "You have no global acl file (%s). This is probably not a good idea.", MasterConfig->acl_file);
+              syslog(LOG_WARNING, "You have no global acl file (%s). This is probably not a good idea.", 
+                     (type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post));
               goto check_local_acl_file;
           default:
-              syslog(LOG_ERR, "Couldn't open \"%s\" acl file: %s", MasterConfig->acl_file,  strerror(errno));
+              syslog(LOG_ERR, "Couldn't open \"%s\" acl file: %s", 
+                     (type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post), strerror(errno));
               return -1;
         }
     }
@@ -277,7 +280,8 @@ int checkACL(struct Mail *   MailStruct,
         yyin = NULL;
     }
     if (rc != 0) {
-        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", MasterConfig->acl_file);
+        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", 
+               (type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post));
         return -1;
     }
 
@@ -301,14 +305,16 @@ check_local_acl_file:
     lineno = 1; operation = ACL_NONE;
 
     ListConfig = getListConfig(listname);
-    yyin = fopen(ListConfig->acl_file, "r");
+    yyin = fopen((type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post), "r");
     if (yyin == NULL) {
         switch(errno) {
           case ENOENT:
               /* no list acl file */
 	      goto finished;
           default:
-              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %s", ListConfig->acl_file,  strerror(errno));
+              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %s", 
+                     (type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post),
+                     strerror(errno));
               return -1;
         }
     }
@@ -317,7 +323,8 @@ check_local_acl_file:
     fclose(yyin);
     yyin = NULL;
     if (rc != 0) {
-        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", ListConfig->acl_file);
+        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", 
+               (type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post));
         return -1;
     }
 
