@@ -21,6 +21,12 @@ if test "$YACC" != "bison -y"; then
     AC_MSG_WARN($YACC might not work for us. Please install bison if the build fails.)
 fi
 
+dnl Find out what sizes the types have.
+dnl
+AC_CHECK_SIZEOF(unsigned short, 2)
+AC_CHECK_SIZEOF(unsigned int, 4)
+AC_CHECK_SIZEOF(unsigned long, 4)
+
 dnl Checks for typedefs
 dnl
 AC_CHECK_TYPE(ssize_t, long)

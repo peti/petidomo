@@ -220,4 +220,8 @@ struct Parse
     };
 extern struct Parse ParseArray[];
 
+/********** generate_cookie.c **********/
+
+char* generate_cookie(const char*);
+
 #endif /* !defined(__PETIDOMO_H__) */

@@ -30,7 +30,7 @@ CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(lib
 		  -DDATADIR=\"$(datadir)\" -DLOCALSTATEDIR=\"$(localstatedir)\"
 LDFLAGS		= @LDFLAGS@
 
-OBJS		= acl.o archive.o authen.o config.o \
+OBJS		= acl.o archive.o authen.o config.o generate_cookie.o \
 		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
 		  mailer.o members.o parsearray.o password.o rfcparse.o \
 		  subscribe.o tool.o unsubscribe.o main.o
@@ -107,8 +107,10 @@ acl.o: libtext/text.h petidomo.h acl_scan.c acl_scan.h
 acl_scan.o: acl_scan.h
 archive.o: libtext/text.h petidomo.h
 authen.o: libtext/text.h petidomo.h
-config.o: liblists/lists.h libconfigfile/configfile.h petidomo.h
+config.o: libtext/text.h liblists/lists.h libconfigfile/configfile.h
+config.o: petidomo.h
 filter.o: petidomo.h
+generate_cookie.o: petidomo.h
 handleacl.o: petidomo.h
 help.o: libtext/text.h petidomo.h
 hermes.o: libtext/text.h petidomo.h
