@@ -106,7 +106,7 @@ install-testlist:
 	$(SHTOOL) install -c -m 644 /dev/null $(DESTDIR)$(localstatedir)/lists/testlist/list
 
 clean distclean realclean::
-	@for subdir in lib*; do \
+	@for subdir in lib* docs; do \
 	echo "===> $$subdir"; \
 	(cd $$subdir && $(MAKE) $(FLAGS_TO_PASS) $@); \
 	echo "<=== $$subdir"; \
