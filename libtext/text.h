@@ -70,7 +70,7 @@ char *   text_find_next_line(char *);
 char *   text_find_string(char * buffer, char * string);
 
 #ifdef __cplusplus
-}   // end extern "C"
+}   /* end extern "C" */
 #endif
 
 #endif /* !__LIB_TEXT_H__ */
