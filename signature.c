@@ -33,43 +33,41 @@
 
 void
 AppendSignature(FILE * fh)
-{
-    const struct PD_Config * MasterConfig = getMasterConfig();
+    {
     struct utsname machine_name;
     struct rusage resource_usage;
 
-    if (MasterConfig->show_stats == TRUE) {
+    /* Start with the part of the signature that never fails. */
 
-	/* Start with the part of the signature that never fails. */
+    fflush(fh);
+    fprintf(fh, "\n\n-- \n");
+    fprintf(fh, " /*\n");
+    fprintf(fh, "  * Listserver software: OpenPetidomo\n");
 
-	fflush(fh);
-	fprintf(fh, "\n\n-- \n");
-	fprintf(fh, " /*\n");
-	fprintf(fh, "  * Listserver software: OpenPetidomo\n");
+    /* Determine what machine we are. */
 
-	/* Determine what machine we are. */
-
-	if (uname(&machine_name) == 0) {
-	    fprintf(fh, "  * Server hardware    : %s-%s\n",
-		    machine_name.sysname,
-		    machine_name.machine);
+    if (uname(&machine_name) == 0)
+	{
+	fprintf(fh, "  * Server hardware    : %s-%s\n",
+		machine_name.sysname,
+		machine_name.machine);
 	}
 
-	/* Determine our resource usage. */
+    /* Determine our resource usage. */
 
-	getrusage(RUSAGE_SELF, &resource_usage);
+    getrusage(RUSAGE_SELF, &resource_usage);
 
-	fprintf(fh, "  * Utilized cpu time  : %ld.%ld seconds\n",
-		resource_usage.ru_utime.tv_sec + resource_usage.ru_stime.tv_sec,
-		resource_usage.ru_utime.tv_usec + resource_usage.ru_stime.tv_usec);
-	fprintf(fh, "  * Utilized memory    : %ld KByte\n",
-		(resource_usage.ru_idrss > 0) ? resource_usage.ru_idrss :
-		(long int)sbrk(0) / 1024);
+    fprintf(fh, "  * Utilized cpu time  : %ld.%ld seconds\n",
+	    resource_usage.ru_utime.tv_sec + resource_usage.ru_stime.tv_sec,
+	    resource_usage.ru_utime.tv_usec + resource_usage.ru_stime.tv_usec);
+    fprintf(fh, "  * Utilized memory    : %ld KByte\n",
+	    (resource_usage.ru_idrss > 0) ? resource_usage.ru_idrss :
+	    (long int)sbrk(0) / 1024);
 
-	/* Close signature. */
+    /* Close signature. */
 
-	fprintf(fh, "  */\n");
-	fflush(fh);
+    fprintf(fh, "  */\n");
+    fflush(fh);
 
     }
-}
+

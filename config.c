@@ -37,7 +37,6 @@ static char *             master_password = NULL;
 static char *             mta = "/usr/sbin/sendmail";
 static char *             mta_options = "-i -f%s";
 static bool               detach = FALSE;
-static bool               show_stats = TRUE;
 
 int
 InitPetidomo(void)
@@ -53,8 +52,6 @@ InitPetidomo(void)
 	{ "AdminPassword", CF_STRING, &master_password },
 	{ "MTA", CF_STRING, &mta },
 	{ "MTA_Options", CF_STRING, &mta_options },
-	{ "DetachImmediately", CF_YES_NO, &detach },
-	{ "ShowStatistics", CF_YES_NO, &show_stats },
 	{ NULL, 0, NULL}
     };
 
@@ -120,8 +117,6 @@ InitPetidomo(void)
     MasterConfig->master_password = master_password;
     MasterConfig->mta = mta;
     MasterConfig->mta_options = mta_options;
-    MasterConfig->detach = detach;
-    MasterConfig->show_stats = show_stats;
 
     return 0;
 }
