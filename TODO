@@ -1,0 +1,13 @@
+
+  Petidomo v4 TODO List
+  =====================
+
+  Immediately (by Peti & RSE):
+  o Update the README, NEWS, ChangeLog and INSTALL documents
+  o Update docs/* to reflect latest Petidomo changes
+  o Complete petidomo.pod manual page
+
+  Later (by RSE):
+  o Re-indent all sources
+  o Cleanup other source tree aspects
+
