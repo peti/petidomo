@@ -7,6 +7,11 @@ dnl
 AC_INIT(petidomo.h)
 AC_REVISION($Revision$)dnl
 
+AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)
+V=`./etc/shtool version -lc -dlong version.c`
+./etc/shtool echo -e "Configuring %BOSSP Petidomo%b, Version %B${V}%b"
+AC_DIVERT_POP()
+
 dnl Checks for paths and programs.
 dnl
 AC_PROG_CC
