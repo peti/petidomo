@@ -11,6 +11,7 @@ YACC		= @YACC@
 CFLAGS		= @CFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@
 LDFLAGS		= @LDFLAGS@
+
 OBJS		= acl.o archive.o argvSetDebugLevel.o authen.o config.o exit.o \
 		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
 		  mailer.o members.o parsearray.o password.o rfcparse.o \
@@ -18,6 +19,10 @@ OBJS		= acl.o archive.o argvSetDebugLevel.o authen.o config.o exit.o \
 LIBS		= librfc822/librfc822.a liblists/liblists.a libargv/libargv.a \
 		  libconfigfile/libconfigfile.a libtext/libtext.a \
 		  libdebug/libdebug.a
+
+FLAGS_TO_PASS	= CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
+		  YACC="$(YACC)" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" \
+		  LDFLAGS="$(LDFLAGS)"
 
 .SUFFIXES:
 .SUFFIXES:	.c .o
@@ -46,7 +51,7 @@ acl_scan.c:		acl_scan.l acl_scan.h
 acl.c:			acl_scan.c
 
 $(LIBS):
-	(cd `echo $@ | sed -e 's@/.*@@'` && $(MAKE))
+	(cd `echo $@ | sed -e 's@/.*@@'` && $(MAKE) $(FLAGS_TO_PASS))
 
 clean distclean realclean::
 	@for n in lib*; do (cd $$n && $(MAKE) $@); done
