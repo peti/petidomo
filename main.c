@@ -75,6 +75,11 @@ main(int argc, char * argv[])
 	who_am_i = text_easy_sprintf("%s/%s", buf, argv[0]);
 	}
 
+    /* Set our real user id equal to the effective user id to avoid
+       confusion in case we're started as a setuid binary. */
+
+    setreuid(geteuid(), geteuid());
+
     /* Parse the command line. */
 
     argv_help_string = "Petidomo Mailing List Server";
