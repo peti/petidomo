@@ -218,8 +218,6 @@ DeleteAddress(struct Mail * MailStruct,
 	    char* command = text_easy_sprintf("unsubscribe %s %s", address, listname);
 	    char* cookie  = queue_command(MailStruct, command);
 
-	    /* Notify the owner. */
-
 	    fh = vOpenMailer(envelope, address, NULL);
 	    if (fh != NULL)
 		{
@@ -242,6 +240,27 @@ DeleteAddress(struct Mail * MailStruct,
 	    else
 		{
 		syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
+		return -1;
+		}
+
+	    fh = vOpenMailer(envelope, originator, NULL);
+	    if (fh != NULL)
+		{
+		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n", listname, ListConfig->fqdn);
+		fprintf(fh, "To: %s\n", originator);
+		fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n", address, listname);
+		if (MailStruct->Message_Id != NULL)
+		    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		fprintf(fh, "Precedence: junk\n");
+		fprintf(fh, "Sender: %s\n", envelope);
+		fprintf(fh, "\n");
+		fprintf(fh, "Unsubscribing the address will need confirmation. Such a\n");
+		fprintf(fh, "request has been sent to the address already, so don't move!\n");
+		CloseMailer(fh);
+		}
+	    else
+		{
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
 		return -1;
 		}
 

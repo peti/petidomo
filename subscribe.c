@@ -186,11 +186,9 @@ AddAddress(struct Mail * MailStruct,
 	fh = vOpenMailer(envelope, originator, NULL);
 	if (fh != NULL)
 	    {
-	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
-		    listname, ListConfig->fqdn);
+	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n", listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n",
-		    address, listname);
+	    fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n", address, listname);
 	    if (MailStruct->Message_Id != NULL)
 		fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
@@ -235,13 +233,33 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "\n    %s\n\n", cookie);
 	    fprintf(fh, "in your reply.\n");
 	    CloseMailer(fh);
+
+	    fh = vOpenMailer(envelope, originator, NULL);
+	    if (fh != NULL)
+		{
+		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n", listname, ListConfig->fqdn);
+		fprintf(fh, "To: %s\n", originator);
+		fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n", address, listname);
+		if (MailStruct->Message_Id != NULL)
+		    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+		fprintf(fh, "Precedence: junk\n");
+		fprintf(fh, "Sender: %s\n", envelope);
+		fprintf(fh, "\n");
+		fprintf(fh, "Subscribing the address will need confirmation. Such a\n");
+		fprintf(fh, "request has been sent to the address already, so don't move!\n");
+		CloseMailer(fh);
+		}
+	    else
+		{
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
+		return -1;
+		}
 	    }
 	else
 	    {
 	    syslog(LOG_ERR, "Failed to send email to \"%s\"!", owner);
 	    return -1;
 	    }
-
 	return 0;
 	}
 
