@@ -20,7 +20,7 @@ SHTOOL          = ./etc/shtool
 CFLAGS		= @CFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(libexecdir)\" \
 		  -DDATADIR=\"$(datadir)\" -DLOCALSTATEDIR=\"$(localstatedir)\" \
-		 -DBINDIR=\"$(bindir)\"
+		  -DBINDIR=\"$(bindir)\"
 LDFLAGS		= @LDFLAGS@
 
 OBJS		= acl.o archive.o authen.o config.o generate_cookie.o \
@@ -31,7 +31,7 @@ OBJS		= acl.o archive.o authen.o config.o generate_cookie.o \
 LIBS		= librfc822/librfc822.a libmpools/libmpools.a liblists/liblists.a libargv/libargv.a \
 		  libconfigfile/libconfigfile.a libtext/libtext.a
 
-FLAGS_TO_PASS	= CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
+FLAGS_TO_PASS	= MFLAGS="$(MFLAGS)" CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" LEX="$(LEX)" \
 		  YACC="$(YACC)" CFLAGS="$(CFLAGS)" \
 		  CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
 
@@ -66,18 +66,18 @@ install:	petidomo
 	$(SHTOOL) mkdir -f -p -m 755 $(datadir)
 	$(SHTOOL) mkdir -f -p -m 755 $(libexecdir)
 	$(SHTOOL) install -c -s -m 555 petidomo $(bindir)
-	$(SHTOOL) install -c -m 644 ../etc/petidomo.conf $(sysconfdir)/petidomo.conf-sample
-	$(SHTOOL) install -c -m 644 ../etc/petidomo.acl $(sysconfdir)/petidomo.acl-sample
-	$(SHTOOL) install -c -m 444 ../etc/help $(datadir)/help
-	$(SHTOOL) install -c -m 555 ../etc/InsertNameInSubject.sh $(libexecdir)
-	$(SHTOOL) install -c -m 555 ../etc/pgp-decrypt.sh $(libexecdir)
-	$(SHTOOL) install -c -m 555 ../etc/pgp-encrypt.sh $(libexecdir)
-	$(SHTOOL) install -c -m 555 ../etc/rfc2369.sh $(libexecdir)
+	$(SHTOOL) install -c -m 644 config/petidomo.conf $(sysconfdir)/petidomo.conf-sample
+	$(SHTOOL) install -c -m 644 config/petidomo.acl $(sysconfdir)/petidomo.acl-sample
+	$(SHTOOL) install -c -m 444 config/help $(datadir)/help
+	$(SHTOOL) install -c -m 555 filter/insert-name-in-subject.sh $(libexecdir)
+	$(SHTOOL) install -c -m 555 filter/pgp-decrypt.sh $(libexecdir)
+	$(SHTOOL) install -c -m 555 filter/pgp-encrypt.sh $(libexecdir)
+	$(SHTOOL) install -c -m 555 filter/rfc2369.sh $(libexecdir)
 
 install-testlist:
 	$(SHTOOL) mkdir -f -p -m 755 $(localstatedir)/lists/testlist
-	$(SHTOOL) install -c -m 644 ../etc/list-config $(localstatedir)/lists/testlist/config
-	$(SHTOOL) install -c -m 644 ../etc/list-acl $(localstatedir)/lists/testlist/acl
+	$(SHTOOL) install -c -m 644 config/list-config $(localstatedir)/lists/testlist/config
+	$(SHTOOL) install -c -m 644 config/list-acl $(localstatedir)/lists/testlist/acl
 	@rm -f $(localstatedir)/lists/testlist/list
 	$(SHTOOL) install -c -m 644 /dev/null $(localstatedir)/lists/testlist/list
 
