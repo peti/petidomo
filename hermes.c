@@ -188,6 +188,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 	    /* Every posting needs an acknowledgement. */
 
 	    char* cookie;
+	    char c;
 	    char* originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
 
 	    syslog(LOG_INFO, "\"%s\" tried to post to acknowledged list \"%s\"; posting " \
@@ -203,12 +204,14 @@ void hermes_main(char * incoming_mail, const char * listname)
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", owner);
 		fprintf(fh, "\n");
-		fprintf(fh, "Your posting needs to be approved. Do this by replying\n");
-		fprintf(fh, "to this mail and citing the string\n");
+		fprintf(fh, "Your posting needs to be approved. Reply to this mail and\n");
+		fprintf(fh, "concatenate the two following strings to one large string\n");
 		fprintf(fh, "\n");
-		fprintf(fh, "    %s\n", cookie);
+ 		c = cookie[16];
+ 		cookie[16] = '\0'; fprintf(fh, "    %s\n", &cookie[ 0]);
+ 		cookie[16] = c;    fprintf(fh, "    %s\n", &cookie[16]);
 		fprintf(fh, "\n");
-		fprintf(fh, "in your reply.\n");
+		fprintf(fh, "This validates your will to send and your will to read.\n");
 		CloseMailer(fh);
 		}
 	    else
@@ -249,6 +252,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 		else if (rc == 0)
 		    {
 		    char* cookie;
+		    char c;
 
 		    syslog(LOG_INFO, "\"%s\" tried to post to ack-once list \"%s\", but is posting " \
 			   "for the first time; posting has been deferred.", MailStruct->From, listname);
@@ -264,12 +268,15 @@ void hermes_main(char * incoming_mail, const char * listname)
 			fprintf(fh, "Precedence: junk\n");
 			fprintf(fh, "Sender: %s\n", owner);
 			fprintf(fh, "\n");
-			fprintf(fh, "Your posting needs to be approved. Do this by replying\n");
-			fprintf(fh, "to this mail and citing the string\n");
+			fprintf(fh, "Your posting needs to be approved. Reply to this mail and\n");
+			fprintf(fh, "concatenate the two following strings to one large string\n");
 			fprintf(fh, "\n");
-			fprintf(fh, "    %s\n", cookie);
+			c = cookie[16];
+			cookie[16] = '\0'; fprintf(fh, "    %s\n", &cookie[ 0]);
+			cookie[16] = c;    fprintf(fh, "    %s\n", &cookie[16]);
 			fprintf(fh, "\n");
-			fprintf(fh, "in your reply. You won't have to do that again.\n");
+			fprintf(fh, "This validates your will to send and your will to read.\n");
+			fprintf(fh, "You won't have to repeat that action in the future.\n");
 			CloseMailer(fh);
 			}
 		    else
