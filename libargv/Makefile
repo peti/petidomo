@@ -13,7 +13,7 @@ CPPFLAGS	=
 LDFLAGS		=
 
 .SUFFIXES:
-.SUFFIXES:	.c .o .a
+.SUFFIXES:	.c .o
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<

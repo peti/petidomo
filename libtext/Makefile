@@ -16,7 +16,7 @@ OBJECTS		= easy_pattern_match.o find_next_line.o find_string.o \
 		  easy_sprintf.o transform_text.o wordwrap.o
 
 .SUFFIXES:
-.SUFFIXES:	.c .o .a
+.SUFFIXES:	.c .o
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
