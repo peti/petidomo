@@ -281,15 +281,6 @@ const struct List_Config* getListConfig(const char * listname)
     EXPAND(acl_file, list_acl_file);
     EXPAND(address_file, address_file);
 
-    printf("archivepath: %s\n", ListConfig->archivepath);
-    printf("intro_file: %s\n", ListConfig->intro_file);
-    printf("desc_file: %s\n", ListConfig->desc_file);
-    printf("sig_file: %s\n", ListConfig->sig_file);
-    printf("header_file: %s\n", ListConfig->header_file);
-    printf("acl_file: %s\n", ListConfig->acl_file);
-    printf("address_file: %s\n", ListConfig->address_file);
-
-
     AppendNode(ListConfigs, xstrdup(listname), ListConfig);
 
     return ListConfig;
