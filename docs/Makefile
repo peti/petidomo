@@ -26,4 +26,3 @@ directory-struct.eps:	directory-struct.fig
 
 clean distclean realclean:
 	rm -f petidomo.aux petidomo.dvi petidomo.idx petidomo.log petidomo.ps petidomo.toc
-	rm -f ml-principle1.eps ml-principle2.eps directory-struct.eps
