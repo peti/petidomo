@@ -92,27 +92,37 @@ hermes_main(char * incoming_mail, const char * listname)
     if (FindBodyPassword(MailStruct) != 0)
 	exit(1);
 
-    if (checkACL(MailStruct, listname, &operation, &parameter) != 0)
+    if (isValidPostingPassword(MailStruct->Approve, listname) == FALSE)
 	{
-	syslog(LOG_ERR, "checkACL() failed with an error.");
-	exit(1);
-	}
-    rc = handleACL(MailStruct, listname, operation, parameter);
-    switch(rc)
-	{
-	case -1:
-	    syslog(LOG_ERR, "handleACL() failed with an error.");
+	/* If no valid posting password has been provided, the mail is
+           subject to the ACL mechanism. Please note that the ACL may
+	   actually set a correct posting password via the 'approve'
+	   command. So just because there wasn't a valid posting
+	   password here, it doesn't mean there might not be after ACL
+	   processing is over. That's why we check the posting
+	   password again below. */
+
+	if (checkACL(MailStruct, listname, &operation, &parameter) != 0)
+	    {
+	    syslog(LOG_ERR, "checkACL() failed with an error.");
 	    exit(1);
-	case 0:
-	    break;
-	case 1:
-	    return 0;
+	    }
+	rc = handleACL(MailStruct, listname, operation, parameter);
+	switch(rc)
+	    {
+	    case -1:
+		syslog(LOG_ERR, "handleACL() failed with an error.");
+		exit(1);
+	    case 0:
+		break;
+	    case 1:
+		return 0;
+	    }
 	}
 
     if (isValidPostingPassword(MailStruct->Approve, listname) == FALSE)
 	{
-	/* No valid password found. Reject the article, if the list is
-	   of type 'moderated'. */
+	/* Reject the article, if the list is of type 'moderated'. */
 
 	if (ListConfig->listtype == LIST_MODERATED)
 	    {
