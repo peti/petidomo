@@ -31,102 +31,96 @@ List ListConfigs;
 /* These variables need to be static/global, so that the addresses as
    used in MasterCF are known at compile time. */
 
-static char *             fqdn = NULL;
-static char *             master_password = NULL;
-static char *             mta = "/usr/sbin/sendmail";
-static char *             mta_options = "-i -f%s";
+static char*  fqdn            = NULL;
+static char*  master_password = NULL;
+static char*  mta             = "/usr/sbin/sendmail";
+static char*  mta_options     = "-i -f%s";
 
-int
-InitPetidomo(void)
-{
-    char *             basedir = "/usr/local/petidomo";
-    int                rc;
+int InitPetidomo(void)
+    {
+    int    rc;
 
     /* Format description of our global config file. */
 
-    struct ConfigFile  MasterCF[] = {
+    struct ConfigFile  MasterCF[] =
+	{
 	{ "Hostname", CF_STRING, &fqdn },
 	{ "AdminPassword", CF_STRING, &master_password },
 	{ "MTA", CF_STRING, &mta },
 	{ "MTA_Options", CF_STRING, &mta_options },
 	{ NULL, 0, NULL}
-    };
+	};
 
     /* Allocate memory for the global config structure. */
 
     MasterConfig = calloc(sizeof(struct PD_Config), 1);
-    if (MasterConfig == NULL) {
+    if (MasterConfig == NULL)
+	{
 	syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct PD_Config));
 	return -1;
-    }
+	}
 
     /* Init the list of read list configs. */
 
     ListConfigs = InitList(NULL);
 
-    /* chdir() into the base directory. */
-
-    rc = chdir(basedir);
-    if (rc != 0) {
-	syslog(LOG_ERR, "Failed to change current directory to \"%s\": %m", basedir);
-	return -1;
-    }
-
     /* Parse the config file. */
 
-    rc = ReadConfig("etc/petidomo.conf", MasterCF);
-    if (rc != 0) {
-	syslog(LOG_ERR, "Failed to parse the master config file \"petidomo.conf\"");
+    rc = ReadConfig(ETCDIR "/petidomo.conf", MasterCF);
+    if (rc != 0)
+	{
+	syslog(LOG_ERR, "Failed to parse the master config file.");
 	return -1;
-    }
+	}
 
     /* Do consistency checks. */
 
-    if (fqdn == NULL) {
+    if (fqdn == NULL)
+	{
 	syslog(LOG_ERR, "The master config file \"petidomo.conf\" doesn't set the host name.");
 	return -1;
-    }
-    if (master_password == NULL) {
+	}
+    if (master_password == NULL)
+	{
 	syslog(LOG_ERR, "The master config file \"petidomo.conf\" doesn't set the admin password.");
 	return -1;
-    }
-    if (strstr(mta_options, "%s") == NULL) {
+	}
+    if (strstr(mta_options, "%s") == NULL)
+	{
 	syslog(LOG_ERR, "The argument to MTA_Options in the master config file is invalid.");
 	return -1;
-    }
+	}
 
     /* Copy the results to the structure. */
 
-    MasterConfig->basedir = basedir;
     MasterConfig->fqdn = fqdn;
     MasterConfig->master_password = master_password;
     MasterConfig->mta = mta;
     MasterConfig->mta_options = mta_options;
 
     return 0;
-}
+    }
 
-const struct PD_Config *
-getMasterConfig(void)
-{
+const struct PD_Config* getMasterConfig(void)
+    {
     return MasterConfig;
-}
+    }
 
-static char *     list_fqdn = NULL;
-static char *     admin_password = NULL;
-static char *     posting_password = NULL;
-static char *     listtype = NULL;
-static char *     reply_to = NULL;
-static char *     postingfilter = NULL;
-static char *     archivepath = NULL;
-static bool       allowpubsub = TRUE;
-static bool       allowaliensub = TRUE;
-static bool       allowmembers = FALSE;
-static bool       showonindex = TRUE;
 
-const struct List_Config *
-getListConfig(const char * listname)
-{
+static char*     list_fqdn = NULL;
+static char*     admin_password = NULL;
+static char*     posting_password = NULL;
+static char*     listtype = NULL;
+static char*     reply_to = NULL;
+static char*     postingfilter = NULL;
+static char*     archivepath = NULL;
+static bool      allowpubsub = TRUE;
+static bool      allowaliensub = TRUE;
+static bool      allowmembers = FALSE;
+static bool      showonindex = TRUE;
+
+const struct List_Config* getListConfig(const char * listname)
+    {
     const struct PD_Config *  MasterConfig;
     struct List_Config *      ListConfig;
     Node                      node;
@@ -135,7 +129,8 @@ getListConfig(const char * listname)
 
     /* Format description of our global config file. */
 
-    struct ConfigFile ListCF[] = {
+    struct ConfigFile ListCF[] =
+	{
 	{ "ListType", CF_STRING, &listtype },
 	{ "AllowPublicSubscription", CF_YES_NO, &allowpubsub },
 	{ "AllowAlienSubscription", CF_YES_NO, &allowaliensub },
@@ -148,7 +143,7 @@ getListConfig(const char * listname)
 	{ "PostingFilter", CF_STRING, &postingfilter },
 	{ "Archive", CF_STRING, &archivepath },
 	{ NULL, 0, NULL}
-    };
+	};
 
     /* Get the master configuration. */
 
@@ -158,41 +153,45 @@ getListConfig(const char * listname)
 
     node = FindNodeByKey(ListConfigs, listname);
     if (node != NULL)
-      return getNodeData(node);
+	return getNodeData(node);
 
     /* No? Then read the config file. */
 
     sprintf(buffer, "lists/%s/config", listname);
     rc = ReadConfig(buffer, ListCF);
-    if (rc != 0) {
+    if (rc != 0)
+	{
 	syslog(LOG_ERR, "Failed to parse the list \"%s\"'s config file.", listname);
 	exit(1);
-    }
+	}
 
     /* Do consistency checks. */
 
-    if (listtype == NULL) {
+    if (listtype == NULL)
+	{
 	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
 	exit(1);
-    }
+	}
 
     /* Set up the list config structure. */
 
     ListConfig = calloc(sizeof(struct List_Config), 1);
-    if (ListConfig == NULL) {
+    if (ListConfig == NULL)
+	{
 	syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct List_Config));
 	exit(1);
-    }
+	}
     if (!strcasecmp(listtype, "open"))
-      ListConfig->listtype = LIST_OPEN;
+	ListConfig->listtype = LIST_OPEN;
     else if (!strcasecmp(listtype, "closed"))
-      ListConfig->listtype = LIST_CLOSED;
+	ListConfig->listtype = LIST_CLOSED;
     else if (!strcasecmp(listtype, "moderated"))
-      ListConfig->listtype = LIST_MODERATED;
-    else {
+	ListConfig->listtype = LIST_MODERATED;
+    else
+	{
 	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
 	exit(1);
-    }
+	}
     ListConfig->allowpubsub = allowpubsub;
     ListConfig->allowaliensub = allowaliensub;
     ListConfig->allowmembers = allowmembers;
@@ -200,7 +199,7 @@ getListConfig(const char * listname)
     ListConfig->fqdn = (list_fqdn) ? list_fqdn : MasterConfig->fqdn;
     ListConfig->reply_to = reply_to;
     if (reply_to != NULL && strcasecmp(reply_to, "none"))
-      CanonizeAddress(&(ListConfig->reply_to), ListConfig->fqdn);
+	CanonizeAddress(&(ListConfig->reply_to), ListConfig->fqdn);
     ListConfig->admin_password = admin_password;
     ListConfig->posting_password = posting_password;
     ListConfig->postingfilter = postingfilter;
@@ -208,4 +207,4 @@ getListConfig(const char * listname)
     AppendNode(ListConfigs, xstrdup(listname), ListConfig);
 
     return ListConfig;
-}
+    }

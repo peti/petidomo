@@ -39,6 +39,29 @@ dnl Turn '-O2' to '-O3'.
 dnl
 CFLAGS=`echo $CFLAGS | sed -e "s/-O2/-O3/"`
 
+dnl Where is the /etc directory?
+dnl
+AC_MSG_CHECKING(etcdir)
+AC_ARG_WITH(etcdir,
+[  --with-etcdir=PATH      Directory containing petidomo.conf (default /etc).],
+[ case "$withval" in
+  no)
+    AC_MSG_ERROR(Need ETCDIR.)
+    ;;
+  yes)
+    ETCDIR="/etc"
+    AC_MSG_RESULT(/etc)
+    ;;
+  *)
+    ETCDIR="$withval"
+    AC_MSG_RESULT($withval)
+    ;;
+  esac ],
+  ETCDIR="/etc"
+  AC_MSG_RESULT(/etc)
+)
+AC_SUBST(ETCDIR)
+
 dnl Write results.
 dnl
 AC_OUTPUT(Makefile)

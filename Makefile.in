@@ -15,6 +15,7 @@ libdir 		= @libdir@/petidomo
 infodir 	= @infodir@
 mandir 		= @mandir@
 includedir 	= @includedir@
+ETCDIR		= @ETCDIR@
 
 CC		= @CC@
 AR		= ar
@@ -24,7 +25,7 @@ YACC		= @YACC@
 INSTALL		= ../etc/install-sh
 
 CFLAGS		= @CFLAGS@
-CPPFLAGS	= @CPPFLAGS@ @DEFS@
+CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DETCDIR=\"$(ETCDIR)\"
 LDFLAGS		= @LDFLAGS@
 
 OBJS		= acl.o archive.o authen.o config.o \

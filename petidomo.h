@@ -51,7 +51,6 @@
 /********** config.c **********/
 
 struct PD_Config {
-    char *    basedir;
     char *    fqdn;
     char *    master_password;
     char *    mta;
