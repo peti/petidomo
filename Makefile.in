@@ -106,6 +106,17 @@ distclean::	clean
 realclean::	distclean
 	rm -f configure
 
+dist: distclean
+	@echo "Fixing source tree permissions"; \
+	$(SHTOOL) fixperm *
+	@echo "Rolling source distribution tarball"; \
+	V=`$(SHTOOL) version -lc -dshort version.c`; \
+	$(SHTOOL) tarball \
+	    -o petidomo-$$V.tar.gz -d petidomo-$$V -u ossp -g petidomo \
+	    -e 'CVS,\.cvsignore,\.configure,ChangeLog*,\.\#.*,*~$$,\.[ao]$$' \
+		-c 'gzip -9' .; \
+	ls -l petidomo-$$V.tar.gz
+
 # Dependencies
 
 address-db.o: libtext/text.h petidomo.h
