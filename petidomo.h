@@ -191,6 +191,10 @@ int savefile(const char *filename, const char *buffer);
 
 int listserv_main(char *incoming_mail, char *default_list);
 
+/********** approve.c **********/
+
+int approve_main(char *incoming_mail);
+
 /********** mailer.c **********/
 
 FILE *OpenMailer(const char *envelope, const char *recipients[]);

@@ -91,6 +91,10 @@ main(int argc, char * argv[])
 	    exit(1);
 	    }
 	}
+    else if (strcasecmp("approve", mode) == 0)
+	{
+	approve_main(incoming_mail);
+	}
     else
 	{
 	syslog(LOG_ERR, "I don't know anything about mode \"%s\".", mode);
