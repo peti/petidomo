@@ -236,10 +236,10 @@ char* generate_cookie(const char*);
 
 /********** queue_posting.c **********/
 
-void queue_posting(const struct Mail* mail, const char* listname);
+char* queue_posting(const struct Mail* mail, const char* listname);
 
 /********** queue_command.c **********/
 
-void queue_command(const struct Mail* mail, const char* command);
+char* queue_command(const struct Mail* mail, const char* command);
 
 #endif /* !defined(__PETIDOMO_H__) */

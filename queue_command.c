@@ -22,7 +22,7 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-void queue_command(const struct Mail* mail, const char* command)
+char* queue_command(const struct Mail* mail, const char* command)
     {
     const struct PD_Config   * MasterConfig = getMasterConfig();
     char*   buffer;
@@ -54,4 +54,5 @@ void queue_command(const struct Mail* mail, const char* command)
     fclose(fh);
     chmod(buffer, 0755);
     free(buffer);
+    return cookie;
     }

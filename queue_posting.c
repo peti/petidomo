@@ -22,7 +22,7 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-void queue_posting(const struct Mail* mail, const char* listname)
+char* queue_posting(const struct Mail* mail, const char* listname)
     {
     const struct PD_Config   * MasterConfig = getMasterConfig();
     char*   buffer;
@@ -46,4 +46,5 @@ void queue_posting(const struct Mail* mail, const char* listname)
     fclose(fh);
     chmod(buffer, 0755);
     free(buffer);
+    return cookie;
     }
