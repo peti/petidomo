@@ -59,6 +59,7 @@ elsif ($mail =~ m|^Subject:\s+Petidomo:\s+BOUNCE|mi) {
     close(FP);
     $mail =~ s|^.+?\n\n||s;
     $mail =~ s|^.+?\n>?From .+?\n||s;
+    $mail =~ s|Delivered-To:\s*$list\s*\n||s;
     $mail = "Approved: $password\n" . $mail; # best
     #$mail =~ s|^(.+?\n\n)(.*)$|$1Approved $password\n$2|s; # not good
     open(SM, "|$sendmail $replyto") || die "cannot spawn $sendmail";
