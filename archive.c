@@ -38,7 +38,7 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
     int           rc;
     struct tm *   timeptr;
     char *        date;
-    time_t        clock;
+    time_t        t;
 
     assert(MailStruct != NULL);
     assert(listname != NULL);
@@ -46,8 +46,8 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
     /* Initialize internals. */
 
     ListConfig = getListConfig(listname);
-    clock = time(NULL);
-    timeptr = localtime(&clock);
+    t = time(NULL);
+    timeptr = localtime(&t);
     date = asctime(timeptr);
     rc = -1;
 
