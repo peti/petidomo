@@ -51,6 +51,7 @@
 
 extern char g_is_approved;
 extern const char* who_am_i;
+extern char* masterconfig_path;
 
 /********** config.c **********/
 
@@ -104,7 +105,7 @@ struct List_Config
     char *        ack_file;
     };
 
-int InitPetidomo(const char* masterconfig_path);
+int InitPetidomo(const char*);
 const struct PD_Config *getMasterConfig(void);
 const struct List_Config *getListConfig(const char* listname);
 

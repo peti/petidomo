@@ -39,9 +39,8 @@ char* queue_command(const struct Mail* mail, const char* command)
 	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
 	exit(1);
 	}
-    fprintf(fh, "#! /bin/sh\n");
-    fprintf(fh, "\n");
-    fprintf(fh, "%s --mode=listserv --approved <<[end-of-%s-marker]\n", who_am_i, cookie);
+    fprintf(fh, "#!/bin/sh\n");
+    fprintf(fh, "%s \\\n--masterconf=%s \\\n--mode=listserv --approved \\\n<<[end-of-%s-marker]\n", who_am_i, masterconfig_path, cookie);
     fprintf(fh, "Sender: %s\n", mail->Envelope);
     fprintf(fh, "From: %s\n", mail->From);
     if (mail->Reply_To)

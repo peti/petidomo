@@ -43,7 +43,7 @@ static char*  index_file      = LOCALSTATEDIR "/index";
 static char*  list_dir        = LOCALSTATEDIR "/lists";
 static char*  ack_queue_dir   = LOCALSTATEDIR "/ack_queue";
 
-int InitPetidomo(const char* masterconfig_path)
+int InitPetidomo(const char* masterconfig)
     {
     int    rc;
 
@@ -78,7 +78,7 @@ int InitPetidomo(const char* masterconfig_path)
 
     /* Parse the config file. */
 
-    rc = ReadConfig(masterconfig_path, MasterCF);
+    rc = ReadConfig(masterconfig, MasterCF);
     if (rc != 0)
 	{
 	syslog(LOG_ERR, "Failed to parse the master config file.");
@@ -89,17 +89,17 @@ int InitPetidomo(const char* masterconfig_path)
 
     if (fqdn == NULL)
 	{
-	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the host name.", masterconfig_path);
+	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the host name.", masterconfig);
 	return -1;
 	}
     if (mta == NULL)
 	{
-	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the MTA.", masterconfig_path);
+	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the MTA.", masterconfig);
 	return -1;
 	}
     if (master_password == NULL)
 	{
-	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the admin password.", masterconfig_path);
+	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the admin password.", masterconfig);
 	return -1;
 	}
     if (strstr(mta_options, "%s") == NULL)

@@ -88,9 +88,9 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "\n");
 		buffer = text_easy_sprintf("You tried to subscribe the address \"%s\" to a mailing list. "   \
 					   "Unfortunately, your request could not be processed, because "    \
-					   "you didn't specify a valid mailing list name to which the "      \
+					   "you did not specify a valid mailing list name to which the "      \
 					   "address should be subscribed to. You may use the command INDEX " \
-					   "to receive an overview over the available mailing lists. Also, " \
+					   "to receive an overview of the available mailing lists. Also, " \
 					   "use the command HELP to verify that you got the command syntax " \
 					   "right.", address);
 		text_wordwrap(buffer, 70);
@@ -212,7 +212,7 @@ AddAddress(struct Mail * MailStruct,
     if (isValidAdminPassword(getPassword(), listname) == FALSE &&
 	ListConfig->subtype == SUBSCRIPTION_ACKED && !g_is_approved)
 	{
-	/* Require confirmation. */
+	/* Require approval. */
 
 	char* command;
 	char* cookie;
@@ -223,25 +223,28 @@ AddAddress(struct Mail * MailStruct,
 	command = text_easy_sprintf("subscribe %s %s", address, listname);
 	cookie  = queue_command(MailStruct, command);
 
-	/* Send request for confirmation to the user. */
+	/* Send request for approval to the user. */
 
 	fh = vOpenMailer(envelope, address, NULL);
 	if (fh != NULL)
 	    {
 	    fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", address);
-	    fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Request from \"%s\"\n", listname, ListConfig->fqdn, originator);
+	    if (strcasecmp(address, originator) == 0)
+	        fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Your request \"subscribe %s\"\n", listname, ListConfig->fqdn, listname);
+	    else
+	        fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Request \"subscribe %s\" from \"%s\"\n", listname, ListConfig->fqdn, listname, originator);
 	    fprintf(fh, "Precedence: junk\n");
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
 	    if (strcasecmp(address, originator) == 0)
 		buffer = text_easy_sprintf("You requested that the address \"%s\" should be subscribed to " \
-					   "the mailing list \"%s\". This will not happen unless you confirm the " \
+					   "the mailing list \"%s\". This will not happen unless you approve the " \
 					   "request by replying to this mail and citing the string",
 					   address, listname);
 	    else
 		buffer = text_easy_sprintf("Per request from \"%s\", the address \"%s\" should be subscribed to " \
-					   "the mailing list \"%s\". This will not happen unless you confirm the " \
+					   "the mailing list \"%s\". This will not happen unless you approve the " \
 					   "request by replying to this mail and citing the string",
 					   originator, address, listname);
 	    text_wordwrap(buffer, 70);
@@ -250,7 +253,7 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "in your reply.\n");
 	    CloseMailer(fh);
 
-	    /* If the request for confirmation has been sent to an
+	    /* If the request for approval has been sent to an
 	       address different to that of the originator, notify him
 	       what happened. */
 
@@ -267,8 +270,9 @@ AddAddress(struct Mail * MailStruct,
 		    fprintf(fh, "Precedence: junk\n");
 		    fprintf(fh, "Sender: %s\n", envelope);
 		    fprintf(fh, "\n");
-		    fprintf(fh, "Subscribing the address will need confirmation. Such a\n");
-		    fprintf(fh, "request has been sent to the address already, so don't move!\n");
+		    fprintf(fh, "Subscribing the address \"%s\" to the list \"%s\"\n", address, listname);
+		    fprintf(fh, "requires additional approval by \"%s\". A request\n", address);
+            fprintf(fh, "has been sent to this address. We are now awaiting the approval.\n");
 		    CloseMailer(fh);
 		    }
 		else
@@ -361,7 +365,7 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", address);
-	    fprintf(fh, "Subject: Petidomo: Welcome to the \"%s\" mailing list!\n", listname);
+	    fprintf(fh, "Subject: Petidomo: Welcome to \"%s@%s\"!\n", listname, ListConfig->fqdn);
 	    if (MailStruct->Message_Id != NULL)
 		fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");

@@ -37,7 +37,7 @@
 
 static char*  listname = NULL;
 static char*  mode = NULL;
-static char*  masterconfig_path = SYSCONFDIR "/petidomo.conf";
+char*  masterconfig_path = SYSCONFDIR "/petidomo.conf";
 char          g_is_approved = ARGV_FALSE;
 const char* who_am_i;
 

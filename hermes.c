@@ -200,11 +200,11 @@ hermes_main(char * incoming_mail, const char * listname)
 		{
 		fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
-		fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Your posting to list \"%s\"\n", listname, ListConfig->fqdn, listname);
+		fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Your posting to list \"%s\"\n", listname, ListConfig->fqdn, listname);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", owner);
 		fprintf(fh, "\n");
-		fprintf(fh, "Your posting needs to be confirmed. Do this by replying\n");
+		fprintf(fh, "Your posting needs to be approved. Do this by replying\n");
 		fprintf(fh, "to this mail and citing the string\n");
 		fprintf(fh, "\n");
 		fprintf(fh, "    %s\n", cookie);
@@ -260,12 +260,12 @@ hermes_main(char * incoming_mail, const char * listname)
 			{
 			fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
 			fprintf(fh, "To: %s\n", originator);
-			fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Your posting to list \"%s\"\n",
+			fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Your posting to list \"%s\"\n",
 				listname, ListConfig->fqdn, listname);
 			fprintf(fh, "Precedence: junk\n");
 			fprintf(fh, "Sender: %s\n", owner);
 			fprintf(fh, "\n");
-			fprintf(fh, "Your posting needs to be confirmed. Do this by replying\n");
+			fprintf(fh, "Your posting needs to be approved. Do this by replying\n");
 			fprintf(fh, "to this mail and citing the string\n");
 			fprintf(fh, "\n");
 			fprintf(fh, "    %s\n", cookie);
