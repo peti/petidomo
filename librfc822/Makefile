@@ -34,6 +34,8 @@ address_scan.c:		address_scan.l rfc822.h
 	$(LEX) -Prfc822_ address_scan.l
 	mv lex.rfc822_.c $@
 
+address.c:		address_scan.c
+
 realclean distclean clean::
 	rm -f librfc822.a test test.o
 	rm -f address.c address_scan.c address_scan.h
