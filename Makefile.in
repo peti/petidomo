@@ -69,6 +69,8 @@ install:	petidomo
 	$(SHTOOL) mkdir -f -p -m 755 $(datadir)
 	$(SHTOOL) mkdir -f -p -m 755 $(libexecdir)
 	$(SHTOOL) install -c -s -m 555 petidomo $(bindir)
+	$(SHTOOL) install -c -m 755 petidomo-approve $(bindir)
+	$(SHTOOL) install -c -m 755 petidomo-kickout $(bindir)
 	$(SHTOOL) install -c -m 644 config/petidomo.conf $(sysconfdir)/petidomo.conf-sample
 	$(SHTOOL) install -c -m 644 config/petidomo.acl $(sysconfdir)/petidomo.acl-sample
 	$(SHTOOL) install -c -m 444 config/help $(datadir)/help
