@@ -23,20 +23,23 @@
 #include <regex.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "petidomo.h"
+#include "libtext/text.h"
 
 void approve_main(char* mail)
     {
     const struct PD_Config* MasterConfig = getMasterConfig();
     struct Mail*   MailStruct;
     char*          originator;
+    char*          envelope;
+    FILE*          fh;
     static const char* cookie_regex = "[0-9a-f]{32}";
     regex_t preg;
     regmatch_t match[3];
     int offset;
-    int number_of_hits            = 0;
-    int number_of_successful_hits = 0;
+    int number_of_hits = 0;
 
     if (chdir(MasterConfig->ack_queue_dir) == -1)
 	{
@@ -59,13 +62,12 @@ void approve_main(char* mail)
 	char* dst = buffer;
 	unsigned int i;
 
-	++number_of_hits;
-
-	/* Copy found string into buffer. */
+	/* Copy found string into buffer and convert it to all
+           upper-case while doing so. */
 
 	src = mail + offset + match[0].rm_so;
 	for (i = 0; i < 32; ++i)
-	    *dst++ = *src++;
+	    *dst++ = toupper(*src++);
 	*dst = '\0';
 
 	/* Correct offset for the next match. */
@@ -79,7 +81,8 @@ void approve_main(char* mail)
 	    {
 	    char cmd[128];
 
-	    ++number_of_successful_hits;
+	    syslog(LOG_INFO, "Received valid approval code for spool file \"%s\".", buffer);
+	    ++number_of_hits;
 	    sprintf(cmd, "/bin/sh %s && /bin/rm -f %s", buffer, buffer);
 	    if (((signed char)system(cmd)) == -1)
 		{
@@ -87,6 +90,8 @@ void approve_main(char* mail)
 		exit(1);
 		}
 	    }
+	else
+	    syslog(LOG_INFO, "Received approval code \"%s\", but there is no corresponding posting.", buffer);
 	}
 
     /* Report results back to the originator */
@@ -104,5 +109,28 @@ void approve_main(char* mail)
 	}
 
     originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
+    envelope = text_easy_sprintf("petidomo-manager@%s", MasterConfig->fqdn);
 
+    fh = vOpenMailer(envelope, originator, NULL);
+    if (fh != NULL)
+	{
+	fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n", MasterConfig->fqdn);
+	fprintf(fh, "To: %s\n", originator);
+	fprintf(fh, "Subject: Petidomo: Your approval mail has been received\n");
+	if (MailStruct->Message_Id != NULL)
+	    fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+	fprintf(fh, "Precedence: junk\n");
+	fprintf(fh, "Sender: %s\n", envelope);
+	fprintf(fh, "\n");
+	if (number_of_hits > 0)
+	    fprintf(fh, "Your approval mail has been received and been processed sucessfully.");
+	else
+	    fprintf(fh, "I couldn't find any approval codes in your mail.");
+	CloseMailer(fh);
+	}
+    else
+	{
+	syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
+	exit(-1);
+	}
     }
