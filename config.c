@@ -215,12 +215,22 @@ const struct List_Config* getListConfig(const char * listname)
     if (stat(buffer, &sb) != 0)
 	{
 	free(buffer);
-	buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
-	list_dir = MasterConfig->list_dir;
+	buffer = text_easy_sprintf("%s/%s/conf", MasterConfig->list_dir, listname);
 	if (stat(buffer, &sb) != 0)
 	    {
-	    syslog(LOG_ERR, "Can't find a config file for list \"%s\".", listname);
-	    exit(1);
+	    free(buffer);
+	    buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
+	    list_dir = MasterConfig->list_dir;
+	    if (stat(buffer, &sb) != 0)
+		{
+		free(buffer);
+		buffer = text_easy_sprintf("%s/%s.conf", MasterConfig->list_dir, listname);
+		if (stat(buffer, &sb) != 0)
+		    {
+		    syslog(LOG_ERR, "Can't find a config file for list \"%s\".", listname);
+		    exit(1);
+		    }
+		}
 	    }
 	}
     rc = ReadConfig(buffer, ListCF);
