@@ -58,7 +58,7 @@ acl_scan.c:		acl_scan.l acl_scan.h
 acl.c:			acl_scan.c
 
 $(LIBS):
-	subdir=`echo $@ | sed -e 's@/.*@@'`; \
+	@subdir=`echo $@ | sed -e 's@/.*@@'`; \
 	echo "===> $$subdir"; \
 	cd $$subdir && $(MAKE) $(FLAGS_TO_PASS); \
 	echo "<=== $$subdir"
