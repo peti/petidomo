@@ -46,6 +46,7 @@ hermes_main(char * incoming_mail, const char * listname)
 
     /* Initialize internals. */
 
+    MasterConfig = getMasterConfig();
     ListConfig = getListConfig(listname);
 
     /* Parse the incoming mail. */
@@ -83,7 +84,6 @@ hermes_main(char * incoming_mail, const char * listname)
 	exit(1);
 	}
     PostingHeaders = xmalloc(strlen(MailStruct->Header)+1024);
-    MasterConfig = getMasterConfig();
     sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
     sprintf(owner, "%s-owner@%s", listname, ListConfig->fqdn);
 
@@ -91,6 +91,23 @@ hermes_main(char * incoming_mail, const char * listname)
 
     if (FindBodyPassword(MailStruct) != 0)
 	exit(1);
+
+    if (checkACL(MailStruct, listname, &operation, &parameter) != 0)
+	{
+	syslog(LOG_ERR, "checkACL() failed with an error.");
+	exit(1);
+	}
+    rc = handleACL(MailStruct, listname, operation, parameter);
+    switch(rc)
+	{
+	case -1:
+	    syslog(LOG_ERR, "handleACL() failed with an error.");
+	    exit(1);
+	case 0:
+	    break;
+	case 1:
+	    return 0;
+	}
 
     if (isValidPostingPassword(MailStruct->Approve, listname) == FALSE)
 	{
@@ -181,23 +198,6 @@ hermes_main(char * incoming_mail, const char * listname)
 		return -1;
 		}
 	    return 0;
-	    }
-
-	if (checkACL(MailStruct, listname, &operation, &parameter) != 0)
-	    {
-	    syslog(LOG_ERR, "checkACL() failed with an error.");
-	    exit(1);
-	    }
-	rc = handleACL(MailStruct, listname, operation, parameter);
-	switch(rc)
-	    {
-	    case -1:
-		syslog(LOG_ERR, "handleACL() failed with an error.");
-		exit(1);
-	    case 0:
-		break;
-	    case 1:
-		return 0;
 	    }
 	}
 
