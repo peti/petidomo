@@ -158,7 +158,7 @@ dofilter(const char * filter)
 
     fh = popen(filter, "w");
     if (fh == NULL) {
-        syslog(LOG_ERR, "Failed to open ACL-filter \"%s\": %m", filter);
+        syslog(LOG_ERR, "Failed to open ACL-filter \"%s\": %s", filter, strerror(errno));
         return -1;
     }
     fprintf(fh, "%s\n", g_MailStruct->Header);
@@ -263,7 +263,7 @@ int checkACL(struct Mail *   MailStruct,
               /* no master acl file */
               goto check_local_acl_file;
           default:
-              syslog(LOG_ERR, "Couldn't open \"%s\" acl file.: %m", MasterConfig->acl_file);
+              syslog(LOG_ERR, "Couldn't open \"%s\" acl file: %s", MasterConfig->acl_file,  strerror(errno));
               return -1;
         }
     }
@@ -307,7 +307,7 @@ check_local_acl_file:
               /* no list acl file */
 	      goto finished;
           default:
-              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %m", ListConfig->acl_file);
+              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %s", ListConfig->acl_file,  strerror(errno));
               return -1;
         }
     }
@@ -316,7 +316,7 @@ check_local_acl_file:
     fclose(yyin);
     yyin = NULL;
     if (rc != 0) {
-        syslog(LOG_ERR, "Parsing \"~petidomo/etc/acl\" file returned with an error.");
+        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", ListConfig->acl_file);
         return -1;
     }
 

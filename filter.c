@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <string.h>
 
 #include "petidomo.h"
 
@@ -61,11 +62,11 @@ MailFilter(struct Mail * MailStruct, const char * filter)
     /* Init pipes. */
 
     if (pipe(child_in) == -1) {
-	syslog(LOG_ERR, "Couldn't open a writing-pipe to my child process: %m");
+	syslog(LOG_ERR, "Couldn't open a writing-pipe to my child process: %s", strerror(errno));
 	return -1;
     }
     if (pipe(child_out) == -1) {
-	syslog(LOG_ERR, "Couldn't open a read-pipe from my child process: %m");
+	syslog(LOG_ERR, "Couldn't open a read-pipe from my child process: %s", strerror(errno));
 	return -1;
     }
 
@@ -78,11 +79,11 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	  close(child_in[WRITE]);
 	  close(child_out[READ]);
 	  if (dup2(child_in[READ], STDIN_FILENO) == -1) {
-	      syslog(LOG_ERR, "Child process couldn't read from pipe: %m");
+	      syslog(LOG_ERR, "Child process couldn't read from pipe: %s", strerror(errno));
 	      return -1;
 	  }
 	  if (dup2(child_out[WRITE], STDOUT_FILENO) == -1) {
-	      syslog(LOG_ERR, "Child process couldn't read from pipe: %m");
+	      syslog(LOG_ERR, "Child process couldn't read from pipe: %s", strerror(errno));
 	      return -1;
 	  }
 	  close(child_in[READ]);
@@ -95,7 +96,7 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	  close(child_in[WRITE]);
 	  close(child_out[READ]);
 	  close(child_out[WRITE]);
-	  syslog(LOG_ERR, "Couldn't fork: %m");
+	  syslog(LOG_ERR, "Couldn't fork: %s", strerror(errno));
 	  return -1;
       default:
 	  /* everything is fine */
@@ -107,24 +108,24 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 
     rc = fcntl(child_in[WRITE], F_GETFL, 0);
     if (rc == -1) {
-	syslog(LOG_ERR, "Couldn't get flags from write-pipe descriptor: %m");
+	syslog(LOG_ERR, "Couldn't get flags from write-pipe descriptor: %s", strerror(errno));
 	goto error_exit;
     }
     rc |= O_NONBLOCK;
     rc = fcntl(child_in[WRITE], F_SETFL, rc);
     if (rc == -1) {
-	syslog(LOG_ERR, "Couldn't set flags for write-pipe descriptor: %m");
+	syslog(LOG_ERR, "Couldn't set flags for write-pipe descriptor: %s", strerror(errno));
 	goto error_exit;
     }
     rc = fcntl(child_out[READ], F_GETFL, 0);
     if (rc == -1) {
-	syslog(LOG_ERR, "Couldn't get flags from write-pipe descriptor: %m");
+	syslog(LOG_ERR, "Couldn't get flags from write-pipe descriptor: %s", strerror(errno));
 	goto error_exit;
     }
     rc |= O_NONBLOCK;
     rc = fcntl(child_out[READ], F_SETFL, rc);
     if (rc == -1) {
-	syslog(LOG_ERR, "Couldn't set flags for write-pipe descriptor: %m");
+	syslog(LOG_ERR, "Couldn't set flags for write-pipe descriptor: %s", strerror(errno));
 	goto error_exit;
     }
 
@@ -167,7 +168,7 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 		}
 	    }
 	    else if (errno != EAGAIN) {
-		syslog(LOG_ERR, "Writing to the filter process failed: %m");
+		syslog(LOG_ERR, "Writing to the filter process failed: %s", strerror(errno));
 		goto error_exit;
 	    }
 	}
@@ -178,7 +179,7 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	    newmail_size += 10*1024;
 	    newmail = realloc(newmail, newmail_size);
 	    if (newmail == NULL) {
-		syslog(LOG_ERR, "Failed to allocate %d byte of memory: %m", newmail_size);
+		syslog(LOG_ERR, "Failed to allocate %d byte of memory: %s", newmail_size, strerror(errno));
 		goto error_exit;
 	    }
 	}
@@ -190,7 +191,7 @@ MailFilter(struct Mail * MailStruct, const char * filter)
 	    break;		/* we are finished */
 	}
 	else if (errno != EAGAIN) {
-	    syslog(LOG_ERR, "Reading from filter process failed: %m");
+	    syslog(LOG_ERR, "Reading from filter process failed: %s", strerror(errno));
 	    goto error_exit;
 	}
     }

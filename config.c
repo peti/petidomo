@@ -154,7 +154,7 @@ const struct List_Config* getListConfig(const char * listname)
     int                       rc;
     char *                    buffer;
     struct stat               sb;
-    char*                     list_dir;
+    char*                     this_list_dir;
 
     /* Format description of our global config file. */
 
@@ -211,7 +211,7 @@ const struct List_Config* getListConfig(const char * listname)
     /* No? Then read the config file. */
 
     buffer = text_easy_sprintf("%s/%s/config", MasterConfig->list_dir, listname);
-    list_dir = text_easy_sprintf("%s/%s", MasterConfig->list_dir, listname);
+    this_list_dir = text_easy_sprintf("%s/%s", MasterConfig->list_dir, listname);
     if (stat(buffer, &sb) != 0)
 	{
 	free(buffer);
@@ -293,7 +293,7 @@ const struct List_Config* getListConfig(const char * listname)
     ListConfig->posting_password = posting_password;
     ListConfig->postingfilter = postingfilter;
 
-    ListConfig->list_dir      = list_dir;
+    ListConfig->list_dir      = this_list_dir;
 
 #define EXPAND(dst, src)                  \
     if (src == NULL || src[0] == '/')     \

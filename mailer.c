@@ -23,6 +23,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <string.h>
+#include <errno.h>
 
 #include "libtext/text.h"
 #include "petidomo.h"
@@ -112,7 +114,7 @@ vOpenMailer(const char * envelope, ...)
 
     fh = popen(cmdline, "w");
     if (fh == NULL)
-	syslog(LOG_ERR, "Failed opening pipe to \"%s\": %m", cmdline);
+	syslog(LOG_ERR, "Failed opening pipe to \"%s\": %s", cmdline, strerror(errno));
 
     free(cmdline);
     return fh;
@@ -218,7 +220,7 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
 	arguments[counter++] = NULL;
 	if (pipe(fildes) == -1)
 	    {
-	    syslog(LOG_ERR, "Couldn't open a pipe to my child process: %m");
+	    syslog(LOG_ERR, "Couldn't open a pipe to my child process: %s", strerror(errno));
 	    return -1;
 	    }
 	child_pid = fork();
@@ -229,16 +231,16 @@ ListMail(const char * envelope, const char * listname, const struct Mail * MailS
 		close(MYPIPE_WRITE);
 		if (dup2(MYPIPE_READ, STDIN_FILENO) == -1)
 		    {
-		    syslog(LOG_ERR, "Child process couldn't read from pipe: %m");
+		    syslog(LOG_ERR, "Child process couldn't read from pipe: %s", strerror(errno));
 		    return -1;
 		    }
 		close(MYPIPE_READ);
 		execv(MasterConfig->mta, arguments);
-		syslog(LOG_ERR, "Couldn't exec(\"%s\"): %m", MasterConfig->mta);
+		syslog(LOG_ERR, "Couldn't exec(\"%s\"): %s", MasterConfig->mta, strerror(errno));
 		return -1;
 	    case -1:
 		/* Error */
-		syslog(LOG_ERR, "Couldn't fork: %m");
+		syslog(LOG_ERR, "Couldn't fork: %s", strerror(errno));
 		return -1;
 	    default:
 		/* everything is fine */

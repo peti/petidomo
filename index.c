@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <errno.h>
 
 #include "libtext/text.h"
 #include "petidomo.h"
@@ -53,7 +54,7 @@ GenIndex(struct Mail * MailStruct,
 
     fh = vOpenMailer(envelope, address, NULL);
     if (fh == NULL) {
-	syslog(LOG_ERR, "Failed to send mail to \"%s\": %m", address);
+	syslog(LOG_ERR, "Failed to send mail to \"%s\": %s", address, strerror(errno));
 	return -1;
     }
     fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", from);

@@ -22,6 +22,7 @@
 
 #define YYSTYPE char *
 
+#include <string.h>
 #include <errno.h>
 #ifdef DEBUG_DMALLOC
 #  include <dmalloc.h>

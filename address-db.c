@@ -69,7 +69,7 @@ int add_address(const char* file, const char* address)
     fh = fopen(file, "a");
     if (fh == NULL)
 	{
-	syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", file);
+	syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %s", file, strerror(errno));
 	return -1;
 	}
     fprintf(fh, "%s\n", address);

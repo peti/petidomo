@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "libtext/text.h"
 #include "petidomo.h"

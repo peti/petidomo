@@ -118,7 +118,7 @@ ReadConfig(const char * filename, /* path to the config file to parse */
 
     file_buf = loadfile(filename);
     if (file_buf == NULL) {
-	syslog(LOG_WARNING, "ReadConfig: Failed to load config file \"%s\": %m", filename);
+	syslog(LOG_WARNING, "ReadConfig: Failed to load config file \"%s\": %s", filename, strerror(errno));
 	return -1;
     }
 
@@ -126,7 +126,7 @@ ReadConfig(const char * filename, /* path to the config file to parse */
 
     filename = strdup(filename);
     if (filename == NULL) {
-	syslog(LOG_ERR, "ReadConfig: Failed to load config file \"%s\": %m", filename);
+	syslog(LOG_ERR, "ReadConfig: Failed to load config file \"%s\": %s", filename, strerror(errno));
 	return -1;
     }
     node = AppendNode(Files, filename, file_buf);
@@ -227,7 +227,7 @@ ReadConfig(const char * filename, /* path to the config file to parse */
 	      syslog(LOG_WARNING, "ReadConfig: Method not supported at the moment.");
 	      break;
 	  default:
-	      syslog(LOG_ERR, "ReadConfig internal error: ConfigFile structure element %d has unknown type %d.", i++, (&(cf[i]))->type);
+	      syslog(LOG_ERR, "ReadConfig internal error: ConfigFile structure element %d has unknown type %d.", i, (&(cf[i]))->type);
 	}
 
     }
@@ -305,7 +305,7 @@ GetConfig(const char * filename, char * keyword)
 
     file_buf = loadfile(filename);
     if (file_buf == NULL) {
-	syslog(LOG_ERR, "GetConfig: Failed to load config file \"%s\". %m", filename);
+	syslog(LOG_ERR, "GetConfig: Failed to load config file \"%s\": %s", filename, strerror(errno));
 	return NULL;
     }
 
@@ -382,7 +382,7 @@ SetConfig(const char * filename,
 
     file_buf = loadfile(filename);
     if (file_buf == NULL) {
-	syslog(LOG_ERR, "SetConfig: Failed to load config file \"%s\": %m", filename);
+	syslog(LOG_ERR, "SetConfig: Failed to load config file \"%s\": %s", filename, strerror(errno));
 	return -1;
     }
     file_len = errno;
@@ -462,7 +462,7 @@ SetConfig(const char * filename,
     return 0;
 
 io_error:
-    syslog(LOG_ERR, "SetConfig: Failed to write to file \"%s\": %m", filename);
+    syslog(LOG_ERR, "SetConfig: Failed to write to file \"%s\": %s", filename, strerror(errno));
     free(file_buf);
     return -1;
 }

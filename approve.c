@@ -17,11 +17,14 @@
    General Public License for more details.
 */
 
-#include "petidomo.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <regex.h>
+#include <string.h>
+#include <errno.h>
+
+#include "petidomo.h"
 
 int approve_main(char* mail)
     {
@@ -33,7 +36,7 @@ int approve_main(char* mail)
 
     if (chdir(MasterConfig->ack_queue_dir) == -1)
 	{
-	syslog(LOG_ERR, "Can't change directory to \"%s\": %m", MasterConfig->ack_queue_dir);
+	syslog(LOG_ERR, "Can't change directory to \"%s\": %s", MasterConfig->ack_queue_dir, strerror(errno));
 	exit(1);
 	}
 
@@ -73,7 +76,7 @@ int approve_main(char* mail)
 	    sprintf(cmd, "/bin/sh %s && /bin/rm -f %s", buffer, buffer);
 	    if (((signed char)system(cmd)) == -1)
 		{
-		syslog(LOG_ERR, "system() failed: %m", MasterConfig->ack_queue_dir);
+		syslog(LOG_ERR, "system() failed for \"%s\": %s", buffer, strerror(errno));
 		exit(1);
 		}
 	    }

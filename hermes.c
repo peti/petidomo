@@ -215,8 +215,6 @@ hermes_main(char * incoming_mail, const char * listname)
 
 	    if (g_is_approved)
 		{
-		int rc;
-
 		syslog(LOG_NOTICE, "\"%s\" acknowledged a former posting attempt on ack-once list \"%s\"; " \
 		       "add him to the ack file and let the posting pass.", MailStruct->From, listname);
 
@@ -229,7 +227,7 @@ hermes_main(char * incoming_mail, const char * listname)
 		}
 	    else
 		{
-		int rc = is_address_on_list(ListConfig->ack_file, MailStruct->From);
+		rc = is_address_on_list(ListConfig->ack_file, MailStruct->From);
 		if (rc == 0)
 		    rc = is_address_on_list(ListConfig->ack_file, MailStruct->Envelope);
 		if (rc < 0)

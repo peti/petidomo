@@ -106,7 +106,7 @@ static	void	argv_startup(void)
 
 /*** ET: BSD's strsep funktion.  See their man-page... ***/
 
-char *
+static char *
 my_strsep(char **stringp, const char *delim)
 {
     register char *s;

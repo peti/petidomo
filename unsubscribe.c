@@ -18,6 +18,8 @@
 */
 
 #include <string.h>
+#include <errno.h>
+
 #include "libtext/text.h"
 #include "petidomo.h"
 
@@ -293,7 +295,7 @@ DeleteAddress(struct Mail * MailStruct,
 	fh = fopen(ListConfig->address_file, "w");
 	if (fh == NULL)
 	    {
-	    syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %m", ListConfig->address_file);
+	    syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %s", ListConfig->address_file, strerror(errno));
 	    return -1;
 	    }
 	*p++ = '\0';

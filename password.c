@@ -18,6 +18,7 @@
 */
 
 #include <ctype.h>
+#include <string.h>
 #include "petidomo.h"
 
 static const char * s_password = NULL;

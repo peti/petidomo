@@ -17,6 +17,8 @@
    General Public License for more details.
 */
 
+#include <string.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "libtext/text.h"
@@ -34,7 +36,7 @@ char* queue_posting(const struct Mail* mail, const char* listname)
     fh = fopen(buffer, "w");
     if (fh == NULL)
 	{
-	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %m", buffer);
+	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
 	exit(1);
 	}
     fprintf(fh, "#! /bin/sh\n");
