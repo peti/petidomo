@@ -184,11 +184,11 @@ const struct List_Config* getListConfig(const char * listname)
     list_fqdn        = NULL;
     admin_password   = NULL;
     posting_password = NULL;
-    listtype         = NULL;
+    listtype         = "open";
     reply_to         = NULL;
     postingfilter    = NULL;
     archivepath      = NULL;
-    subtype          = NULL;
+    subtype          = "public";
     allowmembers     = FALSE;
     intro_file       = "introduction";
     sig_file         = "signature";
@@ -263,11 +263,16 @@ const struct List_Config* getListConfig(const char * listname)
 	}
 
     if (!strcasecmp(subtype, "public"))
-	ListConfig->listtype = SUBSCRIPTION_PUBLIC;
+	ListConfig->subtype = SUBSCRIPTION_PUBLIC;
     else if (!strcasecmp(subtype, "admin"))
-	ListConfig->listtype = SUBSCRIPTION_ADMIN;
+	ListConfig->subtype = SUBSCRIPTION_ADMIN;
     else if (!strcasecmp(subtype, "acknowledged") || !strcasecmp(subtype, "acked"))
-	ListConfig->listtype = SUBSCRIPTION_ACKED;
+	ListConfig->subtype = SUBSCRIPTION_ACKED;
+    else
+	{
+	syslog(LOG_ERR, "List \"%s\" doesn't have a valid subscription type in config file.", listname);
+	exit(1);
+	}
 
     ListConfig->allowmembers = allowmembers;
     ListConfig->fqdn = (list_fqdn) ? list_fqdn : MasterConfig->fqdn;

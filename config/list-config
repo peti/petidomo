@@ -17,8 +17,7 @@
 #               acknowledge his posting once, after that, he can post
 #               as he wishes.
 #
-#       This option is REQUIRED. Petidomo will abort with an error, if it is
-#       unset.
+#	The default, if this option is unset, is an open mailing list.
 ListType	open
 
 #  TAG: SubscriptionType <public|admin|acknowledged>
