@@ -261,6 +261,7 @@ int checkACL(struct Mail *   MailStruct,
         switch(errno) {
           case ENOENT:
               /* no master acl file */
+              syslog(LOG_WARNING, "You have no global acl file (%s). This is probably not a good idea.", MasterConfig->acl_file);
               goto check_local_acl_file;
           default:
               syslog(LOG_ERR, "Couldn't open \"%s\" acl file: %s", MasterConfig->acl_file,  strerror(errno));
@@ -289,15 +290,15 @@ int checkACL(struct Mail *   MailStruct,
 
 check_local_acl_file:
 
-    /* Set up the lex scanner. */
-
-    BEGIN(INITIAL);
-    lineno = 1; operation = ACL_NONE;
-
     /* Do we have a local acl file to test? */
 
     if (listname == NULL)
       goto finished;
+
+    /* Set up the lex scanner. */
+
+    BEGIN(INITIAL);
+    lineno = 1; operation = ACL_NONE;
 
     ListConfig = getListConfig(listname);
     yyin = fopen(ListConfig->acl_file, "r");
