@@ -75,12 +75,12 @@ install:	petidomo
 	$(INSTALL) -m 555 ../etc/rfc2369.sh $(libexecdir)
 
 install-testlist:
-	@if [ ! -d $(localstatedir)/testlist ]; then $(INSTALL) -d $(localstatedir)/testlist; fi
-	$(INSTALL) -m 644 ../etc/list-config $(localstatedir)/testlist/config
-	$(INSTALL) -m 644 ../etc/list-acl $(localstatedir)/testlist/acl
-	@rm -f $(localstatedir)/testlist/list
-	cp /dev/null $(localstatedir)/testlist/list
-	@chmod 644 $(localstatedir)/testlist/list
+	@if [ ! -d $(localstatedir)/lists/testlist ]; then $(INSTALL) -d $(localstatedir)/lists/testlist; fi
+	$(INSTALL) -m 644 ../etc/list-config $(localstatedir)/lists/testlist/config
+	$(INSTALL) -m 644 ../etc/list-acl $(localstatedir)/lists/testlist/acl
+	@rm -f $(localstatedir)/lists/testlist/list
+	cp /dev/null $(localstatedir)/lists/testlist/list
+	@chmod 644 $(localstatedir)/lists/testlist/list
 
 clean distclean realclean::
 	@for n in lib*; do (cd $$n && $(MAKE) $@); done
