@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <pwd.h>
 
 #include "liblists/lists.h"
 #include "libconfigfile/configfile.h"
@@ -40,7 +39,6 @@ static char *             mta_options = "-i -f%s";
 int
 InitPetidomo(void)
 {
-    struct passwd *    pwd;
     char *             basedir = "/usr/local/petidomo";
     int                rc;
 
@@ -65,18 +63,6 @@ InitPetidomo(void)
     /* Init the list of read list configs. */
 
     ListConfigs = InitList(NULL);
-
-    /* First of all, determine the home directory of the "petidomo"
-       user. This will be our base directory for all operations. */
-
-    pwd = getpwnam("petidomo");
-    if (pwd != NULL) {
-	if (strcmp(basedir, pwd->pw_dir) != 0)
-	  basedir = xstrdup(pwd->pw_dir); /* Replace the default above. */
-	endpwent();
-    }
-    else
-      syslog(LOG_WARNING, "User \"petidomo\" not found.");
 
     /* chdir() into the base directory. */
 
