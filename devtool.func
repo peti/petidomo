@@ -1,6 +1,6 @@
 ##
 ##  devtool.func -- Development Tool Functions
-##  Copyright (c) 2001-2002 Ralf S. Engelschall <rse@engelschall.com>
+##  Copyright (c) 2001-2003 Ralf S. Engelschall <rse@engelschall.com>
 ##
 
 devtool_require () {
@@ -14,10 +14,10 @@ devtool_require () {
         $e )
             ;;
         $a )
-            echo "devtool:WARNING: $t version $v still accepted, although expected $e." 1>&2
+            echo "devtool:WARNING: $t version $v accepted, but expected $e." 1>&2
             ;;
         * )
-            echo "devtool:ERROR: $t version $e expected, but found $v." 1>&2
+            echo "devtool:ERROR: $t version $v NOT acceptable, requires $e." 1>&2
             exit 1
             ;;
     esac
