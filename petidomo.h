@@ -77,9 +77,9 @@ struct List_Config {
     char *        reply_to;
 };
 
-int InitPetidomo(void);
-const struct PD_Config *getMasterConfig(void  );
-const struct List_Config *getListConfig(const char *listname);
+int InitPetidomo(const char* masterconfig_path);
+const struct PD_Config *getMasterConfig(void);
+const struct List_Config *getListConfig(const char* listname);
 
 /********** rfcparse.c **********/
 

@@ -36,7 +36,7 @@ static char*  master_password = NULL;
 static char*  mta             = "/usr/sbin/sendmail";
 static char*  mta_options     = "-i -f%s";
 
-int InitPetidomo(void)
+int InitPetidomo(const char* masterconfig_path)
     {
     int    rc;
 
@@ -66,7 +66,7 @@ int InitPetidomo(void)
 
     /* Parse the config file. */
 
-    rc = ReadConfig(ETCDIR "/petidomo.conf", MasterCF);
+    rc = ReadConfig(masterconfig_path, MasterCF);
     if (rc != 0)
 	{
 	syslog(LOG_ERR, "Failed to parse the master config file.");
@@ -77,12 +77,12 @@ int InitPetidomo(void)
 
     if (fqdn == NULL)
 	{
-	syslog(LOG_ERR, "The master config file \"petidomo.conf\" doesn't set the host name.");
+	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the host name.", masterconfig_path);
 	return -1;
 	}
     if (master_password == NULL)
 	{
-	syslog(LOG_ERR, "The master config file \"petidomo.conf\" doesn't set the admin password.");
+	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the admin password.", masterconfig_path);
 	return -1;
 	}
     if (strstr(mta_options, "%s") == NULL)
