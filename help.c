@@ -60,7 +60,7 @@ SendHelp(struct Mail * MailStruct,
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    param1, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Your request \"help %s\"\n", param1);
+	    fprintf(fh, "Subject: Petidomo: Your request \"help %s\"\n", param1);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
@@ -96,7 +96,7 @@ SendHelp(struct Mail * MailStruct,
 	      fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
 		      MasterConfig->fqdn);
 	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Your request \"help %s\"\n", param1);
+	    fprintf(fh, "Subject: Petidomo: Your request \"help %s\"\n", param1);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
@@ -130,7 +130,7 @@ SendHelp(struct Mail * MailStruct,
 	  fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
 		  MasterConfig->fqdn);
 	fprintf(fh, "To: %s\n", originator);
-	fprintf(fh, "Subject: Your request \"help\"\n");
+	fprintf(fh, "Subject: Petidomo: Your request \"help\"\n");
 	if (MailStruct->Message_Id != NULL)
 	  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	fprintf(fh, "Precedence: junk\n");
@@ -186,7 +186,7 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
       fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
 	      MasterConfig->fqdn);
     fprintf(fh, "To: %s\n", replyto);
-    fprintf(fh, "Subject: Your request \"indecipherable\"\n");
+    fprintf(fh, "Subject: Petidomo: Your request \"indecipherable\"\n");
     if (MailStruct->Message_Id != NULL)
       fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
     fprintf(fh, "Precedence: junk\n");

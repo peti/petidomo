@@ -70,9 +70,9 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 		  (MailStruct->Reply_To) : (MailStruct->From));
 	  fprintf(fh, "Cc: %s\n", owner);
 	  if (listname != NULL)
-	    fprintf(fh, "Subject: Your posting to list \"%s\" was rejected\n", listname);
+	    fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Rejected due to ACL\n", listname, ListConfig->fqdn);
 	  else
-	    fprintf(fh, "Subject: Your petidomo request was rejected\n");
+	    fprintf(fh, "Subject: Petidomo: BOUNCE: Rejected due to ACL\n");
 	  fprintf(fh, "Precedence: junk\n");
 	  fprintf(fh, "Sender: %s\n", owner);
 	  fprintf(fh, "\n");
@@ -80,8 +80,14 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 	      fprintf(fh, "%s\n", buffer);
 	      free(buffer);
 	  }
+	  else {
+              if (listname != NULL)
+                  fprintf(fh, "The following posting was rejected by Petidomo, due to\n"
+                              "the access control list (ACL) rules for list `%s@%s'.\n", listname, ListConfig->fqdn);
 	  else
-	    fprintf(fh, "Your article was rejected by the access control rules:\n\n");
+                  fprintf(fh, "The following posting was rejected by Petidomo, due to\n" \
+                              "the global access control list (ACL) rules.\n\n");
+          }
 	  fprintf(fh, "%s\n", MailStruct->Header);
 	  fprintf(fh, "%s", MailStruct->Body);
 	  CloseMailer(fh);
@@ -109,16 +115,20 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 	  fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
 	  fprintf(fh, "To: %s\n", parameter);
 	  if (listname != NULL)
-	    fprintf(fh, "Subject: Disallowed posting from \"%s\" to list \"%s\"\n",
-		    MailStruct->From, listname);
+	    fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Forwarded due to ACL\n", listname, ListConfig->fqdn);
 	  else
-	    fprintf(fh, "Subject: Disallowed petidomo request from \"%s\"\n",
-		    MailStruct->From);
+	    fprintf(fh, "Subject: Petidomo: BOUNCE: Forwarded due to ACL\n");
 	  fprintf(fh, "Precedence: junk\n");
 	  fprintf(fh, "Sender: %s\n", owner);
 	  fprintf(fh, "\n");
-	  fprintf(fh, "The following article was forwarded to you, due to the\n" \
-		  "access control rules:\n\n");
+	  if (listname != NULL)
+	      fprintf(fh, "The following posting was forwarded to you by Petidomo, due to\n"
+		          "the access control list (ACL) rules for list `%s@%s'.\n", listname, ListConfig->fqdn);
+          else
+	      fprintf(fh, "The following posting was forwarded to you by Petidomo, due to\n" \
+		          "the global access control list (ACL) rules.\n");
+          fprintf(fh, "If you approve this posting, pipe this mail through `petidomo-approve'.\n"
+                      "If you do not approve this posting, just do nothing.\n\n");
 	  fprintf(fh, "%s\n", MailStruct->Header);
 	  fprintf(fh, "%s", MailStruct->Body);
 	  CloseMailer(fh);

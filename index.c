@@ -65,7 +65,7 @@ GenIndex(struct Mail * MailStruct,
     }
     fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", from);
     fprintf(fh, "To: %s\n", address);
-    fprintf(fh, "Subject: Your request \"index\"\n");
+    fprintf(fh, "Subject: Petidomo: Your request \"index\"\n");
     if (MailStruct->Message_Id != NULL)
       fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
     fprintf(fh, "Precedence: junk\n");
@@ -112,17 +112,17 @@ GenIndex(struct Mail * MailStruct,
 	}
 	if (ListConfig->allowpubsub == TRUE) {
 	    if (ListConfig->listtype == LIST_MODERATED)
-	      fprintf(fh, "moderated mailing list\n");
+	      fprintf(fh, "(moderated mailing list)\n");
 	    else
-	      fprintf(fh, "public mailing list\n");
+	      fprintf(fh, "(public mailing list)\n");
 	}
 	else
-	  fprintf(fh, "closed mailing list\n");
+	  fprintf(fh, "(closed mailing list)\n");
 
 	buffer = text_easy_sprintf("lists/%s/description", entry->d_name);
 	description = loadfile(buffer);
 	if (description == NULL) {
-	    fprintf(fh, "\tno description available\n\n");
+	    fprintf(fh, "    no description available\n\n");
 	    continue;
 	}
 
@@ -130,7 +130,7 @@ GenIndex(struct Mail * MailStruct,
 	    nextLine = text_find_next_line(currLine);
 	    if (nextLine[-1] == '\n')
 	      nextLine[-1] = '\0';
-	    fprintf(fh, "\t%s\n", currLine);
+	    fprintf(fh, "    %s\n", currLine);
 	}
 	fprintf(fh, "\n");
 	free(description);

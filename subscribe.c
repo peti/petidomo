@@ -90,7 +90,7 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
-		fprintf(fh, "Subject: Your request \"subscribe %s %s\"\n", address, listname);
+		fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n", address, listname);
 		if (MailStruct->Message_Id != NULL)
 		  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 		fprintf(fh, "Precedence: junk\n");
@@ -116,7 +116,7 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", owner);
-		fprintf(fh, "Subject: Unauthorized request from \"%s\"\n", originator);
+		fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Unauthorized request from \"%s\"\n", listname, ListConfig->fqdn, originator);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
@@ -151,7 +151,7 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
-		fprintf(fh, "Subject: Your request \"subscribe %s %s\"\n", address, listname);
+		fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n", address, listname);
 		if (MailStruct->Message_Id != NULL)
 		  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 		fprintf(fh, "Precedence: junk\n");
@@ -177,7 +177,7 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", owner);
-		fprintf(fh, "Subject: Unauthorized request from \"%s\"\n", originator);
+		fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Unauthorized request from \"%s\"\n", listname, ListConfig->fqdn, originator);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
@@ -212,7 +212,7 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Your request \"subscribe %s %s\"\n",
+	    fprintf(fh, "Subject: Petidomo: Your request \"subscribe %s %s\"\n",
 		    address, listname);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
@@ -255,7 +255,7 @@ AddAddress(struct Mail * MailStruct,
 	  fprintf(fh, "Cc: %s\n", owner);
 	else
 	  fprintf(fh, "Cc: %s, %s\n", originator, owner);
-	fprintf(fh, "Subject: Request \"subscribe %s %s\"\n", address, listname);
+	fprintf(fh, "Subject: Petidomo: Request \"subscribe %s %s\"\n", address, listname);
 	if (MailStruct->Message_Id != NULL)
 	  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	fprintf(fh, "Precedence: junk\n");
@@ -297,7 +297,7 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", address);
-	    fprintf(fh, "Subject: Welcome to the \"%s\" mailing list!\n", listname);
+	    fprintf(fh, "Subject: Petidomo: Welcome to the \"%s\" mailing list!\n", listname);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
@@ -315,4 +315,3 @@ AddAddress(struct Mail * MailStruct,
     }
     return 0;
 }
-

@@ -100,11 +100,11 @@ hermes_main(char * incoming_mail, const char * listname)
 	    if (fh != NULL) {
 		fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
 		fprintf(fh, "To: %s\n", owner);
-		fprintf(fh, "Subject: Unauthorized posting to list \"%s\"\n", listname);
+		fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Moderator approval required\n", listname, ListConfig->fqdn);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", owner);
 		fprintf(fh, "\n");
-		fprintf(fh, "The following article was rejected:\n\n");
+		fprintf(fh, "The following posting requires your explicit approval:\n\n");
 		fprintf(fh, "%s\n", MailStruct->Header);
 		fprintf(fh, "%s", MailStruct->Body);
 		CloseMailer(fh);
@@ -124,11 +124,11 @@ hermes_main(char * incoming_mail, const char * listname)
 		if (fh != NULL) {
 		    fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
 		    fprintf(fh, "To: %s\n", owner);
-		    fprintf(fh, "Subject: Unauthorized posting to list \"%s\"\n", listname);
+		    fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Non-member submission from \"%s\"\n", listname, ListConfig->fqdn, MailStruct->From);
 		    fprintf(fh, "Precedence: junk\n");
 		    fprintf(fh, "Sender: %s\n", owner);
 		    fprintf(fh, "\n");
-		    fprintf(fh, "The following article was rejected, because the sender\n" \
+		    fprintf(fh, "The following posting was rejected, because the sender\n" \
 			    "\"%s\" is not subscribed to the list:\n\n", MailStruct->From);
 		    fprintf(fh, "%s\n", MailStruct->Header);
 		    fprintf(fh, "%s", MailStruct->Body);
@@ -234,6 +234,23 @@ hermes_main(char * incoming_mail, const char * listname)
     len = sprintf(dst, "Precedence: list\n");
     dst += len;
     *dst = '\0';
+
+    /* Add custom headers if there are some. */
+
+    buffer = text_easy_sprintf("lists/%s/header", listname);
+    if (stat(buffer, &sb) == 0)
+	{
+ 	char* p = loadfile(buffer);
+ 	if (p == NULL)
+	    {
+ 	    syslog(LOG_ERR, "Failed reading the header file for list \"%s\".", listname);
+ 	    exit(1);
+	    }
+	strcpy(dst, p);
+	dst += strlen(p);
+	free(p);
+	free(buffer);
+	}
 
     /* Add the signature if there is one. */
 

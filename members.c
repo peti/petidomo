@@ -76,7 +76,7 @@ SendSubscriberList(struct Mail * MailStruct,
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", address);
 	    fprintf(fh, "Cc: %s\n", owner);
-	    fprintf(fh, "Subject: Request \"members %s\"\n", listname);
+	    fprintf(fh, "Subject: Petidomo: Request \"members %s\"\n", listname);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
@@ -111,7 +111,7 @@ SendSubscriberList(struct Mail * MailStruct,
 	fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		listname, ListConfig->fqdn);
 	fprintf(fh, "To: %s\n", address);
-	fprintf(fh, "Subject: Request \"members %s\"\n", listname);
+	fprintf(fh, "Subject: Petidomo: Request \"members %s\"\n", listname);
 	if (MailStruct->Message_Id != NULL)
 	  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	fprintf(fh, "Precedence: junk\n");

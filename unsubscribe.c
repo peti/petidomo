@@ -90,7 +90,7 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
-		fprintf(fh, "Subject: Your request \"unsubscribe %s %s\"\n",
+		fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n",
 			address, listname);
 		if (MailStruct->Message_Id != NULL)
 		  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
@@ -117,7 +117,7 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", owner);
-		fprintf(fh, "Subject: Unauthorized request from \"%s\"\n", originator);
+		fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Unauthorized request from \"%s\"\n", listname, ListConfig->fqdn, originator);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
@@ -151,7 +151,7 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", originator);
-		fprintf(fh, "Subject: Your request \"unsubscribe %s %s\"\n",
+		fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n",
 			address, listname);
 		if (MailStruct->Message_Id != NULL)
 		  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
@@ -178,7 +178,7 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 			listname, ListConfig->fqdn);
 		fprintf(fh, "To: %s\n", owner);
-		fprintf(fh, "Subject: Unauthorized request from \"%s\"\n", originator);
+		fprintf(fh, "Subject: Petidomo: APPROVE %s@%s: Unauthorized request from \"%s\"\n", listname, ListConfig->fqdn, originator);
 		fprintf(fh, "Precedence: junk\n");
 		fprintf(fh, "Sender: %s\n", envelope);
 		fprintf(fh, "\n");
@@ -213,7 +213,7 @@ DeleteAddress(struct Mail * MailStruct,
 	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
 		    listname, ListConfig->fqdn);
 	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Your request \"unsubscribe %s %s\"\n",
+	    fprintf(fh, "Subject: Petidomo: Your request \"unsubscribe %s %s\"\n",
 		    address, listname);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
@@ -257,7 +257,7 @@ DeleteAddress(struct Mail * MailStruct,
 	      fprintf(fh, "Cc: %s\n", owner);
 	    else
 	      fprintf(fh, "Cc: %s, %s\n", originator, owner);
-	    fprintf(fh, "Subject: Request \"unsubscribe %s %s\"\n", address, listname);
+	    fprintf(fh, "Subject: Petidomo: Request \"unsubscribe %s %s\"\n", address, listname);
 	    if (MailStruct->Message_Id != NULL)
 	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
 	    fprintf(fh, "Precedence: junk\n");
