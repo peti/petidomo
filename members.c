@@ -87,7 +87,7 @@ SendSubscriberList(struct Mail * MailStruct,
 "afraid. If there's a certain reason, why you need to know the list " \
 "of subscribed addresses, please contact the mailing list administrator " \
 "under the address \"%s\" instead.", owner);
-	    text_wordwrap(buffer, 75);
+	    text_wordwrap(buffer, 70);
 	    fprintf(fh, "%s\n", buffer);
 	    CloseMailer(fh);
 	}

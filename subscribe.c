@@ -91,7 +91,7 @@ AddAddress(struct Mail * MailStruct,
 					   "to receive an overview over the available mailing lists. Also, " \
 					   "use the command HELP to verify that you got the command syntax " \
 					   "right.", address);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n", buffer);
 		CloseMailer(fh);
 		}
@@ -137,7 +137,7 @@ AddAddress(struct Mail * MailStruct,
 					   "subscribe addresses. Your request has been forwarded to the " \
 					   "appropriate person, so please don't send any further mail. You will " \
 					   "be notified as soon as possible.", listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n", buffer);
                 CloseMailer(fh);
 		}
@@ -161,7 +161,7 @@ AddAddress(struct Mail * MailStruct,
 					   "\"%s\" tried to subscribe the address \"%s\" to the \"%s\" mailing list, " \
 					   "but couldn't provide the correct password. To subscribe him, send the " \
 					   "following commands to the server:", originator, address, listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "subscribe %s %s\n", address, listname);
@@ -201,7 +201,7 @@ AddAddress(struct Mail * MailStruct,
 					   "address not equal to the one, you are mailing from. Your request has been forwarded " \
 					   "to the list administrator, so please don't send any futher mail. You will be notified " \
 					   "as soon as possible.", listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n", buffer);
                 CloseMailer(fh);
 		}
@@ -226,7 +226,7 @@ AddAddress(struct Mail * MailStruct,
 					   "The list type does not allow subscribing addresses not equal to the From: " \
 					   "address, though, so the request has been denied. To subscribe this person " \
 					   "manually, send the following commands to the server:", originator, address, listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "subscribe %s %s\n", address, listname);
@@ -321,7 +321,7 @@ AddAddress(struct Mail * MailStruct,
 				       "do so by sending the following command to \"%s-request@%s\":",
 				       originator, address, listname, listname, ListConfig->fqdn);
 	    }
-	text_wordwrap(buffer, 75);
+	text_wordwrap(buffer, 70);
 	fprintf(fh, "%s\n\n", buffer);
 	fprintf(fh, "unsubscribe %s\n\n", address);
 	fprintf(fh, "Please save a copy of this mail, to make sure you remember how " \

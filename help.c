@@ -107,7 +107,7 @@ SendHelp(struct Mail * MailStruct,
 "sending this request to the wrong address.\n\nYou can receive a list of all " \
 "mailing lists available here by sending the command \"INDEX\" to the " \
 "mailing list server.", param1);
-	    text_wordwrap(buffer, 75);
+	    text_wordwrap(buffer, 70);
 	    fprintf(fh, "%s\n", buffer);
 	    CloseMailer(fh);
 	}

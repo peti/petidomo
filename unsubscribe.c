@@ -102,7 +102,7 @@ DeleteAddress(struct Mail * MailStruct,
 "unsubscribe addresses. Your request has been forwarded to the " \
 "appropriate person, so please don't send any further mail. You will " \
 "be notified as soon as possible.", listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n", buffer);
                 CloseMailer(fh);
 	    }
@@ -125,7 +125,7 @@ DeleteAddress(struct Mail * MailStruct,
 "\"%s\" tried to unsubscribe the address \"%s\" from the \"%s\" mailing list, " \
 "but couldn't provide the correct password. To unsubscribe him, send the " \
 "following commands to the server:", originator, address, listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "unsubscribe %s %s\n", address, listname);
@@ -163,7 +163,7 @@ DeleteAddress(struct Mail * MailStruct,
 "address not equal to the one, you are mailing from. Your request has been forwarded " \
 "to the list administrator, so please don't send any futher mail. You will be notified " \
 "as soon as possible.", listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n", buffer);
                 CloseMailer(fh);
 	    }
@@ -187,7 +187,7 @@ DeleteAddress(struct Mail * MailStruct,
 "The list type does not allow unsubscribing addresses not equal to the From: " \
 "address, though, so the request has been denied. To unsubscribe this person " \
 "manually, send the following commands to the server:", originator, address, listname);
-		text_wordwrap(buffer, 75);
+		text_wordwrap(buffer, 70);
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "unsubscribe %s %s\n", address, listname);
@@ -272,7 +272,7 @@ DeleteAddress(struct Mail * MailStruct,
 "Per request from \"%s\", the address \"%s\" has been unsubscribed from the " \
 "\"%s\" mailing list.\n\n", originator, address, listname);
 	    }
-	    text_wordwrap(buffer, 75);
+	    text_wordwrap(buffer, 70);
 	    fprintf(fh, "%s", buffer);
 	    CloseMailer(fh);
 	}
