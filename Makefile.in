@@ -11,20 +11,18 @@ YACC		= @YACC@
 CFLAGS		= @CFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@
 LDFLAGS		= @LDFLAGS@
-LIBS		= @LIBS@
-
-SRCS		= acl.c archive.c argvSetDebugLevel.c authen.c config.c exit.c \
-		  filter.c handleacl.c help.c hermes.c index.c io.c listserv.c \
-		  mailer.c members.c parsearray.c password.c rfcparse.c \
-		  subscribe.c tool.c signature.c unsubscribe.c main.c
-OBJS		= ${SRCS:.c=.o}
+OBJS		= acl.o archive.o argvSetDebugLevel.o authen.o config.o exit.o \
+		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
+		  mailer.o members.o parsearray.o password.o rfcparse.o \
+		  subscribe.o tool.o signature.o unsubscribe.o main.o
 LIBS		= librfc822/librfc822.a liblists/liblists.a libargv/libargv.a \
-		  libconfigfile/libconfigfile.a libtext/libtext.a libdebug/libdebug.a
+		  libconfigfile/libconfigfile.a libtext/libtext.a \
+		  libdebug/libdebug.a
 
-.PHONY: all clean distclean realclean
 .SUFFIXES:
+.SUFFIXES:	.c .o
 
-%.o : %.c
+.c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 all:	hermes listserv
@@ -47,25 +45,24 @@ acl_scan.c:		acl_scan.l acl_scan.h
 
 acl.c:			acl_scan.c
 
-lib%:
-	$(MAKE) -C $(dir $@)
+$(LIBS):
+	$(MAKE) -C `echo $@ | sed -e 's@/.*@@'`
 
 clean distclean realclean::
 	@for n in lib*; do $(MAKE) -C $$n $@; done
-	@$(MAKE) $@-local
 
-clean-local::
+clean::
 	rm -f petidomo listserv hermes
 	rm -f $(OBJS)
 	rm -f acl_scan.c acl_scan.h acl.c
 
-distclean-local::	clean-local
+distclean::	clean
 	rm -f config.log config.cache config.status Makefile
 
-realclean-local::	distclean-local
+realclean::	distclean
 	rm -f configure
 
-# DO NOT DELETE
+# Dependencies
 
 acl.o: libtext/text.h petidomo.h libargv/argv.h debug.h acl_scan.c acl_scan.h
 acl_scan.o: acl_scan.h
