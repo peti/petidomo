@@ -1,0 +1,135 @@
+#
+# ~petidomo/lists/<listname>/config
+#
+# $Header$
+#
+
+#  TAG: ListType <open|closed|moderated>
+#       The following types of mailing lists exists and one of them
+#       should be specified here:
+#
+#         open -- The list is open for all postings which are not rejected
+#		due to the access control mechanism.
+#         closed -- Only subscribers are allowed to post.
+#         moderated -- Only postings which contain the correct posting
+#		password are allowed.
+#
+#       This option is REQUIRED. Petidomo will abort with an error, if it is
+#       unset.
+ListType	open
+
+#  TAG: AllowPublicSubscription <yes|no>
+#	  yes -- Everybody can subscribe and unsubscribe.
+#         no  -- Un-/subscription can only be done by the admin.
+#		Authenticiation is done via password mechanism.
+#
+#	The default, if this option is unset, is to allow public
+#	subscription and unsubscription.
+AllowPublicSubscription	yes
+
+#  TAG: AllowAlienSubscription <yes|no>
+#	  yes -- Users are allowed to subscribe and unsubscribe addresses
+#		not equal to the address they're sending the mail from.
+#         no  -- Users can only add (or remove) the address they're sending
+#		the mail from to the list (from the list).
+#	This option has no effect if public subscription has been
+#	disallowed.
+#
+#	The default, if this option is unset, is to allow alien
+#	subscription and unsubscription.
+AllowAlienSubscription	yes
+
+#  TAG: AllowMembersCommand <yes|no>
+#	Does the 'members' or 'who' command work for this mailing list, or
+#	do you want to keep the addresses of the subscribers confidential?
+#	Set this option to 'yes' to allow the 'members'-command, or set it
+#	to 'no' to disallow it.
+#
+#       The default, if the option is unset, is NOT to allow the 'members'-
+#	command.
+AllowMembersCommand	no
+
+#  TAG: ShowOnIndex <yes|no>
+#	Specify either "yes" or "no", depending on whether you want
+#	this mailing list to be shown on the index of available lists.
+#
+#       The default, if the option is unset, is to show the mailing
+#	list on the index.
+ShowOnIndex yes
+
+#  TAG: Hostname <string>
+#       This entry specifies the fully qualified domain name, Petidomo
+#       should use. This will usually be the 'real' name of the machine the
+#       software is running on, for example:
+#
+#       HostName listserver.foo.bar
+#
+#       The name of the machine and the used name need not necessarily be
+#       the same, though. Please consult the manual for further details
+#       about using this feature, looking at the chapter ``Virtual
+#       Hosting''.
+#
+#       If this option is unset, Petidomo will use the name that has
+#	been specified in the master config file, ~petidomo/etc/petidomo.conf.
+#Hostname        host.domain.net
+
+#  TAG: AdminPassword <string>
+#       This tag sets the master password, which authenticiates the
+#	administrator of this mailing list. The administrator has
+#	special priviledes, such as deleting other users, overriding
+#	access control restrictions or un-/subscribing users to closed
+#	mailing lists. Passwords are always case-insensitive.
+#
+#       Leave this entry blank, if you don't want to enable remote
+#	administration of the mailing list. This is not recommended,
+#	though, because you will have to edit all files manually,
+#	then.
+#AdminPassword   "open sesame"
+
+#  TAG: PostingPassword <string>
+#	The posting password must be specified when posting to closed
+#	or moderated mailing lists, or the server will reject the
+#	article and forward it to the list owner. Passwords are always
+#	case-insensitive.
+#PostingPassword	"yeahyeah"
+
+#  TAG: ReplyTo <address|none>
+#	This tag controls the 'Reply-To:' field, which Petidomo adds
+#	to posted articles before they are delivered. Using this
+#	option, you can force Petidomo to insert a 'Reply-To:' which
+#	points to a certain address, or you can tell Petidomo to leave
+#	'Reply-To:' alone, by setting the parameter to "none".
+#
+#	If this option is unset, Petidomo will default to insert a
+#	'Reply-To:' point back to the mailing list, so that
+#	subscribers can conveniently post simply by hitting the
+#	'reply' function in their mail reader.
+#ReplyTo	none
+
+#  TAG: PostingFilter <string>
+#       If you specify a posting filter, this program or script will
+#       be started by Petidomo right before it sends a posting out to
+#       the subscribers. The programm will receive the article, as it
+#       has been prepared by Petidomo on standard input and is expect
+#       to write the final version to standard output. The posting
+#       filter can be used to manipulate the headers for special
+#       purposes, for example.
+#
+#	If the filter program exits with a returncode not equal to 0
+#       (zero), Petidomo will not post the article and terminate.
+#PostingFilter "/bin/cat"
+
+#  TAG: Archive <string>
+#	Petidomo has the ability to archive all articles that have been
+#	posted to a mailing list. With this tag you can chose the path to
+#	this archive. You have two options: You can specify a directory
+#	name here, or a file name. If Petidomo finds a file name, it will
+#	simply append the posted article to the file, one by one. If you
+#	provide the path of a directory, Petidomo will save each article in
+#	a seperate file into this directory. Paths without a leading slash
+#	("/") are treated relative to the list's home directory, otherwise
+#	the path is absolute.
+#
+#	If this option is unset, no archives of the posted articles will be
+#	kept.
+#Archive		"log"

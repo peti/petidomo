@@ -1,0 +1,107 @@
+1999-06-01  Peter Simons  <simons@petidomo.com>
+
+	* Re-released under GNU GPL.
+
+1998-08-20  Peter Simons  <simons@petidomo.com>
+
+	* Released as Petidomo 2.2.
+
+	* Fixed a few problems in the binary install script.
+
+	* Added rfc2369.sh posting filter to the distribution.
+
+1998-08-17  Peter Simons  <simons@petidomo.com>
+
+	* Released as Petidomo 2.2 beta 2.
+
+	* You can create binary distributions simply by executing "make
+ 	build-bin-dist". All users are encouraged to share binaries for
+ 	platforms we can not support.
+
+	* Petidomo compiles now on SunOS 4.x.
+
+	* Added a -real- RFC 822 parser. This will fix all problems with
+	the more obscure forms of e-mail syntax.
+
+	* Added ShowStatistics (bool) keyword to the master config file.
+ 	(Only in the commercial version.) This switch allows the
+ 	administrator to switch the signature off, listserv appends when
+ 	replying a request. The switch is also supported in the CGI
+ 	configuration manager.
+
+	* Added nice run time statistics to be appended as signature every
+ 	time listserv processes an incoming mail.
+
+	* Fixed a security hole in the CGI configuration manager, that
+	could be abused to delete arbitrary mailing lists on a server.
+
+	* Added a stand-alone implementation of the regular expression
+ 	library which will be used in favor of the one provided in the OS,
+ 	if --with-my-regex is specified at configure. This is necessary on
+ 	some Solaris versions.
+
+1998-01-27  Peter Simons  <simons@petidomo.com>
+
+	* Released as Petidomo 2.1, finally. (Phew!)
+
+	* Documented that "sendmail -bv" can be used to verify addresses,
+ 	in the "misc" chapter of the user manual.
+
+	* Added pgp-(encrypt|decrypt).sh scripts to the distribution and
+	documented their usage in the manual. With them, Petidomo is able
+	to handle fully encrypted mailing lists.
+
+	* Fixed a problem in the code that called sendmail for the
+ 	delivery that would cause the exec() call to fail for large lists
+ 	(>5000 addresses).
+
+	* Petidomo will no longer accept list named that have special
+ 	characters of the file system in them, like '/' as this is a
+ 	security risk.
+
+	* Both hermes and listserv will now set both their real- and
+	effective user-id to "petidomo" at startup, to avoid permission
+	problems on systems that restore the real user-id when calling
+	external problems with exec().
+
+	* etc/COPYRIGHT: Added copyright license, which is needed for the
+	upcoming release of the sources.
+
+	* Makefile: Added build-bin-dist target, which can be used to
+	automatically compile a binary release archive.
+
+	* Added --enable-dynamic-link option to configure script, to let
+ 	the user choose to link static binaries conveniently.
+
+1998-01-04  Peter Simons  <simons@petidomo.com>
+
+	* Released as 2.1 beta 5
+
+	* Re-wrote the parser for the access control language completely.
+	The new version uses lex/yacc for parsong and is way more robust
+	and faster. It will also issue more detailed syntax errors, in
+	case the acl file is incorrect. The new code also fixed a couple
+	of weird problems on some platforms.
+
+1997-12-21  Peter Simons  <simons@petidomo.com>
+
+	* Released as 2.1 beta 4
+
+	* When DEBUG is defined at compile time, loads of debugging output
+	is added to all programs. Debugging can be activated with the -d
+	switch on the command line. The syntax is "-d module,level", with
+	level being an integer from 1 to 9, and module being one of the
+	named as defined in include/debug.h in the sources.
+
+	* Hermes will now preserve the "References:" field when posting an
+ 	article.
+
+	* Fixed a bug in the filter code that could result in hermes
+	hanging forever in a read() loop.
+
+	* Quite a few internal changes that are probably not worth being
+	listed here.
+
+1997-06-30  Peter Simons  <simons@petidomo.com>
+
+	* Released as Petidomo 2.0.

@@ -1,0 +1,326 @@
+/*
+ *      $Source$
+ *      $Revision$
+ *      $Date$
+ *
+ *      Copyright (C) 1997 by CyberSolutions GmbH.
+ *      All rights reserved.
+ */
+
+%{
+        /* Definitions we need in the parser. */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <errno.h>
+
+#include <text.h>
+#include <petidomo.h>
+
+static int yyerror(char *);
+static int yylex(void);
+static int domatch(int, int, char *);
+static int dofilter(const char *);
+
+unsigned int lineno;
+int operation, g_rc;
+char * g_parameter = NULL;
+struct Mail * g_MailStruct;
+
+#include "acl_scan.c"
+
+#define YYERROR_VERBOSE
+%}
+%token TOK_IF TOK_EQUAL TOK_EQUAL TOK_FROM TOK_SUBJECT
+%token TOK_ENVELOPE TOK_HEADER TOK_BODY TOK_AND TOK_OR TOK_NOT
+%token TOK_THEN TOK_MATCH TOK_STRING TOK_DROP TOK_PASS
+%token TOK_REDIRECT TOK_FORWARD TOK_REJECT TOK_REJECTWITH
+%token TOK_FILTER
+%left TOK_AND
+%left TOK_OR
+%right TOK_NOT
+%%
+
+input:    /* empty */
+        | input statmt
+;
+
+statmt:   ';'
+        | TOK_IF exp TOK_THEN action ';'  { if ($2 == TRUE) {
+                                                 operation = $4;
+                                                 YYACCEPT;
+                                            }
+                                          }
+;
+
+exp:      qualifier TOK_EQUAL TOK_STRING  {
+                                            g_rc = domatch($1, TOK_EQUAL, yytext);
+                                            if (g_rc == -1)
+                                               YYABORT;
+                                            $$ = g_rc;
+                                          }
+        | qualifier TOK_MATCH TOK_STRING  {
+                                            g_rc = domatch($1, TOK_MATCH, yytext);
+                                            if (g_rc == -1)
+                                               YYABORT;
+                                            $$ = g_rc;
+                                          }
+        | TOK_STRING                      {
+                                            g_rc = dofilter(yytext);
+                                            if (g_rc == -1)
+                                               YYABORT;
+                                            $$ = g_rc;
+                                          }
+        | exp TOK_OR exp                  { $$ = $1 || $3; }
+        | exp TOK_AND exp                 { $$ = $1 && $3; }
+        | TOK_NOT exp                     { $$ = ! $2; }
+        | '(' exp ')'                     { $$ = $2; }
+;
+
+qualifier: TOK_FROM                       { $$ = TOK_FROM; }
+        | TOK_SUBJECT                     { $$ = TOK_SUBJECT; }
+        | TOK_ENVELOPE                    { $$ = TOK_ENVELOPE; }
+        | TOK_HEADER                      { $$ = TOK_HEADER; }
+        | TOK_BODY                        { $$ = TOK_BODY; }
+;
+
+action:   TOK_PASS                        { $$ = ACL_PASS; }
+        | TOK_DROP                        { $$ = ACL_DROP; }
+        | TOK_REJECT                      { $$ = ACL_REJECT; }
+        | TOK_REJECTWITH TOK_STRING       {
+                                            $$ = ACL_REJECTWITH;
+                                            if (g_parameter != NULL)
+                                              free(g_parameter);
+                                            g_parameter = strdup(yytext);
+                                            if (g_parameter == NULL)
+                                              YYABORT;
+                                          }
+        | TOK_REDIRECT TOK_STRING         {
+                                            $$ = ACL_REDIRECT;
+                                            if (g_parameter != NULL)
+                                              free(g_parameter);
+                                            g_parameter = strdup(yytext);
+                                            if (g_parameter == NULL)
+                                              YYABORT;
+                                          }
+        | TOK_FORWARD TOK_STRING          {
+                                            $$ = ACL_FORWARD;
+                                            if (g_parameter != NULL)
+                                              free(g_parameter);
+                                            g_parameter = strdup(yytext);
+                                            if (g_parameter == NULL)
+                                              YYABORT;
+                                          }
+        | TOK_FILTER TOK_STRING           {
+                                            $$ = ACL_FILTER;
+                                            if (g_parameter != NULL)
+                                              free(g_parameter);
+                                            g_parameter = strdup(yytext);
+                                            if (g_parameter == NULL)
+                                              YYABORT;
+                                          }
+;
+%%
+/***** internal routines *****/
+
+int
+yywrap(void)
+{
+    return 1;
+}
+
+static int
+yyerror(char * string)
+{
+    syslog(LOG_ERR, "Syntax error in line %u: %s\n", lineno, string);
+    return 0;
+}
+
+
+static int
+dofilter(const char * filter)
+{
+    FILE *  fh;
+    int     rc;
+
+    debug((DEBUG_ACL, 2, "Starting ACL-filter \"%s\".", filter));
+    fh = popen(filter, "w");
+    if (fh == NULL) {
+        syslog(LOG_ERR, "Failed to open ACL-filter \"%s\": %m", filter);
+        return -1;
+    }
+    fprintf(fh, "%s\n", g_MailStruct->Header);
+    fprintf(fh, "%s", g_MailStruct->Body);
+    rc = pclose(fh);
+
+    if (!WIFEXITED(rc))
+      return -1;
+
+    rc = WEXITSTATUS(rc);
+    switch(rc) {
+      case 0:
+          debug((DEBUG_ACL, 2, "Filter returned %d (TRUE).", rc));
+          return TRUE;
+      case 1:
+          debug((DEBUG_ACL, 2, "Filter returned %d (FALSE).", rc));
+          return FALSE;
+      default:
+          syslog(LOG_ERR, "ACL-filter \"%s\" returned unexpected value %d.", filter, rc);
+          return -1;
+    }
+}
+
+
+static int
+domatch(int qualifier, int oper, char * string)
+{
+    char *   left;
+
+    switch(qualifier) {
+      case TOK_FROM:
+          left = g_MailStruct->From;
+          break;
+      case TOK_SUBJECT:
+          left = g_MailStruct->Subject;
+          break;
+      case TOK_ENVELOPE:
+          left = g_MailStruct->Envelope;
+          break;
+      case TOK_HEADER:
+          left = g_MailStruct->Header;
+          break;
+      case TOK_BODY:
+          left = g_MailStruct->Body;
+          break;
+      default:
+          syslog(LOG_CRIT, "Internal error in the ACL parser. Unknown qualifier %d.",
+              qualifier);
+          return -1;
+    }
+
+    switch(oper) {
+      case TOK_EQUAL:
+          if (left != NULL && strcasecmp(left, string) == 0) {
+              debug((DEBUG_ACL, 1, "ACL: \"%s\" == \"%s\" == TRUE", left, string));
+              return TRUE;
+          }
+          else {
+              debug((DEBUG_ACL, 1, "ACL: \"%s\" == \"%s\" == FALSE", left, string));
+              return FALSE;
+          }
+      case TOK_MATCH:
+          if (left != NULL && text_easy_pattern_match(left, string) == TRUE) {
+              debug((DEBUG_ACL, 1, "ACL: \"%s\" match \"%s\" == TRUE", left, string));
+              return TRUE;
+          }
+          else {
+              debug((DEBUG_ACL, 1, "ACL: \"%s\" match \"%s\" == FALSE", left, string));
+              return FALSE;
+          }
+      default:
+          syslog(LOG_CRIT, "Internal error in the ACL parser. Unknown operator %d.", oper);
+          return -1;
+    }
+}
+
+
+/****** public routines ******/
+
+int checkACL(struct Mail *   MailStruct,
+             const char *    listname,
+             int *           operation_ptr,
+             char **         parameter_ptr)
+{
+    char *  filename;
+    int     rc;
+
+    assert(MailStruct != NULL);
+    assert(operation_ptr != NULL);
+    assert(parameter_ptr != NULL);
+
+    g_MailStruct = MailStruct;
+    g_parameter = NULL;
+
+    /* Set up the lex scanner. */
+
+    BEGIN(INITIAL);
+    lineno = 1; operation = ACL_NONE;
+
+    /* First check the mail against the master acl file. */
+
+    debug((DEBUG_ACL, 2, "Testing mail against \"~petidomo/etc/acl\"."));
+    yyin = fopen("etc/acl", "r");
+    if (yyin == NULL) {
+        switch(errno) {
+          case ENOENT:
+              /* no master acl file */
+              debug((DEBUG_ACL, 1, "No master acl file found."));
+              goto check_local_acl_file;
+          default:
+              syslog(LOG_ERR, "Couldn't open \"~petidomo/etc/acl\" acl file.: %m");
+              return -1;
+        }
+    }
+
+    /* Parse the acl file. */
+
+    rc = yyparse();
+    if (yyin != NULL) {
+        fclose(yyin);
+        yyin = NULL;
+    }
+    if (rc != 0) {
+        syslog(LOG_ERR, "Parsing \"~petidomo/etc/acl\" file returned with an error.");
+        return -1;
+    }
+
+    /* If we had a hit, return now. */
+
+    if (operation != ACL_NONE)
+      goto finished;
+
+
+
+check_local_acl_file:
+
+    /* Set up the lex scanner. */
+
+    BEGIN(INITIAL);
+    lineno = 1; operation = ACL_NONE;
+
+    /* Do we have a local acl file to test? */
+
+    if (listname == NULL)
+      goto finished;
+
+    filename = text_easy_sprintf("lists/%s/acl", listname);
+    debug((DEBUG_ACL, 2, "Testing mail against \"~petidomo/%s\".", filename));
+    yyin = fopen(filename, "r");
+    if (yyin == NULL) {
+        switch(errno) {
+          case ENOENT:
+              /* no list acl file */
+              debug((DEBUG_ACL, 1, "No acl file for list \"%s\".", listname));
+	      goto finished;
+          default:
+              syslog(LOG_ERR, "Couldn't open \"~petidomo/%s\" file: %m", filename);
+              return -1;
+        }
+    }
+
+    rc = yyparse();
+    fclose(yyin);
+    yyin = NULL;
+    if (rc != 0) {
+        syslog(LOG_ERR, "Parsing \"~petidomo/etc/acl\" file returned with an error.");
+        return -1;
+    }
+
+    /* Return to the caller. */
+finished:
+    *operation_ptr = operation;
+    *parameter_ptr = g_parameter;
+    return 0;
+}

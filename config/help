@@ -1,0 +1,45 @@
+	      How to use the Petidomo 2.x mailing list server
+	      ***********************************************
+
+Petidomo is an automatic mailing list server, which maintains mailing lists
+without any human interaction. The program understands a set of commands
+which you can use to add yourself to mailing lists, or to remove you from
+lists you are subscribed on. These commands will be explained in the
+following paragraphs:
+
+ SUBSCRIBE
+	The "subscribe" command will add your address to a mailing list.
+	Usually sending an e-mail to the server with only this word in the
+	body of the mail will do the right thing for you. In case you want
+	to subscribe an address not equal to the one you are mailing from,
+	you can add this address as parameter to the command, like this:
+
+	subscribe user@site.domain.net
+
+	Please note that many list servers to do not allow to subscribe
+	other addresses than your own, though, because this feature can be
+	abused.
+
+ UNSUBSCRIBE
+	Syntax and usage of the "unsubscribe" command are the same as with
+	the "subscribe" command, the purpose is a bit different though:
+	Sending this command to the server will remove your address from
+	the mailing list.
+
+ INDEX
+	The "index" command does not need any parameters. Sending it to the
+	server will get you a list of available mailing lists on this
+	server. This is useful in case you want to subscribe to a list but
+	can't remember the exact name anymore.
+
+ HELP
+	The "help" command will make the list server send you this file.
+
+ HELP listname
+	If you specify a parameter after the "help" command, the server
+	will send you the description of this mailing list back. The
+	description usually contains the topic and purpose of the mailing
+	list.
+
+Commands must begin at the first column on each line in the mail, to
+be recognized. Lines which do not contain a command will be ignored.

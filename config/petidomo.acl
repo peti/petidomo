@@ -1,0 +1,11 @@
+#
+# ~petidomo/etc/acl
+#
+# $Header$
+#
+
+# Catch anything looks like it does not come from a human sender.
+IF   (envelope matches "[^@]*(-)?owner(-)?[^@]*@|mailer-daemon@")
+  OR (header matches "^Precedence:[	 ]*(junk|list|bulk)")
+  OR (header matches "^Auto-Submitted:" AND NOT header matches "^Auto-Submitted: *no$")
+	then forward "petidomo-manager";

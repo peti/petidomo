@@ -1,0 +1,10 @@
+#
+# Generic mailing list acl file -- Please customize for your needs!
+#
+# $Header$
+#
+
+# Re-directing anything that looks like a command.
+IF   (subject matches "^[	 ]*((un)?subscribe|remove|delete)")
+  OR (body matches "^[	 ]*((un)?subscribe|remove|delete)( me)?$")
+	then redirect "testlist-request";
