@@ -25,14 +25,8 @@
 #ifndef __LIB_LISTS_H__
 #define __LIB_LISTS_H__ 1
 
-/* For autoconf... */
-#undef HAVE_STRINGS_H
-
 #include <stdlib.h>
 #include <string.h>
-#ifdef HAVE_STRINGS_H		/* sunos 4 needs this */
-#   include <strings.h>
-#endif
 #include <assert.h>
 #ifdef DEBUG_DMALLOC
 #  include <dmalloc.h>

@@ -26,4 +26,9 @@ test:		test.o libargv.a
 	$(CC) $(LDFLAGS) test.o libargv.a -o test
 
 realclean distclean clean::
-	rm -f argv.o libargv.o test.o test
+	rm -f libargv.a argv.o test.o test
+
+# Dependencies
+
+argv.o: argv.h argv_loc.h
+test.o: argv.h
