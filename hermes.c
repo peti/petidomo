@@ -62,17 +62,17 @@ hermes_main(char * incoming_mail, const char * listname)
 
     if (MailStruct->Envelope == NULL)
 	{
-	syslog(LOG_NOTICE, "Received mail without a valid envelope.");
+	syslog(LOG_ERR, "Received mail without a valid envelope.");
 	return 0;
 	}
     if (MailStruct->From == NULL)
 	{
-	syslog(LOG_NOTICE, "Received mail without From: line.");
+	syslog(LOG_ERR, "Received mail without From: line.");
 	return 0;
 	}
     if (*MailStruct->Body == '\0')
 	{
-	syslog(LOG_NOTICE, "Received mail with empty body.");
+	syslog(LOG_INFO, "Received mail with empty body.");
 	return 0;
 	}
 
@@ -144,8 +144,12 @@ hermes_main(char * incoming_mail, const char * listname)
 	else if (ListConfig->listtype == LIST_CLOSED)
 	    {
 	    /* Only subscribers may post */
+
 	    if (isSubscribed(listname, MailStruct->From, NULL, NULL, TRUE) == FALSE)
 		{
+		syslog(LOG_NOTICE, "\"%s\" tried to post to closed list \"%s\", but " \
+		       "he is no subscriber.", MailStruct->From, listname);
+
 		fh = vOpenMailer(envelope, owner, NULL);
 		if (fh != NULL)
 		    {
@@ -174,7 +178,12 @@ hermes_main(char * incoming_mail, const char * listname)
 	    {
 	    /* Every posting needs an acknowledgement. */
 
-	    char* cookie = queue_posting(MailStruct, listname);
+	    char* cookie;
+
+	    syslog(LOG_NOTICE, "\"%s\" tried to post to acknowledged list \"%s\"; posting " \
+		   "has been deferred.", MailStruct->From, listname);
+
+	    cookie = queue_posting(MailStruct, listname);
             fh = vOpenMailer(owner, MailStruct->Envelope, NULL);
             if (fh != NULL)
 		{
@@ -206,7 +215,12 @@ hermes_main(char * incoming_mail, const char * listname)
 
 	    if (g_is_approved)
 		{
-		int rc = add_address(ListConfig->ack_file, MailStruct->From);
+		int rc;
+
+		syslog(LOG_NOTICE, "\"%s\" acknowledged a former posting attempt on ack-once list \"%s\"; " \
+		       "add him to the ack file and let the posting pass.", MailStruct->From, listname);
+
+		rc = add_address(ListConfig->ack_file, MailStruct->From);
 		if (rc < 0)
 		    {
 		    syslog(LOG_ERR, "Can't add address to ack file.");
@@ -225,7 +239,12 @@ hermes_main(char * incoming_mail, const char * listname)
 		    }
 		else if (rc == 0)
 		    {
-		    char* cookie = queue_posting(MailStruct, listname);
+		    char* cookie;
+
+		    syslog(LOG_NOTICE, "\"%s\" tried to post to ack-once list \"%s\", but is posting " \
+			   "for the first time; posting has been deferred.", MailStruct->From, listname);
+
+		    cookie = queue_posting(MailStruct, listname);
 		    fh = vOpenMailer(owner, MailStruct->Envelope, NULL);
 		    if (fh != NULL)
 			{
@@ -251,6 +270,9 @@ hermes_main(char * incoming_mail, const char * listname)
 			}
 		    return 0;
 		    }
+		else
+		    syslog(LOG_NOTICE, "\"%s\" tried to post to ack-once list \"%s\" and has been found in " \
+			   "the ack file; letting posting pass.", MailStruct->From, listname);
 		}
 	    }
 	}

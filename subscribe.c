@@ -72,7 +72,7 @@ AddAddress(struct Mail * MailStruct,
 	    listname = defaultlist;
 	else
 	    {
-	    syslog(LOG_NOTICE, "%s: subscribe-command invalid: No list specified.", MailStruct->From);
+	    syslog(LOG_INFO, "%s: subscribe-command invalid: No list specified.", MailStruct->From);
 	    fh = vOpenMailer(envelope, originator, NULL);
 	    if (fh != NULL)
 		{
@@ -117,8 +117,8 @@ AddAddress(struct Mail * MailStruct,
 	    {
 	    /* Access was unauthorized, notify the originator. */
 
-	    syslog(LOG_INFO, "\"%s\" tried to subscribe \"%s\" to list \"%s\", but couldn't " \
-		   "provide the correct password.", originator, address, listname);
+	    syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" rejected due to lack of " \
+		   "a correct admin password.", MailStruct->From, address, listname);
 
 	    fh = vOpenMailer(envelope, originator, NULL);
 	    if (fh != NULL)
@@ -142,8 +142,7 @@ AddAddress(struct Mail * MailStruct,
                 CloseMailer(fh);
 		}
 	    else
-		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.",
-		       originator);
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
 
 	    /* Notify the owner. */
 
@@ -180,6 +179,9 @@ AddAddress(struct Mail * MailStruct,
 
     if (isSubscribed(listname, address, NULL, NULL, FALSE) == TRUE)
 	{
+	syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" rejected because the " \
+	       "address is already on the list.", MailStruct->From, address, listname);
+
 	/* Notify the originator, that the address is already a
            member. */
 
@@ -210,8 +212,14 @@ AddAddress(struct Mail * MailStruct,
 	{
 	/* Require confirmation. */
 
-	char* command = text_easy_sprintf("subscribe %s %s", address, listname);
-	char* cookie  = queue_command(MailStruct, command);
+	char* command;
+	char* cookie;
+
+	syslog(LOG_INFO, "%s: Attempt to subscribe \"%s\" to list \"%s\" deferred because the " \
+	       "request must be acknowledged first.", MailStruct->From, address, listname);
+
+	command = text_easy_sprintf("subscribe %s %s", address, listname);
+	cookie  = queue_command(MailStruct, command);
 
 	/* Send request for confirmation to the user. */
 
@@ -277,6 +285,8 @@ AddAddress(struct Mail * MailStruct,
 	}
 
     /* Okay, add the address to the list. */
+
+    syslog(LOG_INFO, "%s: Okay; subscribing address \"%s\" to list \"%s\".", MailStruct->From, address, listname);
 
     fh = fopen(ListConfig->address_file, "a");
     if (fh == NULL)
