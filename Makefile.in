@@ -56,7 +56,10 @@ acl_scan.c:		acl_scan.l acl_scan.h
 acl.c:			acl_scan.c
 
 $(LIBS):
-	(cd `echo $@ | sed -e 's@/.*@@'` && $(MAKE) $(FLAGS_TO_PASS))
+	subdir=`echo $@ | sed -e 's@/.*@@'`; \
+	echo "===> $$subdir"; \
+	cd $$subdir && $(MAKE) $(FLAGS_TO_PASS); \
+	echo "<=== $$subdir"
 
 install:	petidomo
 	$(SHTOOL) mkdir -f -p -m 755 $(bindir)
@@ -82,7 +85,11 @@ install-testlist:
 	$(SHTOOL) install -c -m 644 /dev/null $(localstatedir)/lists/testlist/list
 
 clean distclean realclean::
-	@for n in lib*; do (cd $$n && $(MAKE) $@); done
+	@for subdir in lib*; do \
+	echo "===> $$subdir"; \
+	(cd $$subdir && $(MAKE) $(FLAGS_TO_PASS) $@); \
+	echo "<=== $$subdir"; \
+	done
 
 clean::
 	rm -f petidomo
