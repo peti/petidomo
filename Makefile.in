@@ -5,27 +5,29 @@
 prefix 		= @prefix@
 exec_prefix 	= @exec_prefix@
 bindir 		= @bindir@
-sbindir 	= @sbindir@
-libexecdir 	= @libexecdir@
-datadir 	= @datadir@
+libexecdir 	= @libexecdir@/petidomo
+datadir 	= @datadir@/petidomo
 sysconfdir 	= @sysconfdir@
-sharedstatedir	= @sharedstatedir@
-localstatedir 	= @localstatedir@
-libdir 		= @libdir@/petidomo
-infodir 	= @infodir@
-mandir 		= @mandir@
-includedir 	= @includedir@
-ETCDIR		= @ETCDIR@
+localstatedir 	= @localstatedir@/petidomo
+# delete me
+#sharedstatedir	= @sharedstatedir@
+#sbindir 	= @sbindir@
+#libdir 		= @libdir@/petidomo
+#infodir 	= @infodir@
+#mandir 		= @mandir@
+#includedir 	= @includedir@
+# delete me
 
 CC		= @CC@
 AR		= ar
 RANLIB		= @RANLIB@
 LEX		= @LEX@
 YACC		= @YACC@
-INSTALL		= ../etc/install-sh
+INSTALL		= ../etc/install-sh -c
 
 CFLAGS		= @CFLAGS@
-CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DETCDIR=\"$(ETCDIR)\"
+CPPFLAGS	= @CPPFLAGS@ @DEFS@ -DSYSCONFDIR=\"$(sysconfdir)\" -DLIBEXECDIR=\"$(libexecdir)\" \
+		  -DDATADIR=\"$(datadir)\" -DLOCALSTATEDIR=\"$(localstatedir)\"
 LDFLAGS		= @LDFLAGS@
 
 OBJS		= acl.o archive.o authen.o config.o \
@@ -62,18 +64,23 @@ acl.c:			acl_scan.c
 $(LIBS):
 	(cd `echo $@ | sed -e 's@/.*@@'` && $(MAKE) $(FLAGS_TO_PASS))
 
-
-
 install:	petidomo
-	if [ ! -d $(bindir) ]; then $(INSTALL) -d $(bindir); fi
-	$(INSTALL) -c -s -m 555 petidomo $(bindir)
-	#
-	if [ ! -d $(libdir) ]; then $(INSTALL) -d $(libdir); fi
-	$(INSTALL) -c -m 444 ../etc/help $(libdir)/help
-	#
-	#if [ ! -d $(sysconfdir) ]; then $(INSTALL) -d $(sysconfdir); fi
-	#$(INSTALL) -c -m 640 ../etc/master-config $(sysconfdir)/petidomo.conf
-	#$(INSTALL) -c -m 640 ../etc/master-acl $(sysconfdir)/acl
+	@if [ ! -d $(bindir) ]; then $(INSTALL) -d $(bindir); fi
+	@if [ ! -d $(sysconfdir) ]; then $(INSTALL) -d $(sysconfdir); fi
+	@if [ ! -d $(localstatedir) ]; then $(INSTALL) -d $(localstatedir); fi
+	@if [ ! -d $(datadir) ]; then $(INSTALL) -d $(datadir); fi
+	@if [ ! -d $(libexecdir) ]; then $(INSTALL) -d $(libexecdir); fi
+	$(INSTALL) -s -m 555 petidomo $(bindir)
+	$(INSTALL) -m 644 ../etc/petidomo.conf $(sysconfdir)/petidomo.conf-sample
+	$(INSTALL) -m 644 ../etc/petidomo.acl $(sysconfdir)/petidomo.acl-sample
+	$(INSTALL) -m 444 ../etc/help $(datadir)/help
+	$(INSTALL) -m 555 ../etc/InsertNameInSubject.sh $(libexecdir)
+	$(INSTALL) -m 555 ../etc/pgp-decrypt.sh $(libexecdir)
+	$(INSTALL) -m 555 ../etc/pgp-encrypt.sh $(libexecdir)
+	$(INSTALL) -m 555 ../etc/rfc2369.sh $(libexecdir)
+
+install-testlist:
+	@if [ ! -d $(localstatedir)/testlist ]; then $(INSTALL) -d $(localstatedir)/testlist; fi
 
 clean distclean realclean::
 	@for n in lib*; do (cd $$n && $(MAKE) $@); done
