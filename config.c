@@ -173,7 +173,7 @@ const struct List_Config* getListConfig(const char * listname)
 	{ "SignatureFile", CF_STRING, &sig_file },
 	{ "DescriptionFile", CF_STRING, &desc_file },
 	{ "HeaderFile", CF_STRING, &header_file },
-	{ "ListACLFile", CF_STRING, &list_acl_file },
+	{ "ACLFile", CF_STRING, &list_acl_file },
 	{ "AddressFile", CF_STRING, &address_file },
 	{ "AcknowledgementFile", CF_STRING, &ack_file },
 	{ NULL, 0, NULL}
