@@ -1,0 +1,94 @@
+#
+# Petidomo Makefile
+#
+
+CC		= @CC@
+AR		= ar
+RANLIB		= @RANLIB@
+LEX		= @LEX@
+YACC		= @YACC@
+
+CFLAGS		= @CFLAGS@
+CPPFLAGS	= @CPPFLAGS@ @DEFS@
+LDFLAGS		= @LDFLAGS@
+LIBS		= @LIBS@
+
+SRCS		= acl.c archive.c argvSetDebugLevel.c authen.c config.c exit.c \
+		  filter.c handleacl.c help.c hermes.c index.c io.c listserv.c \
+		  mailer.c members.c parsearray.c password.c rfcparse.c \
+		  subscribe.c tool.c signature.c unsubscribe.c main.c
+OBJS		= ${SRCS:.c=.o}
+LIBS		= librfc822/librfc822.a liblists/liblists.a libmpools/libmpools.a \
+		  libconfigfile/libconfigfile.a libtext/libtext.a libargv/libargv.a \
+		  libdebug/libdebug.a
+
+.PHONY: all clean distclean realclean
+.SUFFIXES:
+
+%.o : %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+all:	hermes listserv
+
+petidomo:	$(OBJS) $(LIBS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS) $(LIBS)
+
+hermes listserv:	petidomo
+	@rm -f $@
+	ln -s $< $@
+
+acl.c acl_scan.h:	acl.y
+	$(YACC) -d -p acl acl.y
+	mv y.tab.c acl.c
+	mv y.tab.h acl_scan.h
+
+acl_scan.c:		acl_scan.l acl_scan.h
+	$(LEX) -i -Pacl $<
+	mv lex.acl.c acl_scan.c
+
+acl.c:			acl_scan.c
+
+lib%:
+	$(MAKE) -C $(dir $@)
+
+clean distclean realclean::
+	@for n in lib*; do $(MAKE) -C $$n $@; done
+	@$(MAKE) $@-local
+
+clean-local::
+	rm -f petidomo listserv hermes
+	rm -f $(OBJS)
+	rm -f acl_scan.c acl_scan.h acl.c
+
+distclean-local::	clean-local
+	rm -f config.log config.cache config.status GNUmakefile
+
+realclean-local::	distclean-local
+	rm -f configure
+
+# DO NOT DELETE
+
+archive.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+argvSetDebugLevel.o: debug.h libargv/argv.h
+authen.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+config.o: liblists/lists.h libconfigfile/configfile.h petidomo.h
+config.o: libargv/argv.h debug.h
+exit.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+filter.o: petidomo.h libargv/argv.h debug.h
+handleacl.o: petidomo.h libargv/argv.h debug.h
+help.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+hermes.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+index.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+io.o: petidomo.h libargv/argv.h debug.h
+listserv.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+mailer.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+main.o: petidomo.h libargv/argv.h debug.h
+members.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+parsearray.o: petidomo.h libargv/argv.h debug.h
+password.o: petidomo.h libargv/argv.h debug.h
+rfcparse.o: librfc822/rfc822.h libtext/text.h petidomo.h libargv/argv.h
+rfcparse.o: debug.h
+signature.o: petidomo.h libargv/argv.h debug.h
+subscribe.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+tool.o: libtext/text.h petidomo.h libargv/argv.h debug.h
+unsubscribe.o: libtext/text.h petidomo.h libargv/argv.h debug.h
