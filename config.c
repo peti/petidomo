@@ -142,6 +142,7 @@ static char*     desc_file;
 static char*     header_file;
 static char*     list_acl_file;
 static char*     address_file;
+static char*     ack_file;
 
 const struct List_Config* getListConfig(const char * listname)
     {
@@ -173,6 +174,7 @@ const struct List_Config* getListConfig(const char * listname)
 	{ "HeaderFile", CF_STRING, &header_file },
 	{ "ListACLFile", CF_STRING, &list_acl_file },
 	{ "AddressFile", CF_STRING, &address_file },
+	{ "AcknowledgementFile", CF_STRING, &ack_file },
 	{ NULL, 0, NULL}
 	};
 
@@ -194,6 +196,7 @@ const struct List_Config* getListConfig(const char * listname)
     header_file      = "header";
     list_acl_file    = "acl";
     address_file     = "list";
+    ack_file         = "acks";
 
     /* Get the master configuration. */
 
@@ -280,6 +283,7 @@ const struct List_Config* getListConfig(const char * listname)
     EXPAND(header_file, header_file);
     EXPAND(acl_file, list_acl_file);
     EXPAND(address_file, address_file);
+    EXPAND(ack_file, ack_file);
 
     AppendNode(ListConfigs, xstrdup(listname), ListConfig);
 

@@ -181,11 +181,23 @@ AllowMembersCommand	no
 
 #  TAG: AddressFile <string>
 #	This entry sets the path to the address database file, which
-#	uses to store the addresses of the list's subscribers. If the
-#	path is not absolute -- not beginning with a '/' character,
-#	that is --, it will be interpreted relative to the directory
-#	where this config file has been found.
+#	Petidomo uses to store the addresses of the list's
+#	subscribers. If the path is not absolute -- not beginning with
+#	a '/' character, that is --, it will be interpreted relative
+#	to the directory where this config file has been found.
 #
 #	If this option has not been set, the default value is
 #	"list".
 #AddressFile	list
+
+#  TAG: AcknowledgementFile <string>
+#	This entry sets the path to the acknowledgement database file,
+#	which Petidomo uses to store the addresses of posters who have
+#	verified their address by acknowledgement already. If the path
+#	is not absolute -- not beginning with a '/' character, that is
+#	--, it will be interpreted relative to the directory where
+#	this config file has been found.
+#
+#	If this option has not been set, the default value is
+#	"list".
+#AcknowledgementFile	ack

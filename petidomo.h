@@ -88,6 +88,7 @@ struct List_Config
     char *        acl_file;
     char *        list_dir;
     char *        address_file;
+    char *        ack_file;
     };
 
 int InitPetidomo(const char* masterconfig_path);
