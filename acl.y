@@ -237,7 +237,7 @@ int checkACL(struct Mail *   MailStruct,
              char **         parameter_ptr)
 {
     const struct PD_Config * MasterConfig;
-    char *  filename;
+    const struct List_Config * ListConfig;
     int     rc;
 
     assert(MailStruct != NULL);
@@ -245,6 +245,7 @@ int checkACL(struct Mail *   MailStruct,
     assert(parameter_ptr != NULL);
 
     MasterConfig = getMasterConfig();
+    ListConfig = getListConfig(listname);
     g_MailStruct = MailStruct;
     g_parameter = NULL;
 
@@ -298,15 +299,14 @@ check_local_acl_file:
     if (listname == NULL)
       goto finished;
 
-    filename = text_easy_sprintf("lists/%s/acl", listname);
-    yyin = fopen(filename, "r");
+    yyin = fopen(ListConfig->acl_file, "r");
     if (yyin == NULL) {
         switch(errno) {
           case ENOENT:
               /* no list acl file */
 	      goto finished;
           default:
-              syslog(LOG_ERR, "Couldn't open \"~petidomo/%s\" file: %m", filename);
+              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %m", ListConfig->acl_file);
               return -1;
         }
     }
