@@ -124,7 +124,7 @@ hermes_main(char * incoming_mail, const char * listname)
 	    return 0;
 	    }
 
-	if (ListConfig->listtype == LIST_CLOSED)
+	else if (ListConfig->listtype == LIST_CLOSED)
 	    {
 	    /* Only subscribers may post */
 	    if (isSubscribed(listname, MailStruct->From, NULL, NULL, TRUE) == FALSE)
@@ -151,6 +151,36 @@ hermes_main(char * incoming_mail, const char * listname)
 		    }
 		return 0;
 		}
+	    }
+
+	else if (ListConfig->listtype == LIST_ACKED && !g_is_approved)
+	    {
+	    /* Every posting needs an acknowledgement. */
+
+	    char* cookie = queue_posting(MailStruct, listname);
+            fh = vOpenMailer(owner, MailStruct->Envelope, NULL);
+            if (fh != NULL)
+		{
+		fprintf(fh, "From: petidomo-approve@%s (Petidomo Mailing List Server)\n", ListConfig->fqdn);
+		fprintf(fh, "To: %s\n", MailStruct->Envelope);
+		fprintf(fh, "Subject: Petidomo: CONFIRM %s@%s: Your posting to list \"%s\"\n", listname, ListConfig->fqdn, listname);
+		fprintf(fh, "Precedence: junk\n");
+		fprintf(fh, "Sender: %s\n", owner);
+		fprintf(fh, "\n");
+		fprintf(fh, "Your posting needs to be confirmed. Do this by replying\n");
+		fprintf(fh, "to this mail and citing the string\n");
+		fprintf(fh, "\n");
+		fprintf(fh, "    %s\n", cookie);
+		fprintf(fh, "\n");
+		fprintf(fh, "in your reply.\n");
+		CloseMailer(fh);
+		}
+	    else
+		{
+		syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
+		return -1;
+		}
+	    return 0;
 	    }
 
 	if (checkACL(MailStruct, listname, &operation, &parameter) != 0)
