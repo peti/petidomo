@@ -367,6 +367,7 @@ probably be enough for you to guess what these options do, though.
 Once you have done this, your installation is ready to be tested.
 
 \section{Testing the Installation}
+\label{testing}
 
 Asserting you followed all steps described above, you have a working
 Petidomo installation now. Occasionally, some minor permisson problem
@@ -483,4 +484,111 @@ In case any of the benefits promised above stays away, please consult
 paragraphs 11 and 12 of the file {\sf COPYING} included in this
 distribution.
 
+\chapter{Configuring Petidomo}
+
+\section{The Master Configuration File}
+
+At startup, Petidomo will read its master configuration file in order
+to determine the correct file system paths, the machine's hostname,
+and the location of the system's MTA --- usually sendmail. If Petidomo
+is unable to locate or to parse that config file, it will abort
+immediately.
+
+When you started Petidomo while running the tests described in section
+\ref{testing}, you certainly noticed that Petidomo logs the path where
+it expects to find that config file:
+\begin{quote}
+\begin{verbatim}
+petidomo[8706]: Petidomo 4.0b1 (18-Jan-2001) starting up; \
+        mode=listserv, listname=<none>, \
+        masterconf=/usr/local/etc/petidomo.conf, \
+        approved=false, ruid=2, euid=2, gid=2, egid=2
+\end{verbatim}
+\end{quote}
+
+Here, the master config file will be expected at {\sf
+/usr/local/etc/petidomo.conf} --- what is the default, unless you
+changed the ``sysconfdir'' while compiling the binary. If you want to
+change that path without re-compiling the binary, you can simply
+provide a new location on the command line when calling Petidomo by
+adding the parameter ``{\sf {-}-masterconf=/new/path/to/file}''. You
+can also omit the equal sign and write ``{\sf
+{-}-masterconf~/new/path/to/file}'' if you prefer that.
+
+In any case, this config file must exist, be readable for Petidomo and
+have correct contents, or your installation won't do anything but tell
+you that there's something wrong. In the following, we'll list all
+directives you can set in that file and explain their syntax and
+semantics.
+
+\label{config file syntax}
+All directives must be stated at the first column of a line and
+obviously only one directive per line is allowed. Each directive
+consists of a keyword and the data part. Which keywords exist will be
+explained below. You separate the keyword from the data by whitespace.
+Either tabs of blanks are fine and you may use any number of
+whitespace characters you like.
+
+The case of the keywords does not matter; both ``hostname'' and
+``HoStNaMe'' are the same to Petidomo. If the data part contains any
+whitespace itself --- as in the MTAOptions directive ---, it is
+recommended to enclose it in double quotes to avoid confusion.
+Petidomo will get it right if you do not use double quotes, though,
+unless you need to specifi whitespace at the beginning or the end of
+the data part; any whitespace there will be ignored.
+
+Empty lines will be ignored and so will any line that starts with the
+{\sf \#} character; you can use it to add comments to the config file.
+
+OK, here is the list of keywords to be used in the master config file
+including a description what they mean.
+
+\paragraph{Hostname}
+
+This is a required directive that tells Petidomo how the system's
+Internet host name is. You should use the fully qualified host name
+here --- the host's name including the domain name that is. If you
+omit the domain, things might work, but they probably won't.
+
+\paragraph{AdminPassword}
+
+Use this to specify a password, which only the administrator of the
+Petidomo systems should know. You can use this password to approve
+e-mails or to subscribe addresses to closed lists. You can do pretty
+much anything with Petidomo you want, so choose somthing a bit more
+original than the example ``open sesame'' found in the config file
+examples. This option is required; Petidomo will not run unless it is
+there.
+
+\paragraph{MTA}
+
+Here you must specify the path to the MTA Petidomo will use to send
+outbound e-mail. This option is required.
+
+\paragraph{MTAOptions}
+
+Depending on which MTA you use, you may want to provide parameters to
+it when it is started. Those options can be specified here. The
+default options, if this directive is not specified in the master
+config file, are ``{\tt -i -f\%s}''. The {\tt \%s} is a place holder
+for the envelope from to be added by Petidomo and it will be replaced
+by the apropriate e-mail address at execution time.
+
+Please note that the compiled in default options work for sendmail,
+you may have to change them if you're using a different MTA.
+
+\paragraph{ListDirectory}
+
+\paragraph{AckQueueDirectory}
+
+\paragraph{HelpFile}
+
+\paragraph{ACLFile}
+
+\paragraph{IndexFile}
+
+\section{List Config Files}
+
+
 \end{document}
+
