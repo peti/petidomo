@@ -104,7 +104,6 @@ DeleteAddress(struct Mail * MailStruct,
 "be notified as soon as possible.", listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n", buffer);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else
@@ -130,7 +129,6 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "unsubscribe %s %s\n", address, listname);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else {
@@ -167,7 +165,6 @@ DeleteAddress(struct Mail * MailStruct,
 "as soon as possible.", listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n", buffer);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else
@@ -194,7 +191,6 @@ DeleteAddress(struct Mail * MailStruct,
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "unsubscribe %s %s\n", address, listname);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else {
@@ -225,7 +221,6 @@ DeleteAddress(struct Mail * MailStruct,
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
 	    fprintf(fh, "The address is not subscribed to this list.\n");
-	    AppendSignature(fh);
 	    CloseMailer(fh);
 	}
 	else {
@@ -280,7 +275,6 @@ DeleteAddress(struct Mail * MailStruct,
 	    }
 	    text_wordwrap(buffer, 75);
 	    fprintf(fh, "%s", buffer);
-	    AppendSignature(fh);
 	    CloseMailer(fh);
 	}
 	else {

@@ -103,7 +103,6 @@ AddAddress(struct Mail * MailStruct,
 "be notified as soon as possible.", listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n", buffer);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else
@@ -129,7 +128,6 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "subscribe %s %s\n", address, listname);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else {
@@ -166,7 +164,6 @@ AddAddress(struct Mail * MailStruct,
 "as soon as possible.", listname);
 		text_wordwrap(buffer, 75);
 		fprintf(fh, "%s\n", buffer);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else
@@ -193,7 +190,6 @@ AddAddress(struct Mail * MailStruct,
 		fprintf(fh, "%s\n\n", buffer);
 		fprintf(fh, "password <AdminPassword>\n");
 		fprintf(fh, "subscribe %s %s\n", address, listname);
-		AppendSignature(fh);
                 CloseMailer(fh);
 	    }
 	    else {
@@ -224,7 +220,6 @@ AddAddress(struct Mail * MailStruct,
 	    fprintf(fh, "Sender: %s\n", envelope);
 	    fprintf(fh, "\n");
 	    fprintf(fh, "The address is subscribed to this list already.\n");
-	    AppendSignature(fh);
 	    CloseMailer(fh);
 	}
 	else {
@@ -285,7 +280,6 @@ AddAddress(struct Mail * MailStruct,
 	fprintf(fh, "unsubscribe %s\n\n", address);
 	fprintf(fh, "Please save a copy of this mail, to make sure you remember how " \
 		"to\nunsubscribe!\n");
-	AppendSignature(fh);
 	CloseMailer(fh);
     }
     else {

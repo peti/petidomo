@@ -31,7 +31,7 @@ LDFLAGS		= @LDFLAGS@
 OBJS		= acl.o archive.o authen.o config.o \
 		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
 		  mailer.o members.o parsearray.o password.o rfcparse.o \
-		  subscribe.o tool.o signature.o unsubscribe.o main.o
+		  subscribe.o tool.o unsubscribe.o main.o
 LIBS		= librfc822/librfc822.a liblists/liblists.a libargv/libargv.a \
 		  libconfigfile/libconfigfile.a libtext/libtext.a
 
@@ -81,28 +81,3 @@ realclean::	distclean
 
 # Dependencies
 
-acl.o: libtext/text.h petidomo.h libargv/argv.h acl_scan.c acl_scan.h
-acl_scan.o: acl_scan.h
-archive.o: libtext/text.h petidomo.h libargv/argv.h
-authen.o: libtext/text.h petidomo.h libargv/argv.h
-config.o: liblists/lists.h libconfigfile/configfile.h petidomo.h
-config.o: libargv/argv.h
-exit.o: libtext/text.h petidomo.h libargv/argv.h
-filter.o: petidomo.h libargv/argv.h
-handleacl.o: petidomo.h libargv/argv.h
-help.o: libtext/text.h petidomo.h libargv/argv.h
-hermes.o: libtext/text.h petidomo.h libargv/argv.h
-index.o: libtext/text.h petidomo.h libargv/argv.h
-io.o: petidomo.h libargv/argv.h
-listserv.o: libtext/text.h petidomo.h libargv/argv.h
-mailer.o: libtext/text.h petidomo.h libargv/argv.h
-main.o: petidomo.h libargv/argv.h
-members.o: libtext/text.h petidomo.h libargv/argv.h
-parsearray.o: petidomo.h libargv/argv.h
-password.o: petidomo.h libargv/argv.h
-rfcparse.o: librfc822/rfc822.h libtext/text.h petidomo.h libargv/argv.h
-rfcparse.o:
-signature.o: petidomo.h libargv/argv.h
-subscribe.o: libtext/text.h petidomo.h libargv/argv.h
-tool.o: libtext/text.h petidomo.h libargv/argv.h
-unsubscribe.o: libtext/text.h petidomo.h libargv/argv.h

@@ -77,7 +77,6 @@ SendHelp(struct Mail * MailStruct,
 		syslog(LOG_NOTICE, "List \"%s\" doesn't have a description.", param1);
 		fprintf(fh, "No description available.\n");
 	    }
-	    AppendSignature(fh);
 	    CloseMailer(fh);
 	}
 	else {
@@ -111,7 +110,6 @@ SendHelp(struct Mail * MailStruct,
 "mailing list server.", param1);
 	    text_wordwrap(buffer, 75);
 	    fprintf(fh, "%s\n", buffer);
-	    AppendSignature(fh);
 	    CloseMailer(fh);
 	}
     }
@@ -147,7 +145,6 @@ SendHelp(struct Mail * MailStruct,
 	    syslog(LOG_ERR, "There is no help file for Petidomo!");
 	    fprintf(fh, "No help text available.\n");
 	}
-	AppendSignature(fh);
 	CloseMailer(fh);
     }
 
@@ -204,7 +201,6 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
 	syslog(LOG_ERR, "There is no help file for Petidomo!");
 	fprintf(fh, "No help text available.\n");
     }
-    AppendSignature(fh);
     CloseMailer(fh);
     return 0;
 }

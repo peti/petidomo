@@ -89,7 +89,6 @@ SendSubscriberList(struct Mail * MailStruct,
 "under the address \"%s\" instead.", owner);
 	    text_wordwrap(buffer, 75);
 	    fprintf(fh, "%s\n", buffer);
-	    AppendSignature(fh);
 	    CloseMailer(fh);
 	}
 	else
@@ -135,7 +134,6 @@ SendSubscriberList(struct Mail * MailStruct,
 	      fputc(*p, fh);
 	    }
 	}
-	AppendSignature(fh);
 	CloseMailer(fh);
     }
     else {

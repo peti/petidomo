@@ -148,7 +148,6 @@ GenIndex(struct Mail * MailStruct,
 	  fprintf(fh, "Found %d mailing lists.\n", entry_num);
     }
 
-    AppendSignature(fh);
     CloseMailer(fh);
 
     return 0;

@@ -36,7 +36,6 @@ static char *             fqdn = NULL;
 static char *             master_password = NULL;
 static char *             mta = "/usr/sbin/sendmail";
 static char *             mta_options = "-i -f%s";
-static bool               detach = FALSE;
 
 int
 InitPetidomo(void)
