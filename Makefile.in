@@ -28,7 +28,7 @@ CXXFLAGS	= @CXXFLAGS@
 CPPFLAGS	= @CPPFLAGS@ @DEFS@
 LDFLAGS		= @LDFLAGS@
 
-OBJS		= acl.o archive.o authen.o config.o exit.o \
+OBJS		= acl.o archive.o authen.o config.o \
 		  filter.o handleacl.o help.o hermes.o index.o io.o listserv.o \
 		  mailer.o members.o parsearray.o password.o rfcparse.o \
 		  subscribe.o tool.o signature.o unsubscribe.o main.o
