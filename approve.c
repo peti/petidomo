@@ -18,9 +18,10 @@
 */
 
 #include "petidomo.h"
-#include <regex.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <regex.h>
 
 int approve_main(char* mail)
     {
