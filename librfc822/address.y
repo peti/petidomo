@@ -114,6 +114,7 @@ sourceroutings:	  /* empty */		{ $$ = (YYSTYPE) NULL; }
 					  str_join($$,$1,$2); str_join($$,$$,$3);
 					  str_join($$,$$,$4);
 					}
+;
 
 local:   atom				{ $$ = $1; }
        | atom local			{ str_join($$,$1,$2); }
@@ -125,10 +126,10 @@ domain:   atom				{ $$ = $1; }
 	| atom dot domain		{ str_join($$,$2,$3); str_join($$,$1,$$); }
 ;
 
-atom:	  TOK_ATOM			{ str_dup($$,yytext); }
-dot:	  '.'				{ $$ = (YYSTYPE) "."; }
-at:	  '@'				{ $$ = (YYSTYPE) "@"; }
-colon:	  ':'				{ $$ = (YYSTYPE) ":"; }
+atom:	  TOK_ATOM			{ str_dup($$,yytext); };
+dot:	  '.'				{ $$ = (YYSTYPE) "."; };
+at:	  '@'				{ $$ = (YYSTYPE) "@"; };
+colon:	  ':'				{ $$ = (YYSTYPE) ":"; };
 
 %%
 /***** internal routines *****/
