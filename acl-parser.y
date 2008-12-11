@@ -43,7 +43,7 @@ struct Mail * g_MailStruct;
 
 #define YYERROR_VERBOSE
 %}
-%token TOK_IF TOK_EQUAL TOK_EQUAL TOK_FROM TOK_SUBJECT
+%token TOK_IF TOK_EQUAL TOK_FROM TOK_SUBJECT
 %token TOK_ENVELOPE TOK_HEADER TOK_BODY TOK_AND TOK_OR TOK_NOT
 %token TOK_THEN TOK_MATCH TOK_STRING TOK_DROP TOK_PASS TOK_APPROVE
 %token TOK_REDIRECT TOK_FORWARD TOK_REJECT TOK_REJECTWITH
@@ -262,11 +262,11 @@ int checkACL(struct Mail *   MailStruct,
         switch(errno) {
           case ENOENT:
               /* no master acl file */
-              syslog(LOG_WARNING, "You have no global acl file (%s). This is probably not a good idea.", 
+              syslog(LOG_WARNING, "You have no global acl file (%s). This is probably not a good idea.",
                      (type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post));
               goto check_local_acl_file;
           default:
-              syslog(LOG_ERR, "Couldn't open \"%s\" acl file: %s", 
+              syslog(LOG_ERR, "Couldn't open \"%s\" acl file: %s",
                      (type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post), strerror(errno));
               return -1;
         }
@@ -280,7 +280,7 @@ int checkACL(struct Mail *   MailStruct,
         yyin = NULL;
     }
     if (rc != 0) {
-        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", 
+        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.",
                (type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post));
         return -1;
     }
@@ -312,7 +312,7 @@ check_local_acl_file:
               /* no list acl file */
 	      goto finished;
           default:
-              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %s", 
+              syslog(LOG_ERR, "Couldn't open acl file \"%s\": %s",
                      (type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post),
                      strerror(errno));
               return -1;
@@ -323,7 +323,7 @@ check_local_acl_file:
     fclose(yyin);
     yyin = NULL;
     if (rc != 0) {
-        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.", 
+        syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.",
                (type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post));
         return -1;
     }
