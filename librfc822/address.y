@@ -30,7 +30,7 @@
 
 #include "../libmpools/mpools.h"
 #define yytext rfc822_text
-#define yyley rfc822_lex
+#define yylex rfc822_lex
 
     /* Variables in our lexer. */
 
