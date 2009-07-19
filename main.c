@@ -27,10 +27,6 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-#define _VERSION_C_AS_HEADER_
-#include "version.c"
-#undef  _VERSION_C_AS_HEADER_
-
 #ifndef LOG_PERROR
 #  define LOG_PERROR 0
 #endif
@@ -87,7 +83,7 @@ main(int argc, char * argv[])
     /* Parse the command line. */
 
     argv_help_string = "Petidomo Mailing List Server";
-    argv_version_string = (char *)petidomo_version.v_gnu;
+    argv_version_string = PACKAGE_STRING;
     argv_process(args, argc, argv);
 
     /* Make sure we got all required parameters. */
@@ -124,7 +120,7 @@ main(int argc, char * argv[])
     /* Log a few helpful facts about this Petidomo instance. */
 
     syslog(LOG_DEBUG, "%s starting up; mode=%s, listname=%s, masterconf=%s, approved=%s, ruid=%d, euid=%d, gid=%d, egid=%d",
-	   petidomo_version.v_gnu, mode, (listname != NULL ? listname : "<none>"), masterconfig_path, (g_is_approved) ? "true" : "false",
+	   PACKAGE_STRING, mode, (listname != NULL ? listname : "<none>"), masterconfig_path, (g_is_approved) ? "true" : "false",
 	   getuid(), geteuid(), getgid(), getegid());
 
     /* Init Petidomo's internal stuff. */
