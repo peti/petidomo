@@ -1,8 +1,0 @@
-config.log config.cache config.status Makefile
-config.h
-shtool
-ltmain.sh libtool.m4 config.guess config.sub
-configure config.h.in
-acl.c acl-scan.c acl-scan.h
-petidomo
-petidomo.1
