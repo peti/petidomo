@@ -23,8 +23,7 @@
 #endif
 
 #include "rfc822.h"
-#include "address_scan.h"
-#define yylval rfc822_lval
+#include "address.h"
 
 extern int     yylval;
 
@@ -37,6 +36,16 @@ int            rfc822_address_buffer_pos;
 }
 %}
 %x quoted escaped escaped2
+
+%option 8bit
+%option batch
+%option case-insensitive
+%option nounput
+%option outfile="lex.yy.c"
+%option prefix="rfc822_"
+%option warn
+%option noyywrap
+
 %%
 ([^@\.\(\) \t<>\":,\\]*\\)/(.[@\.:])	{ BEGIN(escaped2); yymore(); }
 ([^@\.\(\) \t<>\":,\\]*\\)/(.)		{ BEGIN(escaped2); yymore(); }
@@ -57,10 +66,3 @@ int            rfc822_address_buffer_pos;
 <quoted>\"			{ BEGIN(INITIAL); return TOK_ATOM; }
 <quoted><<EOF>>			{ BEGIN(INITIAL); return TOK_ILLEGAL; }
 %%
-/* Internal routines. */
-
-int
-yywrap(void)
-{
-    return 1;
-}

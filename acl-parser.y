@@ -1,24 +1,21 @@
-/*
-   $Source$
-   $Revision$
-
-   Copyright (C) 2000 by CyberSolutions GmbH, Germany.
-
-   This file is part of Petidomo.
-
-   Petidomo is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
-   Petidomo is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-   General Public License for more details.
-*/
-
 %{
-        /* Definitions we need in the parser. */
+/*
+ * Copyright (c) 1995-2006 Peter Simons <simons@cryp.to>
+ * Copyright (c) 2000-2001 Cable & Wireless GmbH
+ * Copyright (c) 1999-2000 CyberSolutions GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE. See the GNU General Public License for more details.
+ */
+
+/* Definitions we need in the parser. */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,8 +26,8 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-static int yyerror(char *);
-static int yylex(void);
+static int acl_error(char *);
+static int acl_lex(void);
 static int domatch(int, int, char *);
 static int dofilter(const char *);
 
@@ -39,10 +36,13 @@ int operation, g_rc;
 char * g_parameter = NULL;
 struct Mail * g_MailStruct;
 
-#include "acl-scan.c"
+// Forward declarations for the scanner generated from acl-scanner.l.
+extern char *acl_text;
+extern FILE *acl_in;
 
 #define YYERROR_VERBOSE
 %}
+%name-prefix="acl_"
 %token TOK_IF TOK_EQUAL TOK_FROM TOK_SUBJECT
 %token TOK_ENVELOPE TOK_HEADER TOK_BODY TOK_AND TOK_OR TOK_NOT
 %token TOK_THEN TOK_MATCH TOK_STRING TOK_DROP TOK_PASS TOK_APPROVE
@@ -66,19 +66,19 @@ statmt:   ';'
 ;
 
 exp:      qualifier TOK_EQUAL TOK_STRING  {
-                                            g_rc = domatch($1, TOK_EQUAL, yytext);
+                                            g_rc = domatch($1, TOK_EQUAL, acl_text);
                                             if (g_rc == -1)
                                                YYABORT;
                                             $$ = g_rc;
                                           }
         | qualifier TOK_MATCH TOK_STRING  {
-                                            g_rc = domatch($1, TOK_MATCH, yytext);
+                                            g_rc = domatch($1, TOK_MATCH, acl_text);
                                             if (g_rc == -1)
                                                YYABORT;
                                             $$ = g_rc;
                                           }
         | TOK_STRING                      {
-                                            g_rc = dofilter(yytext);
+                                            g_rc = dofilter(acl_text);
                                             if (g_rc == -1)
                                                YYABORT;
                                             $$ = g_rc;
@@ -104,7 +104,7 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
                                             $$ = ACL_REJECTWITH;
                                             if (g_parameter != NULL)
                                               free(g_parameter);
-                                            g_parameter = strdup(yytext);
+                                            g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
@@ -112,7 +112,7 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
                                             $$ = ACL_REDIRECT;
                                             if (g_parameter != NULL)
                                               free(g_parameter);
-                                            g_parameter = strdup(yytext);
+                                            g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
@@ -120,7 +120,7 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
                                             $$ = ACL_FORWARD;
                                             if (g_parameter != NULL)
                                               free(g_parameter);
-                                            g_parameter = strdup(yytext);
+                                            g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
@@ -128,7 +128,7 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
                                             $$ = ACL_FILTER;
                                             if (g_parameter != NULL)
                                               free(g_parameter);
-                                            g_parameter = strdup(yytext);
+                                            g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
@@ -136,14 +136,8 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
 %%
 /***** internal routines *****/
 
-int
-yywrap(void)
-{
-    return 1;
-}
-
 static int
-yyerror(char * string)
+acl_error(char * string)
 {
     syslog(LOG_ERR, "Syntax error in line %u: %s\n", lineno, string);
     return 0;
@@ -238,6 +232,8 @@ int checkACL(struct Mail *   MailStruct,
              char **         parameter_ptr,
              acl_type_t      type)
 {
+    extern void acl_reset_lexer();
+
     const struct PD_Config * MasterConfig;
     const struct List_Config * ListConfig;
     int     rc;
@@ -252,13 +248,13 @@ int checkACL(struct Mail *   MailStruct,
 
     /* Set up the lex scanner. */
 
-    BEGIN(INITIAL);
+    acl_reset_lexer();
     lineno = 1; operation = ACL_NONE;
 
     /* First check the mail against the master acl file. */
 
-    yyin = fopen((type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post), "r");
-    if (yyin == NULL) {
+    acl_in = fopen((type == ACL_PRE ? MasterConfig->acl_file_pre : MasterConfig->acl_file_post), "r");
+    if (acl_in == NULL) {
         switch(errno) {
           case ENOENT:
               /* no master acl file */
@@ -275,9 +271,9 @@ int checkACL(struct Mail *   MailStruct,
     /* Parse the acl file. */
 
     rc = yyparse();
-    if (yyin != NULL) {
-        fclose(yyin);
-        yyin = NULL;
+    if (acl_in != NULL) {
+        fclose(acl_in);
+        acl_in = NULL;
     }
     if (rc != 0) {
         syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.",
@@ -301,12 +297,12 @@ check_local_acl_file:
 
     /* Set up the lex scanner. */
 
-    BEGIN(INITIAL);
+    acl_reset_lexer();
     lineno = 1; operation = ACL_NONE;
 
     ListConfig = getListConfig(listname);
-    yyin = fopen((type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post), "r");
-    if (yyin == NULL) {
+    acl_in = fopen((type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post), "r");
+    if (acl_in == NULL) {
         switch(errno) {
           case ENOENT:
               /* no list acl file */
@@ -320,8 +316,8 @@ check_local_acl_file:
     }
 
     rc = yyparse();
-    fclose(yyin);
-    yyin = NULL;
+    fclose(acl_in);
+    acl_in = NULL;
     if (rc != 0) {
         syslog(LOG_ERR, "Parsing \"%s\" file returned with an error.",
                (type == ACL_PRE ? ListConfig->acl_file_pre : ListConfig->acl_file_post));
