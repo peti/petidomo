@@ -18,6 +18,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #ifdef DEBUG_DMALLOC
 #  include <dmalloc.h>
 #endif
