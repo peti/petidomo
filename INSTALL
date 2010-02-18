@@ -1,436 +1,365 @@
-                         Installing Petidomo
+Installation Instructions
+*************************
 
-The installation of the Petidomo Mailing List Manager is simple and
-straight forward; do not be scared by the length of this document.
-There are many different ways and options how to install it and I have
-tried my best to cover *all* of them. If you are not interested in
-every little detail, you will be able to skim over most of the text
-here.
+Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005,
+2006, 2007, 2008, 2009 Free Software Foundation, Inc.
 
-                                   Peter Simons <simons@computer.org>
+   Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.
 
+Basic Installation
+==================
 
-Building the Binaries
+   Briefly, the shell commands `./configure; make; make install' should
+configure, build, and install this package.  The following
+more-detailed instructions are generic; see the `README' file for
+instructions specific to this package.  Some packages provide this
+`INSTALL' file but do not implement all of the features documented
+below.  The lack of an optional feature in a given package is not
+necessarily a bug.  More recommendations for GNU packages can be found
+in *note Makefile Conventions: (standards)Makefile Conventions.
+
+   The `configure' shell script attempts to guess correct values for
+various system-dependent variables used during compilation.  It uses
+those values to create a `Makefile' in each directory of the package.
+It may also create one or more `.h' files containing system-dependent
+definitions.  Finally, it creates a shell script `config.status' that
+you can run in the future to recreate the current configuration, and a
+file `config.log' containing compiler output (useful mainly for
+debugging `configure').
+
+   It can also use an optional file (typically called `config.cache'
+and enabled with `--cache-file=config.cache' or simply `-C') that saves
+the results of its tests to speed up reconfiguring.  Caching is
+disabled by default to prevent problems with accidental use of stale
+cache files.
+
+   If you need to do unusual things to compile the package, please try
+to figure out how `configure' could check whether to do them, and mail
+diffs or instructions to the address given in the `README' so they can
+be considered for the next release.  If you are using the cache, and at
+some point `config.cache' contains results you don't want to keep, you
+may remove or edit it.
+
+   The file `configure.ac' (or `configure.in') is used to create
+`configure' by a program called `autoconf'.  You need `configure.ac' if
+you want to change it or regenerate `configure' using a newer version
+of `autoconf'.
+
+   The simplest way to compile this package is:
+
+  1. `cd' to the directory containing the package's source code and type
+     `./configure' to configure the package for your system.
+
+     Running `configure' might take a while.  While running, it prints
+     some messages telling which features it is checking for.
+
+  2. Type `make' to compile the package.
+
+  3. Optionally, type `make check' to run any self-tests that come with
+     the package, generally using the just-built uninstalled binaries.
+
+  4. Type `make install' to install the programs and any data files and
+     documentation.  When installing into a prefix owned by root, it is
+     recommended that the package be configured and built as a regular
+     user, and only the `make install' phase executed with root
+     privileges.
+
+  5. Optionally, type `make installcheck' to repeat any self-tests, but
+     this time using the binaries in their final installed location.
+     This target does not install anything.  Running this target as a
+     regular user, particularly if the prior `make install' required
+     root privileges, verifies that the installation completed
+     correctly.
+
+  6. You can remove the program binaries and object files from the
+     source code directory by typing `make clean'.  To also remove the
+     files that `configure' created (so you can compile the package for
+     a different kind of computer), type `make distclean'.  There is
+     also a `make maintainer-clean' target, but that is intended mainly
+     for the package's developers.  If you use it, you may have to get
+     all sorts of other programs in order to regenerate files that came
+     with the distribution.
+
+  7. Often, you can also type `make uninstall' to remove the installed
+     files again.  In practice, not all packages have tested that
+     uninstallation works correctly, even though it is required by the
+     GNU Coding Standards.
+
+  8. Some packages, particularly those that use Automake, provide `make
+     distcheck', which can by used by developers to test that all other
+     targets like `make install' and `make uninstall' work correctly.
+     This target is generally not run by end users.
+
+Compilers and Options
 =====================
 
-Untar the source archive of Petidomo in a directory of your choice
-like /usr/local/src or your home directory. This will create a
-directory called petidomo-VERSION, where the "VERSION" part is called
-exactly as in the file name of the tar archive. Change into this
-directory.
-
-Now you have to run the configure script
-
-    ./configure
-
-which will determine the characteristics of your system and create the
-files required to actually build Petidomo. You may provide several
-parameters to the script. The interesting ones, including the default
-values if unspecified, are:
-
-   --help
-        Display the complete list of command line options.
-
-   --prefix
-        The the PREFIX for all following paths. The default is
-        /usr/local.
-
-   --exec-prefix
-        Set the EPREFIX for all following paths. This is useful in
-        case you want to install binaries into a different directory
-        hierarchy than normal text files, but usually the EPREFIX is
-        identical to PREFIX. The default is PREFIX.
-
-   --bindir
-        Set the directory where the binaries should be installed. The
-        default is EPREFIX/bin.
-
-   --libexecdir
-        Set the directory where executables should be installed that
-        will be called by Petidomo but not by the user directly (like
-        posting filters). The default is EPREFIX/libexec.
-
-   --datadir
-        Set the directory where read-only architecture-independent
-        data files should be installed (like the help file). The
-        default is PREFIX/share.
-
-   --sysconfdir
-        Set the directory where read-only configuration files should
-        be installed. The default is PREFIX/etc.
-
-   --localstatedir
-        Set the directory where modifiable data files should be
-        installed (like the approve-queue or the mailing list config
-        files). The default is PREFIX/var.
-
-   --mandir
-        Set the directory where man documentation files should be
-        installed. The default is PREFIX/man.
-
-Please note that the directories you specify here are only the default
-settings that are compiled into Petidomo. You can modify *all* paths
-at run-time via the command line and through the configuration files.
-So don't waste to much time figuring out what you want here, you can
-change anything later without having to recompile Petidomo.
-
-Finally, here is an example output of the configuration script when
-run without any parameters on a Linux machine:
-
-    simons@peti:~/projects/petidomo-4.0b1$ ./configure
-    Configuring OSSP Petidomo, Version 4.0b1 (18-Jan-2001)
-    creating cache ./config.cache
-    checking for gcc... gcc
-    checking whether the C compiler (gcc  ) works... yes
-    checking whether the C compiler (gcc  ) is a cross-compiler... no
-    checking whether we are using GNU C... yes
-    checking whether gcc accepts -g... yes
-    checking for ranlib... ranlib
-    checking for flex... flex
-    checking for yywrap in -lfl... yes
-    checking for bison... bison -y
-    checking size of unsigned short... 2
-    checking size of unsigned int... 4
-    checking size of unsigned long... 4
-    checking how to run the C preprocessor... gcc -E
-    checking for ANSI C header files... yes
-    checking for ssize_t... yes
-    updating cache ./config.cache
-    creating ./config.status
-    creating Makefile
-
-Often, you may want to pass certain flags to the compiler or the
-linker to modify the building process. To achieve this, you can set
-certain environment variables before calling the configure script.
-These variables are:
-
-   CC
-        The name of the C compiler to use.
-
-   CPPFLAGS
-        Flags to pass to the preprocesser before compiling a source
-        code file.
-
-   CFLAGS
-        Flags to pass to the compiler when compiling a C source code
-        file.
-
-   LDFLAGS
-        Flags to pass to the linker when linking the binaries.
-
-I personally find this useful to raise the level of compiler
-optimization or to add linker flags that tell the linker to strip
-unnecessary symbols from the binaries. To achive these effects, I call
-the configure script like this:
-
-    CFLAGS=-O3 LDFLAGS=-s ./configure
-
-Anyway, once the configure script has been run, just call
-
-    make
-
-to start the building process. Petidomo has been tested with various
-flavours of the make(1) utility and all of them seem to work fine. If
-in doubt, try GNU Make, which is available from ftp.gnu.org.
-
-Petidomo has also been built using parallel builds. This is useful if
-you have a multi-processer system. You can do this with most make
-utilities by adding the flag "-j4" with "4" being the number of
-processes you want to spawn simultaneously. Please note, though, that
-some make utilities have problems with the rules that translate the
-yacc-modules included in Petidomo correctly when building in parallel.
-If you experience any trouble, just build it conventionally and you
-should be fine.
-
-
-Installing the Binaries
-=======================
-
-To install the software to your system, all you have to do is execute
-
-    make install
-
-This will copy the Petidomo binary, the posting filters included in
-the distribution, the sample config files and the manual pages into
-the directories you chose at configure time earlier. If you're a
-first-time user, you may also want to execute
-
-    make install-testlist
-
-which will create a sample mailing list called "testlist" for you.
-
-Assuming you used the default paths when running configure, the
-install process will create the follwing directories, respectively
-copy the following files to your system:
-
-    /usr/local/
-    /usr/local/bin/
-    /usr/local/bin/petidomo
-    /usr/local/bin/petidomo-approve
-    /usr/local/bin/petidomo-kickout
-    /usr/local/etc/
-    /usr/local/etc/petidomo.acl-sample
-    /usr/local/etc/petidomo.conf-sample
-    /usr/local/libexec/
-    /usr/local/libexec/petidomo/
-    /usr/local/libexec/petidomo/insert-name-in-subject.sh
-    /usr/local/libexec/petidomo/pgp-decrypt.sh
-    /usr/local/libexec/petidomo/pgp-encrypt.sh
-    /usr/local/libexec/petidomo/rfc2369.sh
-    /usr/local/man/
-    /usr/local/man/man1/
-    /usr/local/man/man1/petidomo.1
-    /usr/local/share/
-    /usr/local/share/petidomo/
-    /usr/local/share/petidomo/help
-    /usr/local/var/
-    /usr/local/var/petidomo/
-    /usr/local/var/petidomo/ack-queue/
-    /usr/local/var/petidomo/index
-    /usr/local/var/petidomo/lists/
-
-If you run the "install-testlist" target, the following
-directory/files will be created additionally:
-
-    /usr/local/var/petidomo/lists/testlist/
-    /usr/local/var/petidomo/lists/testlist/config
-    /usr/local/var/petidomo/lists/testlist/acl
-    /usr/local/var/petidomo/lists/testlist/list
-
-
-Configuring Sendmail
-====================
-
-Before you can use Petidomo, you have to configure sendmail so that it
-knows about Petidomo -- I assume that you have sendmail installed
-already. If you are using an MTA other than sendmail, you are on your
-own from here on, I am afraid. Any users who have successfully
-installed Petidomo on a qmail-, vmailer-, or postfix-based system are
-more than welcome to contribute to this documentation to help other
-users.
-
-To run Petidomo via sendmail -- what is what you want to do --, you
-have to create apropriate aliases for it. You can do this by adding
-the folling lines to your aliases file, which usually resides in
-/etc/aliases or, with newer sendmail versions, in /etc/mail/aliases:
-
-    petidomo-manager:   postmaster
-    petidomo:           "|/usr/local/bin/petidomo --mode=listserv"
-    petidomo-approve:   "|/usr/local/bin/petidomo --mode=approve"
-
-In case you installed the Petidomo binary to some other location, you
-will have to change the paths here apropriately of course. You may
-also chose that mail for the "petidomo-manager" should go to some
-different address than "postmaster", if that suits your needs better;
-the main point is that somebody actually *reads* what arrives there.
-
-If executed the "install-testlist" target earlier and thus have the
-example mailing list from the distribution installed, you may also
-want to add the lines:
-
-    testlist:           "|/usr/local/bin/petidomo --mode=deliver testlist"
-    testlist-request:   "|/usr/local/bin/petidomo --mode=listserv testlist"
-    testlist-owner:     petidomo-manager
-
-Having done all this, execute the newaliases(1) utility to rebuild
-sendmail's internal database. Your changes will not have any effect
-unless you do this.
-
-
-Configuring the File Permissions
-================================
-
-The final step, before Petidomo is successfully installed, is to set
-the right permissions to the installation directories and installed
-files. Unfortunately, the installation process can not do this
-automatically; you have to chose what permissions are "right"
-yourself. If works like this: Petidomo will be called from sendmail,
-thanks to the aliases you just created. That means, that sendmail
-determines under what user to start Petidomo. In 99% of all
-configurations I have ever seen, that user is "daemon", but it *may*
-be something else, so we better figure it out for sure.
-
-Add the line
-
-    foobar:             "/tmp/foobar-mail"
-
-to your aliases file and execute newaliases(1). Then send an e-mail to
-the address "foobar". The contents of this mail will be stored in the
-file /tmp/foobar-mail then and we are interested in the user who owns
-this file:
-
-    root@peti:/# sendmail -v foobar </dev/null
-    foobar... aliased to "/tmp/foobar-mail"
-    "/tmp/foobar-mail"... Sent
-    root@peti:/# ls -l /tmp/foobar-mail
-    -rw-------   1 daemon   daemon        269 Feb 12 17:57 /tmp/foobar-mail
-
-See? On my system it is "daemon" indeed. On your system it may be
-someone else. Now that we know, you may remove the foobar-line from
-the aliases file again.
-
-OK, sendmail starts Petidomo under user id "daemon". This means that
-"daemon" must have read access to virtually any file in the Petidomo
-installation. This is the default, because all files are installed
-with read permisson for everybody. Also, all directories allow access
-to anybody by default. But "daemon" also needs write access to the
-"localstatedir" -- /usr/local/var/petidomo per default. You can ensure
-this by executing the command:
-
-    chown -R daemon /usr/local/var/petidomo
-
-This is a rather simplistic solution to the permisson problem; you
-*can* use much more fine-grained settings if you like to. But I
-figured that if you are the kind of person who wants to do things like
-this, you won't need an explanation how to do it anyway. Just that
-much information for you: Petidomo does not actually write to the
-"localstatdir", but only to the subdirectory ack-queue located in it.
-
-Of course, you do not necessarily need to have the ack-queue directory
-owned by "daemon", you can also set the group permissions
-apropriately. Furthermore, Petidomo will usually want to write to the
-lists directory located in the "localstatedir", because most list
-administrators tend to place the mailing list archives there, but you
-can enable write access according to the list's configuration once you
-know how you're mailing lists are configured. In case something does
-not work as expected, check out the syslog messages for the LOG_MAIL
-facility -- this is where Petidomo logs its error messages.
-
-
-Configuring Petidomo
-====================
-
-The last step before we can test our installation is to configure
-Petidomo. This is really simple. List the contents of the "sysconfdir"
-you chose. If you did not change the default paths, this is
-/usr/local/etc. There you will find two files: petidomo.conf-sample
-and petidomo.acl-sample. Just rename them to petidomo.conf and
-petidomo.acl respectively and fire up your favorite text editor to
-edit the file petidomo.conf.
-
-Uncomment the options "Hostname", "AdminPassword", and "MTA" and set
-the values correctly. "Hostname" should be the fully qualified domain
-name of the machine running Petidomo. It is essential that this name
-can receive e-mail, that is, that is has an MX record. (Talk to the
-person administrating the domain name service of your organization if
-this doesn't make any sense to you.) As "AdminPassword", you can chose
-pretty much any text you like, just make sure you remember it. The
-"MTA" setting will usually be alright the way it is. You may want to
-check whether sendmail does actually live at this path; on some
-Unixes, it is not installed at /usr/sbin/sendmail, but at
-/usr/lib/sendmail. Change the setting if this is the case. You can
-ignore all other settings right now. Come back and configure those
-once you have read the apropriate sections of this manual. If you're
-an experienced Unix wizard, the comments in the config file will
-probably be enough for you to guess what these options do, though.
-
-Once you have done this, your installation is ready to be tested.
-
-
-Testing the Installation
-========================
-
-Asserting you followed all steps described above, you have a working
-Petidomo installation now. Occasionally, some minor permisson problem
-may still remain to be fixed, or you may want to customize some texts.
-To figure out what is left to do (or to realize that there is nothing
-left do to), send an e-mail to the "petidomo" user on your machine and
-put the word "help" into the mail body -- without the quotes of
-course.
-
-On my system, this looks like this:
-
-    simons@peti:~/projects/petidomo$ echo help | sendmail -v petidomo
-    petidomo... aliased to "|/usr/local/bin/petidomo --mode=listserv"
-    "|/usr/local/bin/petidomo --mode=listserv"... Connecting to prog...
-    "|/usr/local/bin/petidomo --mode=listserv"... Sent
-
-Once you sent the e-mail, sendmail will start up Petidomo and feed the
-mail text into it for processing. If you take a look at the syslogfile
-containing the LOG_MAIL facility now -- this is usally
-/var/log/messages or /var/log/maillog --, you will find that Petidomo
-logged entries there that look pretty much like the following ones.
-The backslash ("\") characters at the end of some of these lines
-denote that the line has been wrapped for readability. In reality,
-this would be one single large line.
-
-    sendmail[8705]: f1CIHWJ08705: from=simons, size=5, class=0, \
-	    nrcpts=1, msgid=<200102121817.f1CIHWJ08705@peti.cryp.to>, \
-	    relay=simons@localhost
-    petidomo[8706]: Petidomo 4.0b1 (18-Jan-2001) starting up; \
-	    mode=listserv, listname=<none>, \
-	    masterconf=/usr/local/etc/petidomo.conf, \
-	    approved=false, ruid=2, euid=2, gid=2, egid=2
-    petidomo[8706]: simons@peti.cryp.to: help
-    sendmail[8707]: f1CIHX508707: from=petidomo-manager@peti.cryp.to, \
-	    size=2091, class=-100, nrcpts=1, \
-	    msgid=<200102121817.f1CIHX508707@peti.cryp.to>, \
-	    relay=daemon@localhost
-    sendmail[8705]: f1CIHWJ08705: \
-	    to="|/usr/local/bin/petidomo --mode=listserv", \
-	    ctladdr=petidomo (2/0), delay=00:00:01, xdelay=00:00:01, \
-	    mailer=prog, pri=30005, dsn=2.0.0, stat=Sent
-    sendmail[8709]: f1CIHX508707: to=simons@peti.cryp.to, delay=00:00:00, \
-	    xdelay=00:00:00, mailer=local, pri=212091, dsn=2.0.0, stat=Sent
-
-As you can see, Petidomo logged how it was started, where it is
-expecting its master config file and under which user- and group id it
-is running. Then it logs that it has received a HELP request. This
-request will be answered by sending the file
-/usr/local/share/petidomo/help back to the person who requested help,
-and if everthing worked, you will now find that mail in your mail box.
-
-If something went wrong, Petidomo will tell you what went wrong. So,
-please fix the problem and try again. In 99% of all cases, the error
-will say something like "opening file XYZ failed: permission denied".
-Then all you have to do is to make sure that the user under which
-Petidomo has been started (you have the numeric id in the logfile) has
-read access to that file. If the user has but Petidomo keeps
-complaining, check, whether that user has access to the directory at
-all!
-
-Those of you who executed the "install-testlist" target earlier in
-the "Building the Binaries" chapter may also want to test whether
-this mailing list is working. To do so, send another mail to Petidomo
-and put the command "subscribe YOUR-ADDRESS testlist" in the mail
-body -- without the quotes! "YOUR-ADDRESS" naturally means that you
-should insert your e-mail address here. This command will subscribe
-your e-mail address to the "testlist" mailing list; you should
-receive a confirmation about that via e-mail within moments. Once that
-is accomplished, send another e-mail to the "testlist" address on
-your system. The e-mail may look like whatever you want.
-
-Within seconds, you should get the mail back from the mailing list
-server -- and so will all other addresses that are subscribed to the
-list. My personal test mail looked like this:
-
-    From testlist-owner@peti.cryp.to  Mon Feb 12 19:43:56 2001
-    Received: (from daemon@localhost)
-	    by peti.cryp.to id f1CIhuA08872 for simons@peti.cryp.to;
-	    Mon, 12 Feb 2001 19:43:56 +0100
-    Received: (from simons@localhost)
-	    by peti.cryp.to id f1CIhJY08853 for testlist;
-	    Mon, 12 Feb 2001 19:43:19 +0100
-    Date: Mon, 12 Feb 2001 19:43:19 +0100
-    From: Peter Simons <simons@peti.cryp.to>
-    Message-Id: <200102121843.f1CIhJY08853@peti.cryp.to>
-    Subject: Petidomo absolutely rules the known earth!
-    Reply-To: testlist@peti.cryp.to
-    Sender: testlist-owner@peti.cryp.to
-    Precedence: list
-
-    It does ...
-
-If this all worked for you, you have a your Petidomo installation up
-and running. Men will envy you and women will desire you -- unless, of
-course, you *are* a woman, then it is vice versa. You will be able to
-stop smoking any time you want, you may eat anything you like and as
-much as you like, but you will never gain a single pound. Your sex
-life will improve dramatically, your boss will like you, your hard
-drives will never crash and your Internet connections will always be
-fast. All this, thanks to the wonders of the Petidomo Mailing List
-Manager!
-
-In case any of the benefits promised above stays away, please consult
-paragraphs 11 and 12 of the file COPYING included in this
-distribution.
+   Some systems require unusual options for compilation or linking that
+the `configure' script does not know about.  Run `./configure --help'
+for details on some of the pertinent environment variables.
+
+   You can give `configure' initial values for configuration parameters
+by setting variables in the command line or in the environment.  Here
+is an example:
+
+     ./configure CC=c99 CFLAGS=-g LIBS=-lposix
+
+   *Note Defining Variables::, for more details.
+
+Compiling For Multiple Architectures
+====================================
+
+   You can compile the package for more than one kind of computer at the
+same time, by placing the object files for each architecture in their
+own directory.  To do this, you can use GNU `make'.  `cd' to the
+directory where you want the object files and executables to go and run
+the `configure' script.  `configure' automatically checks for the
+source code in the directory that `configure' is in and in `..'.  This
+is known as a "VPATH" build.
+
+   With a non-GNU `make', it is safer to compile the package for one
+architecture at a time in the source code directory.  After you have
+installed the package for one architecture, use `make distclean' before
+reconfiguring for another architecture.
+
+   On MacOS X 10.5 and later systems, you can create libraries and
+executables that work on multiple system types--known as "fat" or
+"universal" binaries--by specifying multiple `-arch' options to the
+compiler but only a single `-arch' option to the preprocessor.  Like
+this:
+
+     ./configure CC="gcc -arch i386 -arch x86_64 -arch ppc -arch ppc64" \
+                 CXX="g++ -arch i386 -arch x86_64 -arch ppc -arch ppc64" \
+                 CPP="gcc -E" CXXCPP="g++ -E"
+
+   This is not guaranteed to produce working output in all cases, you
+may have to build one architecture at a time and combine the results
+using the `lipo' tool if you have problems.
+
+Installation Names
+==================
+
+   By default, `make install' installs the package's commands under
+`/usr/local/bin', include files under `/usr/local/include', etc.  You
+can specify an installation prefix other than `/usr/local' by giving
+`configure' the option `--prefix=PREFIX', where PREFIX must be an
+absolute file name.
+
+   You can specify separate installation prefixes for
+architecture-specific files and architecture-independent files.  If you
+pass the option `--exec-prefix=PREFIX' to `configure', the package uses
+PREFIX as the prefix for installing programs and libraries.
+Documentation and other data files still use the regular prefix.
+
+   In addition, if you use an unusual directory layout you can give
+options like `--bindir=DIR' to specify different values for particular
+kinds of files.  Run `configure --help' for a list of the directories
+you can set and what kinds of files go in them.  In general, the
+default for these options is expressed in terms of `${prefix}', so that
+specifying just `--prefix' will affect all of the other directory
+specifications that were not explicitly provided.
+
+   The most portable way to affect installation locations is to pass the
+correct locations to `configure'; however, many packages provide one or
+both of the following shortcuts of passing variable assignments to the
+`make install' command line to change installation locations without
+having to reconfigure or recompile.
+
+   The first method involves providing an override variable for each
+affected directory.  For example, `make install
+prefix=/alternate/directory' will choose an alternate location for all
+directory configuration variables that were expressed in terms of
+`${prefix}'.  Any directories that were specified during `configure',
+but not in terms of `${prefix}', must each be overridden at install
+time for the entire installation to be relocated.  The approach of
+makefile variable overrides for each directory variable is required by
+the GNU Coding Standards, and ideally causes no recompilation.
+However, some platforms have known limitations with the semantics of
+shared libraries that end up requiring recompilation when using this
+method, particularly noticeable in packages that use GNU Libtool.
+
+   The second method involves providing the `DESTDIR' variable.  For
+example, `make install DESTDIR=/alternate/directory' will prepend
+`/alternate/directory' before all installation names.  The approach of
+`DESTDIR' overrides is not required by the GNU Coding Standards, and
+does not work on platforms that have drive letters.  On the other hand,
+it does better at avoiding recompilation issues, and works well even
+when some directory options were not specified in terms of `${prefix}'
+at `configure' time.
+
+Optional Features
+=================
+
+   If the package supports it, you can cause programs to be installed
+with an extra prefix or suffix on their names by giving `configure' the
+option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
+
+   Some packages pay attention to `--enable-FEATURE' options to
+`configure', where FEATURE indicates an optional part of the package.
+They may also pay attention to `--with-PACKAGE' options, where PACKAGE
+is something like `gnu-as' or `x' (for the X Window System).  The
+`README' should mention any `--enable-' and `--with-' options that the
+package recognizes.
+
+   For packages that use the X Window System, `configure' can usually
+find the X include and library files automatically, but if it doesn't,
+you can use the `configure' options `--x-includes=DIR' and
+`--x-libraries=DIR' to specify their locations.
+
+   Some packages offer the ability to configure how verbose the
+execution of `make' will be.  For these packages, running `./configure
+--enable-silent-rules' sets the default to minimal output, which can be
+overridden with `make V=1'; while running `./configure
+--disable-silent-rules' sets the default to verbose, which can be
+overridden with `make V=0'.
+
+Particular systems
+==================
+
+   On HP-UX, the default C compiler is not ANSI C compatible.  If GNU
+CC is not installed, it is recommended to use the following options in
+order to use an ANSI C compiler:
+
+     ./configure CC="cc -Ae -D_XOPEN_SOURCE=500"
+
+and if that doesn't work, install pre-built binaries of GCC for HP-UX.
+
+   On OSF/1 a.k.a. Tru64, some versions of the default C compiler cannot
+parse its `<wchar.h>' header file.  The option `-nodtk' can be used as
+a workaround.  If GNU CC is not installed, it is therefore recommended
+to try
+
+     ./configure CC="cc"
+
+and if that doesn't work, try
+
+     ./configure CC="cc -nodtk"
+
+   On Solaris, don't put `/usr/ucb' early in your `PATH'.  This
+directory contains several dysfunctional programs; working variants of
+these programs are available in `/usr/bin'.  So, if you need `/usr/ucb'
+in your `PATH', put it _after_ `/usr/bin'.
+
+   On Haiku, software installed for all users goes in `/boot/common',
+not `/usr/local'.  It is recommended to use the following options:
+
+     ./configure --prefix=/boot/common
+
+Specifying the System Type
+==========================
+
+   There may be some features `configure' cannot figure out
+automatically, but needs to determine by the type of machine the package
+will run on.  Usually, assuming the package is built to be run on the
+_same_ architectures, `configure' can figure that out, but if it prints
+a message saying it cannot guess the machine type, give it the
+`--build=TYPE' option.  TYPE can either be a short name for the system
+type, such as `sun4', or a canonical name which has the form:
+
+     CPU-COMPANY-SYSTEM
+
+where SYSTEM can have one of these forms:
+
+     OS
+     KERNEL-OS
+
+   See the file `config.sub' for the possible values of each field.  If
+`config.sub' isn't included in this package, then this package doesn't
+need to know the machine type.
+
+   If you are _building_ compiler tools for cross-compiling, you should
+use the option `--target=TYPE' to select the type of system they will
+produce code for.
+
+   If you want to _use_ a cross compiler, that generates code for a
+platform different from the build platform, you should specify the
+"host" platform (i.e., that on which the generated programs will
+eventually be run) with `--host=TYPE'.
+
+Sharing Defaults
+================
+
+   If you want to set default values for `configure' scripts to share,
+you can create a site shell script called `config.site' that gives
+default values for variables like `CC', `cache_file', and `prefix'.
+`configure' looks for `PREFIX/share/config.site' if it exists, then
+`PREFIX/etc/config.site' if it exists.  Or, you can set the
+`CONFIG_SITE' environment variable to the location of the site script.
+A warning: not all `configure' scripts look for a site script.
+
+Defining Variables
+==================
+
+   Variables not defined in a site shell script can be set in the
+environment passed to `configure'.  However, some packages may run
+configure again during the build, and the customized values of these
+variables may be lost.  In order to avoid this problem, you should set
+them in the `configure' command line, using `VAR=value'.  For example:
+
+     ./configure CC=/usr/local2/bin/gcc
+
+causes the specified `gcc' to be used as the C compiler (unless it is
+overridden in the site shell script).
+
+Unfortunately, this technique does not work for `CONFIG_SHELL' due to
+an Autoconf bug.  Until the bug is fixed you can use this workaround:
+
+     CONFIG_SHELL=/bin/bash /bin/bash ./configure CONFIG_SHELL=/bin/bash
+
+`configure' Invocation
+======================
+
+   `configure' recognizes the following options to control how it
+operates.
+
+`--help'
+`-h'
+     Print a summary of all of the options to `configure', and exit.
+
+`--help=short'
+`--help=recursive'
+     Print a summary of the options unique to this package's
+     `configure', and exit.  The `short' variant lists options used
+     only in the top level, while the `recursive' variant lists options
+     also present in any nested packages.
+
+`--version'
+`-V'
+     Print the version of Autoconf used to generate the `configure'
+     script, and exit.
+
+`--cache-file=FILE'
+     Enable the cache: use and save the results of the tests in FILE,
+     traditionally `config.cache'.  FILE defaults to `/dev/null' to
+     disable caching.
+
+`--config-cache'
+`-C'
+     Alias for `--cache-file=config.cache'.
+
+`--quiet'
+`--silent'
+`-q'
+     Do not print messages saying which checks are being made.  To
+     suppress all normal output, redirect it to `/dev/null' (any error
+     messages will still be shown).
+
+`--srcdir=DIR'
+     Look for the package's source code in directory DIR.  Usually
+     `configure' can determine that directory automatically.
+
+`--prefix=DIR'
+     Use DIR as the installation prefix.  *note Installation Names::
+     for more details, including other options available for fine-tuning
+     the installation locations.
+
+`--no-create'
+`-n'
+     Run the configure checks, but stop before creating any output
+     files.
+
+`configure' also accepts some other, not widely useful, options.  Run
+`configure --help' for more details.
+
