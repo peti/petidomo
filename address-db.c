@@ -2,7 +2,7 @@
    $Source$
    $Revision$
 
-   Copyright (C) 2000 by Peter Simons <simons@computer.org>
+   Copyright (C) 2000 by Peter Simons <simons@cryp.to>
 
    This file is part of Petidomo.
 

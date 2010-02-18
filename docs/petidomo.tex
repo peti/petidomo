@@ -23,8 +23,8 @@
 \begin{document}
 
 \title{The Petidomo Mailing List Manager}
-\author{Peter Simons $<$simons@computer.org$>$}
-\date{February 2001}
+\author{Peter Simons $<$simons@cryp.to$>$}
+\date{February 2010}
 \maketitle
 \tableofcontents
 \clearpage
@@ -1386,7 +1386,7 @@ also use the synonyms ``approved'', ``password'' or ``passwd''
 instead. Here is an example:
 \begin{quote}
 \begin{verbatim}
-From: simons@computer.org (Peter Simons)
+From: peter@example.org (Peter Simons)
 Subject: Cats are the most beautiful animals in the world.
 
 approve let me post
@@ -1406,7 +1406,7 @@ headers of outgoing mail. That is why the body-approval has been
 added.) Here is the same example as above now using the headers:
 \begin{quote}
 \begin{verbatim}
-From: simons@computer.org (Peter Simons)
+From: peter@example.org (Peter Simons)
 Subject: Cats are the most beautiful animals in the world.
 Approve: let me post
 
@@ -1698,7 +1698,7 @@ are the same to Petidomo.
 to be included in quotes. An ACL statement like this:
 \begin{quote}
 \begin{verbatim}
-if from == simons@computer.org then drop;
+if from == peter@example.org then drop;
 \end{verbatim}
 \end{quote}
 will cause Petidomo to abort with an error, because it can't parse
@@ -1710,7 +1710,7 @@ quotes, too. A statement like this can also not be parsed by
 Petidomo:
 \begin{quote}
 \begin{verbatim}
-if from == "simons@computer.org" then
+if from == "peter@example.org" then
         forward postmaster@example.org;
 \end{verbatim}
 \end{quote}
@@ -1793,7 +1793,7 @@ additionally to a regular posting filter you might have configured.
 A nice example for what this feature can be used is the following:
 \begin{quote}
 \begin{verbatim}
-if (address == "simons@computer.org") then
+if (address == "peter@example.org") then
        filter "/usr/local/libexec/petidomo/simons.filter";
 \end{verbatim}
 \end{quote}

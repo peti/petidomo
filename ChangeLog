@@ -5,7 +5,7 @@
 	of defaults, the user should choose his CFLAGS himself. The '-g'
 	is particularly annoying.
 
-2001-02-17  Peter Simons <simons@computer.org>
+2001-02-17  Peter Simons <simons@cryp.to>
 
 	* Updated the documentation for the new version.
 
@@ -47,19 +47,19 @@
 	version number for "new-version" on the command line, provide
 	"VERSION=0.8.15".
 
-2001-01-20  Peter Simons <simons@computer.org>
+2001-01-20  Peter Simons <simons@cryp.to>
 
 	* Underscores in file names suck, because you need an extra
 	key-press to type them compared to the hyphen. For this reason
 	(and for consistency) I corrected this horrible, horrible mistake
 	of the past and renamed everything that contained an underscore.
 
-2001-01-20  Peter Simons <simons@computer.org>
+2001-01-20  Peter Simons <simons@cryp.to>
 
 	* Renamed the MTA_Options" tag in the master config file to
 	"MTAOptions" for consistency.
 
-2001-01-19  Peter Simons <simons@computer.org>
+2001-01-19  Peter Simons <simons@cryp.to>
 
 	* Changed ACL semantics: The ACL is processed _only_ if the
 	posting didn't have a valid password. If it did, the mail is going
@@ -67,7 +67,7 @@
 
 	* Added a warning message to be logged when no global ACL file exists.
 
-2001-01-19  Peter Simons <simons@computer.org>
+2001-01-19  Peter Simons <simons@cryp.to>
 
 	* Greatly enhanced the log messages Petidomo writes. Made the
 	existing messages more helpful, added lots of new ones, generally
@@ -96,7 +96,7 @@
 	* Added two useful scripts for list administrators:
 	petidomo-approve and petidomo-kickout.
 
-2001-01-16  Peter Simons <simons@computer.org>
+2001-01-16  Peter Simons <simons@cryp.to>
 
 	* Added the "acknowledge" feature for mailing list postings.
 
@@ -109,7 +109,7 @@
 	* The ACL is now tested _before_ anything else, meaning that you
 	can use the "approve" action to bypass all other tests.
 
-2001-01-15  Peter Simons <simons@computer.org>
+2001-01-15  Peter Simons <simons@cryp.to>
 
 	* The "ListType" keyword is no longer a mandatory directive in the
 	list's config file; it now defaults to "open".
@@ -131,7 +131,7 @@
 	listserv_main() and to hermes_main(). The parameter will be used
 	by the "acknowledge" mechanism.
 
-2001-01-11  Peter Simons <simons@computer.org>
+2001-01-11  Peter Simons <simons@cryp.to>
 
 	* Added config entry "AcknowledgementFile" to the mailing list's
 	config file.
@@ -140,7 +140,7 @@
 	wrong when he tries to un-/subscribe an address without specifying
 	a (valid) list name.
 
-2001-01-08  Peter Simons <simons@computer.org>
+2001-01-08  Peter Simons <simons@cryp.to>
 
 	* Added "install-testlist" target to the Makefile.
 
@@ -153,7 +153,7 @@
 
 	* Added "install" target to the Makefile.
 
-2001-01-06  Peter Simons <simons@computer.org>
+2001-01-06  Peter Simons <simons@cryp.to>
 
 	* The whole concept of the "petidomo" user is gone. Instead,
 	compile complete paths into the binary and make them run-time
@@ -178,7 +178,7 @@
 	file thing Petidomo had for ever. Consequently, the "ShowOnIndex"
 	directive in the list's config file is gone.
 
-2000-12-15  Peter Simons <simons@computer.org>
+2000-12-15  Peter Simons <simons@cryp.to>
 
 	* The whole signature stuff the commercial Petidomo is gone; the
 	free version does not need this. This, the "AppendSignature"
@@ -194,7 +194,7 @@
 	The different modes of operation will now be distinguished by the
 	mandatory command line parameter "--mode".
 
-2000-12-14  Peter Simons <simons@computer.org>
+2000-12-14  Peter Simons <simons@cryp.to>
 
 	* Removed the complimentary mail2news.c program from the
 	distribution. The program isn't tested, it isn't documented ... so
@@ -206,7 +206,7 @@
 	are useful to reduce the amount of effort required in daily
 	mailing lists administration.
 
-2000-12-01  Peter Simons <simons@computer.org>
+2000-12-01  Peter Simons <simons@cryp.to>
 
 	* CyberSolutions GmbH has released a version of Petidomo 2.2 under
 	GPL at <http://www.petidomo.com/download/OpenPetidomo/source/>.

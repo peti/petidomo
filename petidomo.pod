@@ -914,7 +914,7 @@ Example:
 
 =over 4
 
-B<if (from == "simons@computer.org") then
+B<if (from == "simons@cryp.to") then
      filter "/@PREFIX@/etc/petidomo/simons.filter";>
 
 =back
@@ -1056,7 +1056,7 @@ instead. Here is an example:
 
 =over 4
 
-=item B<From: simons@computer.org (Peter Simons)>
+=item B<From: simons@cryp.to (Peter Simons)>
 
 =item B<Subject: Cats are the most beautiful animals in the world.>
 
@@ -1087,7 +1087,7 @@ added. Here is the same example as above now using the headers:
 
 =over 4
 
-=item B<From: simons@computer.org (Peter Simons)>
+=item B<From: simons@cryp.to (Peter Simons)>
 
 =item B<Subject: Cats are the most beautiful animals in the world.>
 
@@ -1466,7 +1466,7 @@ B<smtpd(8)>, B<spawn(8)>, B<trivial-rewrite(8)>.
 =head1 AUTHOR
 
 Peter Simons
-<simons@computer.org>
+<simons@cryp.to>
 
 =cut
 
