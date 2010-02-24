@@ -73,7 +73,7 @@ main(int argc, char * argv[])
 	if (getcwd(buf, sizeof(buf)) == NULL)
 	    {
 	    syslog(LOG_CRIT, "Failed to get the path to my current working directory.");
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	    }
 	who_am_i = text_easy_sprintf("%s/%s", buf, argv[0]);
 	}
@@ -94,7 +94,7 @@ main(int argc, char * argv[])
     if ((!strcasecmp(mode, "deliver") || !strcasecmp(mode, "dump")) && listname == NULL)
 	{
 	fprintf(stderr, "petidomo: %s mode requires a list name argument\n", mode);
-	exit(1);
+	exit(EXIT_FAILURE);
         }
 
     /* Member Dump Mode */
@@ -106,18 +106,18 @@ main(int argc, char * argv[])
         if (InitPetidomo(masterconfig_path) != 0)
 	    {
             fprintf(stderr, "petidomo: failed load master configuration.\n");
-            exit(1);
+            exit(EXIT_FAILURE);
 	    }
         MasterConfig = getMasterConfig();
         ListConfig = getListConfig(listname);
         if ((cp = loadfile(ListConfig->address_file)) == NULL)
 	    {
             fprintf(stderr, "petidomo: failed to open file \"%s\"\n", ListConfig->address_file);
-            exit(1);
+            exit(EXIT_FAILURE);
 	    }
         fwrite(cp, strlen(cp), 1, stdout);
         free(cp);
-        exit(0);
+        exit(EXIT_SUCCESS);
     }
 
     /* Log a few helpful facts about this Petidomo instance. */
@@ -130,7 +130,7 @@ main(int argc, char * argv[])
 
     if (InitPetidomo(masterconfig_path) != 0) {
 	syslog(LOG_CRIT, "Failed to initialize my internals.");
-	exit(1);
+	exit(EXIT_FAILURE);
     }
     MasterConfig = getMasterConfig();
 
@@ -140,7 +140,7 @@ main(int argc, char * argv[])
     incoming_mail = LoadFromDescriptor(STDIN_FILENO);
     if (incoming_mail == NULL) {
 	syslog(LOG_ERR, "Failed to read incoming mail from standard input.");
-	exit(1);
+	exit(EXIT_FAILURE);
     }
 
     /* Now decide what we actually do with the mail. */
@@ -154,7 +154,7 @@ main(int argc, char * argv[])
 	else
 	    {
 	    syslog(LOG_ERR, "Wrong command line syntax; deliver mode requires a parameter.");
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	    }
 	}
     else if (strcasecmp("approve", mode) == 0)
@@ -164,7 +164,7 @@ main(int argc, char * argv[])
     else
 	{
 	syslog(LOG_ERR, "I don't know anything about mode \"%s\".", mode);
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     /* Exit gracefully. */

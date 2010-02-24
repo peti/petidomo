@@ -44,13 +44,13 @@ void approve_main(char* mail)
     if (chdir(MasterConfig->ack_queue_dir) == -1)
 	{
 	syslog(LOG_ERR, "Can't change directory to \"%s\": %s", MasterConfig->ack_queue_dir, strerror(errno));
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     if (regcomp(&preg, cookie_regex, REG_EXTENDED | REG_ICASE) != 0)
 	{
 	syslog(LOG_CRIT, "Can't compile my internal regular expressions. This is serious!");
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     offset = 0;
@@ -87,7 +87,7 @@ void approve_main(char* mail)
 	    if (((signed char)system(cmd)) == -1)
 		{
 		syslog(LOG_ERR, "system() failed for \"%s\": %s", buffer, strerror(errno));
-		exit(1);
+		exit(EXIT_FAILURE);
 		}
 	    }
 	else

@@ -37,7 +37,7 @@ char* queue_command(const struct Mail* mail, const char* command)
     if (fh == NULL)
 	{
 	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
     fprintf(fh, "#!/bin/sh\n");
     fprintf(fh, "%s \\\n--masterconf=%s \\\n--mode=listserv --approved \\\n<<[end-of-%s-marker]\n", who_am_i, masterconfig_path, cookie);

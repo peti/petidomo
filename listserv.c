@@ -66,13 +66,13 @@ void listserv_main(char * incoming_mail, char * default_list)
 
     if (checkACL(MailStruct, NULL, &operator, &parameter, ACL_PRE) != 0) {
 	syslog(LOG_ERR, "checkACL() failed with an error.");
-	exit(1);
+	exit(EXIT_FAILURE);
     }
     rc = handleACL(MailStruct, NULL, operator, parameter);
     switch(rc) {
       case -1:
 	  syslog(LOG_ERR, "handleACL() failed with an error.");
-	  exit(1);
+	  exit(EXIT_FAILURE);
       case 0:
 	  break;
       case 1:
@@ -80,13 +80,13 @@ void listserv_main(char * incoming_mail, char * default_list)
     }
     if (checkACL(MailStruct, NULL, &operator, &parameter, ACL_POST) != 0) {
 	syslog(LOG_ERR, "checkACL() failed with an error.");
-	exit(1);
+	exit(EXIT_FAILURE);
     }
     rc = handleACL(MailStruct, NULL, operator, parameter);
     switch(rc) {
       case -1:
 	  syslog(LOG_ERR, "handleACL() failed with an error.");
-	  exit(1);
+	  exit(EXIT_FAILURE);
       case 0:
 	  break;
       case 1:
@@ -136,7 +136,7 @@ void listserv_main(char * incoming_mail, char * default_list)
 							 default_list);
 		if (rc != 0) {
 		    syslog(LOG_ERR, "Error occured while handling command.");
-		    exit(1);
+		    exit(EXIT_FAILURE);
 		}
 		found++;
 		break;

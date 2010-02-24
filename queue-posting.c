@@ -37,7 +37,7 @@ char* queue_posting(const struct Mail* mail, const char* listname)
     if (fh == NULL)
 	{
 	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
     fprintf(fh, "#! /bin/sh\n");
     fprintf(fh, "\n");

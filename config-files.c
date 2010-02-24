@@ -229,7 +229,7 @@ const struct List_Config* getListConfig(const char * listname)
 		if (stat(buffer, &sb) != 0)
 		    {
 		    syslog(LOG_ERR, "Can't find a config file for list \"%s\".", listname);
-		    exit(1);
+		    exit(EXIT_FAILURE);
 		    }
 		}
 	    }
@@ -238,7 +238,7 @@ const struct List_Config* getListConfig(const char * listname)
     if (rc != 0)
 	{
 	syslog(LOG_ERR, "Failed to parse the list \"%s\"'s config file.", listname);
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     /* Do consistency checks. */
@@ -246,7 +246,7 @@ const struct List_Config* getListConfig(const char * listname)
     if (listtype == NULL)
 	{
 	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     /* Set up the list config structure. */
@@ -255,7 +255,7 @@ const struct List_Config* getListConfig(const char * listname)
     if (ListConfig == NULL)
 	{
 	syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct List_Config));
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
     if (!strcasecmp(listtype, "open"))
 	ListConfig->listtype = LIST_OPEN;
@@ -270,7 +270,7 @@ const struct List_Config* getListConfig(const char * listname)
     else
 	{
 	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     if (!strcasecmp(subtype, "public"))
@@ -282,7 +282,7 @@ const struct List_Config* getListConfig(const char * listname)
     else
 	{
 	syslog(LOG_ERR, "List \"%s\" doesn't have a valid subscription type in config file.", listname);
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     ListConfig->allowmembers = allowmembers;

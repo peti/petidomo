@@ -14,13 +14,11 @@ gnulib_modules=( git-version-gen gitlog-to-changelog gnupload progname
 $gnulibtool --m4-base build-aux --source-base libgnu --import "${gnulib_modules[@]}"
 
 sed -i -e 's/^sc_prohibit_atoi_atof/disabled_sc_prohibit_atoi_atof/' \
+       -e 's/^sc_prohibit_magic_number_exit/disabled_sc_prohibit_magic_number_exit/' \
+       -e 's/^sc_prohibit_strcmp/disabled_sc_prohibit_strcmp/' \
+       -e 's/^sc_require_config_h/disabled_sc_require_config_h/' \
+       -e 's/^sc_useless_cpp_parens/disabled_sc_useless_cpp_parens/' \
    maint.mk
-
-#        -e 's/^sc_prohibit_magic_number_exit/disabled_sc_prohibit_magic_number_exit/' \
-#        -e 's/^sc_prohibit_strcmp/disabled_sc_prohibit_strcmp/' \
-#        -e 's/^sc_require_config_h/disabled_sc_require_config_h/' \
-#        -e 's/^sc_useless_cpp_parens/disabled_sc_useless_cpp_parens/' \
-
 
 build-aux/gitlog-to-changelog >ChangeLog
 

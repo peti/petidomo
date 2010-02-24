@@ -80,7 +80,7 @@ void hermes_main(char * incoming_mail, const char * listname)
     if (isValidListName(listname) == FALSE)
 	{
 	syslog(LOG_ERR, "Mailing list \"%s\" does not exist.", listname);
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
     PostingHeaders = xmalloc(strlen(MailStruct->Header)+1024);
     sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
@@ -89,7 +89,7 @@ void hermes_main(char * incoming_mail, const char * listname)
     /* Check for authorization. */
 
     if (FindBodyPassword(MailStruct) != 0)
-	exit(1);
+	exit(EXIT_FAILURE);
 
     if (isValidPostingPassword(MailStruct->Approve, listname) == FALSE)
 	{
@@ -104,14 +104,14 @@ void hermes_main(char * incoming_mail, const char * listname)
 	if (checkACL(MailStruct, listname, &operation, &parameter, ACL_PRE) != 0)
 	    {
 	    syslog(LOG_ERR, "checkACL() failed with an error.");
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	    }
 	rc = handleACL(MailStruct, listname, operation, parameter);
 	switch(rc)
 	    {
 	    case -1:
 		syslog(LOG_ERR, "handleACL() failed with an error.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	    case 0:
 		break;
 	    case 1:
@@ -299,14 +299,14 @@ void hermes_main(char * incoming_mail, const char * listname)
         if (checkACL(MailStruct, listname, &operation, &parameter, ACL_POST) != 0)
             {
             syslog(LOG_ERR, "checkACL() failed with an error.");
-            exit(1);
+            exit(EXIT_FAILURE);
             }
         rc = handleACL(MailStruct, listname, operation, parameter);
         switch(rc)
             {
             case -1:
                 syslog(LOG_ERR, "handleACL() failed with an error.");
-                exit(1);
+                exit(EXIT_FAILURE);
             case 0:
                 break;
             case 1:
@@ -406,7 +406,7 @@ void hermes_main(char * incoming_mail, const char * listname)
  	if (p == NULL)
 	    {
  	    syslog(LOG_ERR, "Failed reading the header file for list \"%s\".", listname);
- 	    exit(1);
+ 	    exit(EXIT_FAILURE);
 	    }
 	strcpy(dst, p);
 	dst += strlen(p);
@@ -421,7 +421,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 	if (buffer == NULL)
 	    {
 	    syslog(LOG_ERR, "Failed reading the signature file for list \"%s\".", listname);
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	    }
 	MailStruct->ListSignature = buffer;
 	}
@@ -440,7 +440,7 @@ void hermes_main(char * incoming_mail, const char * listname)
 	    {
 	    syslog(LOG_ERR, "Postingfilter \"%s\" returned error %d while processing posting " \
 		   "for list \"%s\".", ListConfig->postingfilter, rc, listname);
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	    }
 	}
 
@@ -450,7 +450,7 @@ void hermes_main(char * incoming_mail, const char * listname)
     if (rc != 0)
 	{
 	syslog(LOG_ERR, "The attempt to deliver the article to the subscribers failed.");
-	exit(1);
+	exit(EXIT_FAILURE);
 	}
 
     syslog(LOG_INFO, "Posted article from \"%s\" to list \"%s\" successfully.",

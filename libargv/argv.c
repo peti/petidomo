@@ -2483,7 +2483,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
 	  || strncmp(HELP_ARG, *arg_p + LONG_PREFIX_LENGTH, len) == 0) {
 	if (argv_interactive) {
 	  do_usage(grid, global_usage);
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2492,7 +2492,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
       if (strncmp(USAGE_SHORT_ARG, *arg_p + LONG_PREFIX_LENGTH, len) == 0) {
 	if (argv_interactive) {
 	  do_usage(grid, GLOBAL_USAGE_SHORT);
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2501,7 +2501,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
       if (strncmp(USAGE_LONG_ARG, *arg_p + LONG_PREFIX_LENGTH, len) == 0) {
 	if (argv_interactive) {
 	  do_usage(grid, GLOBAL_USAGE_LONG);
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2510,7 +2510,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
       if (strncmp(USAGE_ALL_ARG, *arg_p + LONG_PREFIX_LENGTH, len) == 0) {
 	if (argv_interactive) {
 	  do_usage(grid, GLOBAL_USAGE_ALL);
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2529,7 +2529,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
 			    argv_program, argv_help_string);
 	    }
 	  }
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2547,7 +2547,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
 	      (void)fprintf(argv_error_stream, "%s\n", argv_version_string);
 	    }
 	  }
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2558,7 +2558,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
 	  if (argv_error_stream != NULL) {
 	    display_variables(grid);
 	  }
-	  (void)exit(0);
+	  (void)exit(EXIT_SUCCESS);
 	}
 	continue;
       }
@@ -2623,7 +2623,7 @@ static	void	do_list(argv_t *grid, const int arg_c, char **argv,
 	  if ((*arg_p)[SHORT_PREFIX_LENGTH + char_c] == USAGE_CHAR_ARG) {
 	    if (argv_interactive) {
 	      do_usage(grid, global_usage);
-	      (void)exit(0);
+	      (void)exit(EXIT_SUCCESS);
 	    }
 	    continue;
 	  }
