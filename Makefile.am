@@ -44,14 +44,6 @@ MAINTAINERCLEANFILES =                                          \
 maintainer-clean-local:
 	-rm -rf build-aux
 
-# petidomo.1:	petidomo.pod
-# 	V=`$(SHTOOL) version -lc -dlong version.c`; \
-# 	sed -e "s;@V@;$$V;g" <petidomo.pod >/tmp/petidomo.pod; \
-# 	pod2man --section=1 --date="$$V" \
-# 	        --center="Petidomo" --release="Petidomo" \
-# 	        /tmp/petidomo.pod >petidomo.1; \
-# 	rm -f /tmp/petidomo.pod
-#
 # install:	all
 # 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(bindir)
 # 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(sysconfdir)
