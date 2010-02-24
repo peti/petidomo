@@ -2,5 +2,9 @@
 # Petidomo User Manual
 #
 
-petidomo.1:	petidomo.pod
-	pod2man --section=1 --center="Petidomo" --release="Petidomo" $< >$@
+htmldir                 = $(pkgdatadir)/html
+dist_html_DATA          = petidomo.html petidomo.css
+
+petidomo.html:	petidomo.tex
+	latex $<
+	htlatex $<
