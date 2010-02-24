@@ -105,32 +105,28 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
         | TOK_REJECT                      { $$ = ACL_REJECT; }
         | TOK_REJECTWITH TOK_STRING       {
                                             $$ = ACL_REJECTWITH;
-                                            if (g_parameter != NULL)
-                                              free(g_parameter);
+                                            free(g_parameter);
                                             g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
         | TOK_REDIRECT TOK_STRING         {
                                             $$ = ACL_REDIRECT;
-                                            if (g_parameter != NULL)
-                                              free(g_parameter);
+                                            free(g_parameter);
                                             g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
         | TOK_FORWARD TOK_STRING          {
                                             $$ = ACL_FORWARD;
-                                            if (g_parameter != NULL)
-                                              free(g_parameter);
+                                            free(g_parameter);
                                             g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;
                                           }
         | TOK_FILTER TOK_STRING           {
                                             $$ = ACL_FILTER;
-                                            if (g_parameter != NULL)
-                                              free(g_parameter);
+                                            free(g_parameter);
                                             g_parameter = strdup(acl_text);
                                             if (g_parameter == NULL)
                                               YYABORT;

@@ -151,8 +151,7 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 	      operation);
 	  return -1;
     }
-    if (parameter != NULL)
-      free(parameter);
+    free(parameter);
 
     return 0;
 }

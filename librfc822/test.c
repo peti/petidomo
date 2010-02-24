@@ -24,7 +24,6 @@
 #endif
 
 #include "rfc822.h"
-#define safe_free(x) if (x) free(x)
 
 int
 main(int argc, char ** argv)
@@ -52,9 +51,9 @@ main(int argc, char ** argv)
 	    rc = rfc822_parse_address(p, &address, &local, &host);
 	    if (rc == RFC822_OK) {
 		printf("Address: '%s'\nLocal: '%s'\nHost: '%s'\n", address, local, host);
-		safe_free(address);
-		safe_free(local);
-		safe_free(host);
+		free(address);
+		free(local);
+		free(host);
 	    }
 	    else
 	      printf("Syntax error: %d\n", rc);

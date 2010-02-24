@@ -53,8 +53,7 @@ isRFC822Address(const char * buffer)
 
     rc = rfc822_parse_address(buffer, &address, NULL, NULL);
     if (rc == RFC822_OK) {
-	if (address)
-	    free(address);
+        free(address);
 	return TRUE;
     }
     else
