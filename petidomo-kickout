@@ -3,7 +3,7 @@ eval 'exec perl -S $0 ${1+"$@"}'
     if $running_under_some_shell;
 ##
 ##  petidomo-kickout -- Petidomo kickout tool
-##  Copyright (c) 2000 Ralf S. Engelschall <rse@engelschall.com> 
+##  Copyright (c) 2000 Ralf S. Engelschall <rse@engelschall.com>
 ##
 
 my $pattern = $ARGV[0] || die "Usage: petidomo-kickout <address-pattern>";
@@ -20,7 +20,7 @@ foreach my $dir (split(/:/, "$ENV{PATH}:/bin:/sbin:/usr/bin:/usr/sbin:/lib:/usr/
     }
 }
 
-#   read config 
+#   read config
 my $list = {};
 open(FP, "<$config") || die "No ~/.petidomo file found";
 while (<FP>) {
@@ -66,4 +66,3 @@ foreach my $l (keys(%{$list})) {
     }
 }
 exit(0);
-

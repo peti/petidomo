@@ -45,40 +45,40 @@ maintainer-clean-local:
 	-rm -rf build-aux
 
 # install:	all
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(bindir)
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(sysconfdir)
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/lists
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/ack-queue
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(datadir)
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(libexecdir)
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(mandir)/man1
-# 	$(SHTOOL) install -c -s -m 555 petidomo $(DESTDIR)$(bindir)
-# 	$(SHTOOL) install -c -m 755 petidomo-approve $(DESTDIR)$(bindir)
-# 	$(SHTOOL) install -c -m 755 petidomo-kickout $(DESTDIR)$(bindir)
-# 	$(SHTOOL) install -c -m 644 petidomo.1 $(DESTDIR)$(mandir)/man1/petidomo.1
-# 	$(SHTOOL) install -c -m 644 config/petidomo.conf $(DESTDIR)$(sysconfdir)/petidomo.conf-sample
-# 	$(SHTOOL) install -c -m 644 config/petidomo.acl $(DESTDIR)$(sysconfdir)/petidomo.acl-sample
-# 	$(SHTOOL) install -c -m 444 config/help $(DESTDIR)$(datadir)
-# 	if [ ! -f $(DESTDIR)$(localstatedir)/index ] ; then $(SHTOOL) install -c -m 444 config/index $(DESTDIR)$(localstatedir); fi
-# 	$(SHTOOL) install -c -m 555 filter/insert-name-in-subject.sh $(DESTDIR)$(libexecdir)
-# 	$(SHTOOL) install -c -m 555 filter/pgp-decrypt.sh $(DESTDIR)$(libexecdir)
-# 	$(SHTOOL) install -c -m 555 filter/pgp-encrypt.sh $(DESTDIR)$(libexecdir)
-# 	$(SHTOOL) install -c -m 555 filter/rfc2369.sh $(DESTDIR)$(libexecdir)
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(bindir)
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(sysconfdir)
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/lists
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/ack-queue
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(datadir)
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(libexecdir)
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(mandir)/man1
+#	$(SHTOOL) install -c -s -m 555 petidomo $(DESTDIR)$(bindir)
+#	$(SHTOOL) install -c -m 755 petidomo-approve $(DESTDIR)$(bindir)
+#	$(SHTOOL) install -c -m 755 petidomo-kickout $(DESTDIR)$(bindir)
+#	$(SHTOOL) install -c -m 644 petidomo.1 $(DESTDIR)$(mandir)/man1/petidomo.1
+#	$(SHTOOL) install -c -m 644 config/petidomo.conf $(DESTDIR)$(sysconfdir)/petidomo.conf-sample
+#	$(SHTOOL) install -c -m 644 config/petidomo.acl $(DESTDIR)$(sysconfdir)/petidomo.acl-sample
+#	$(SHTOOL) install -c -m 444 config/help $(DESTDIR)$(datadir)
+#	if [ ! -f $(DESTDIR)$(localstatedir)/index ] ; then $(SHTOOL) install -c -m 444 config/index $(DESTDIR)$(localstatedir); fi
+#	$(SHTOOL) install -c -m 555 filter/insert-name-in-subject.sh $(DESTDIR)$(libexecdir)
+#	$(SHTOOL) install -c -m 555 filter/pgp-decrypt.sh $(DESTDIR)$(libexecdir)
+#	$(SHTOOL) install -c -m 555 filter/pgp-encrypt.sh $(DESTDIR)$(libexecdir)
+#	$(SHTOOL) install -c -m 555 filter/rfc2369.sh $(DESTDIR)$(libexecdir)
 #
 # install-testlist:
-# 	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/lists/testlist
-# 	$(SHTOOL) install -c -m 644 config/list-config $(DESTDIR)$(localstatedir)/lists/testlist/config
-# 	$(SHTOOL) install -c -m 644 config/list-acl $(DESTDIR)$(localstatedir)/lists/testlist/acl
-# 	@rm -f $(DESTDIR)$(localstatedir)/lists/testlist/list
-# 	$(SHTOOL) install -c -m 644 /dev/null $(DESTDIR)$(localstatedir)/lists/testlist/list
+#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/lists/testlist
+#	$(SHTOOL) install -c -m 644 config/list-config $(DESTDIR)$(localstatedir)/lists/testlist/config
+#	$(SHTOOL) install -c -m 644 config/list-acl $(DESTDIR)$(localstatedir)/lists/testlist/acl
+#	@rm -f $(DESTDIR)$(localstatedir)/lists/testlist/list
+#	$(SHTOOL) install -c -m 644 /dev/null $(DESTDIR)$(localstatedir)/lists/testlist/list
 #
 # #   increase or update version information
 # new-version:
-# 	@V="$(VERSION)"; OPT="-e"; [ ".$$V" != . ] && OPT="-s$$V"; \
-# 	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
+#	@V="$(VERSION)"; OPT="-e"; [ ".$$V" != . ] && OPT="-s$$V"; \
+#	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
 # update-version:
-# 	@OPT="-s`$(SHTOOL) version -lc -dshort version.c`"; \
-# 	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
+#	@OPT="-s`$(SHTOOL) version -lc -dshort version.c`"; \
+#	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
 
 dist-hook:
 	echo $(VERSION) > $(distdir)/.tarball-version

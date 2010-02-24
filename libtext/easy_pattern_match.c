@@ -40,8 +40,8 @@
 
 bool
 text_easy_pattern_match(const char * buffer, /* text buffer */
-		 const char * pattern /* regular expression */
-		 )
+                 const char * pattern /* regular expression */
+                 )
 {
     regex_t   preg;
     int       rc;
@@ -57,7 +57,7 @@ text_easy_pattern_match(const char * buffer, /* text buffer */
 
     rc = regcomp(&preg, pattern, REG_EXTENDED | REG_ICASE | REG_NOSUB | REG_NEWLINE);
     if (rc != 0)
-	return FALSE;
+        return FALSE;
 
     /* Match it. */
 

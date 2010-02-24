@@ -51,10 +51,10 @@ main(int argc, char ** argv)
     printf("do_something: %s\n", (do_something == ARGV_TRUE) ? "yes" : "no");
     printf("parameters  : ");
     for (i = 0; i < ARGV_ARRAY_COUNT(parameters); i++) {
-	if (i+1 < ARGV_ARRAY_COUNT(parameters))
-	  printf("'%s', ", ARGV_ARRAY_ENTRY(parameters, char *, i));
-	else
-	  printf("'%s'", ARGV_ARRAY_ENTRY(parameters, char *, i));
+        if (i+1 < ARGV_ARRAY_COUNT(parameters))
+          printf("'%s', ", ARGV_ARRAY_ENTRY(parameters, char *, i));
+        else
+          printf("'%s'", ARGV_ARRAY_ENTRY(parameters, char *, i));
     }
     printf("\n");
 

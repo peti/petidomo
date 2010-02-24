@@ -44,7 +44,7 @@ static int     no_memory_flag;
 static char *  poolname,
             *  result_hostpart,
             *  result_localpart,
-	    *  result_address;
+            *  result_address;
 
     /* Prototypes for internal functions. */
 
@@ -79,57 +79,57 @@ int            yylex(void);
 %left '@'
 %%
 
-address:   local			{
-					  result_localpart = (char *)$1;
-					  str_dup($$,$1);
-					  result_address = (char *)$$;
-					}
-	 | local at domain		{
-					  result_localpart = (char *)$1;
-					  result_hostpart = (char *)$3;
-					  str_join($$,$1,$2); str_join($$,$$,$3);
-					  result_address = (char *)$$;
-					}
-	 | at domain colon sourceroutings local {
-					  result_hostpart = (char *)$2;
-					  str_join($$,$4,$5);
-					  result_localpart = (char *)$$;
-					  str_join($$,$3,$$); str_join($$,$2,$$);
-					  str_join($$,$1,$$);
-					  result_address = (char *)$$;
-					}
-	 | at domain colon sourceroutings local at domain {
-					  result_hostpart = (char *)$2;
-					  str_join($$,$4,$5); str_join($$,$$,$6);
-					  str_join($$,$$,$7);
-					  result_localpart = (char *)$$;
-					  str_join($$,$3,$$); str_join($$,$2,$$);
-					  str_join($$,$1,$$);
-					  result_address = (char *)$$;
-					}
+address:   local                        {
+                                          result_localpart = (char *)$1;
+                                          str_dup($$,$1);
+                                          result_address = (char *)$$;
+                                        }
+         | local at domain              {
+                                          result_localpart = (char *)$1;
+                                          result_hostpart = (char *)$3;
+                                          str_join($$,$1,$2); str_join($$,$$,$3);
+                                          result_address = (char *)$$;
+                                        }
+         | at domain colon sourceroutings local {
+                                          result_hostpart = (char *)$2;
+                                          str_join($$,$4,$5);
+                                          result_localpart = (char *)$$;
+                                          str_join($$,$3,$$); str_join($$,$2,$$);
+                                          str_join($$,$1,$$);
+                                          result_address = (char *)$$;
+                                        }
+         | at domain colon sourceroutings local at domain {
+                                          result_hostpart = (char *)$2;
+                                          str_join($$,$4,$5); str_join($$,$$,$6);
+                                          str_join($$,$$,$7);
+                                          result_localpart = (char *)$$;
+                                          str_join($$,$3,$$); str_join($$,$2,$$);
+                                          str_join($$,$1,$$);
+                                          result_address = (char *)$$;
+                                        }
 ;
 
-sourceroutings:	  /* empty */		{ $$ = (YYSTYPE) NULL; }
-		| at domain colon sourceroutings {
-					  str_join($$,$1,$2); str_join($$,$$,$3);
-					  str_join($$,$$,$4);
-					}
+sourceroutings:   /* empty */           { $$ = (YYSTYPE) NULL; }
+                | at domain colon sourceroutings {
+                                          str_join($$,$1,$2); str_join($$,$$,$3);
+                                          str_join($$,$$,$4);
+                                        }
 ;
 
-local:   atom				{ $$ = $1; }
-       | atom local			{ str_join($$,$1,$2); }
-       | dot				{ $$ = $1; }
-       | dot local			{ str_join($$,$1,$2); }
+local:   atom                           { $$ = $1; }
+       | atom local                     { str_join($$,$1,$2); }
+       | dot                            { $$ = $1; }
+       | dot local                      { str_join($$,$1,$2); }
 ;
 
-domain:   atom				{ $$ = $1; }
-	| atom dot domain		{ str_join($$,$2,$3); str_join($$,$1,$$); }
+domain:   atom                          { $$ = $1; }
+        | atom dot domain               { str_join($$,$2,$3); str_join($$,$1,$$); }
 ;
 
-atom:	  TOK_ATOM			{ str_dup($$,yytext); };
-dot:	  '.'				{ $$ = (YYSTYPE) "."; };
-at:	  '@'				{ $$ = (YYSTYPE) "@"; };
-colon:	  ':'				{ $$ = (YYSTYPE) ":"; };
+atom:     TOK_ATOM                      { str_dup($$,yytext); };
+dot:      '.'                           { $$ = (YYSTYPE) "."; };
+at:       '@'                           { $$ = (YYSTYPE) "@"; };
+colon:    ':'                           { $$ = (YYSTYPE) ":"; };
 
 %%
 /***** internal routines *****/

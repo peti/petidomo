@@ -23,7 +23,7 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-char * g_currLine;		/* pointer to the line currently parsed */
+char * g_currLine;              /* pointer to the line currently parsed */
 
 void listserv_main(char * incoming_mail, char * default_list)
 {
@@ -45,17 +45,17 @@ void listserv_main(char * incoming_mail, char * default_list)
     /* Parse the incoming mail. */
 
     rc = ParseMail(&MailStruct, incoming_mail,
-		   (ListConfig != NULL) ? ListConfig->fqdn : NULL);
+                   (ListConfig != NULL) ? ListConfig->fqdn : NULL);
     if (rc != 0) {
-	syslog(LOG_ERR, "Parsing the incoming mail failed.");
-	exit(rc);
+        syslog(LOG_ERR, "Parsing the incoming mail failed.");
+        exit(rc);
     }
 
     /* Do sanity checks. */
 
     if (MailStruct->Envelope == NULL) {
-	syslog(LOG_NOTICE, "Received mail without a valid envelope.");
-	return;
+        syslog(LOG_NOTICE, "Received mail without a valid envelope.");
+        return;
     }
     if (MailStruct->From == NULL) {
         syslog(LOG_NOTICE, "Received mail without From: line.");
@@ -65,32 +65,32 @@ void listserv_main(char * incoming_mail, char * default_list)
     /* Do access control. */
 
     if (checkACL(MailStruct, NULL, &operator, &parameter, ACL_PRE) != 0) {
-	syslog(LOG_ERR, "checkACL() failed with an error.");
-	exit(EXIT_FAILURE);
+        syslog(LOG_ERR, "checkACL() failed with an error.");
+        exit(EXIT_FAILURE);
     }
     rc = handleACL(MailStruct, NULL, operator, parameter);
     switch(rc) {
       case -1:
-	  syslog(LOG_ERR, "handleACL() failed with an error.");
-	  exit(EXIT_FAILURE);
+          syslog(LOG_ERR, "handleACL() failed with an error.");
+          exit(EXIT_FAILURE);
       case 0:
-	  break;
+          break;
       case 1:
-	  return;
+          return;
     }
     if (checkACL(MailStruct, NULL, &operator, &parameter, ACL_POST) != 0) {
-	syslog(LOG_ERR, "checkACL() failed with an error.");
-	exit(EXIT_FAILURE);
+        syslog(LOG_ERR, "checkACL() failed with an error.");
+        exit(EXIT_FAILURE);
     }
     rc = handleACL(MailStruct, NULL, operator, parameter);
     switch(rc) {
       case -1:
-	  syslog(LOG_ERR, "handleACL() failed with an error.");
-	  exit(EXIT_FAILURE);
+          syslog(LOG_ERR, "handleACL() failed with an error.");
+          exit(EXIT_FAILURE);
       case 0:
-	  break;
+          break;
       case 1:
-	  return;
+          return;
     }
 
     /* Parse the body and call the apropriate routines for each
@@ -98,65 +98,65 @@ void listserv_main(char * incoming_mail, char * default_list)
 
     g_currLine = MailStruct->Body;
     if (*g_currLine == '\0') {
-	SendHelp(MailStruct, NULL, NULL, default_list);
-	return;
+        SendHelp(MailStruct, NULL, NULL, default_list);
+        return;
     }
     for (nextLine = text_find_next_line(g_currLine), junklines = 0, found = 0;
-	 *g_currLine != '\0' && junklines <= 7;
-	 g_currLine = nextLine, nextLine = text_find_next_line(g_currLine)) {
+         *g_currLine != '\0' && junklines <= 7;
+         g_currLine = nextLine, nextLine = text_find_next_line(g_currLine)) {
 
-	/* remove trailing \n */
+        /* remove trailing \n */
 
-	if (nextLine[-1] == '\n')
-	  nextLine[-1] = '\0';
+        if (nextLine[-1] == '\n')
+          nextLine[-1] = '\0';
 
-	/* Skip comments, signature and empty lines. */
+        /* Skip comments, signature and empty lines. */
 
-	if (*g_currLine == '\0' || *g_currLine == '#')
-	    continue;
-	if (!strcmp(g_currLine, "-- "))
-	    break;
+        if (*g_currLine == '\0' || *g_currLine == '#')
+            continue;
+        if (!strcmp(g_currLine, "-- "))
+            break;
 
-	/* Log contents of current line. */
+        /* Log contents of current line. */
 
-	syslog(LOG_INFO, "%s: %s",
-	    ((MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From), g_currLine);
+        syslog(LOG_INFO, "%s: %s",
+            ((MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From), g_currLine);
 
-	/* Check whether we have a routine for that command. */
+        /* Check whether we have a routine for that command. */
 
-	for (j = 0; !isspace((int)g_currLine[j]) && j < (sizeof(keyword)-1); j++)
-	  keyword[j] = g_currLine[j];
-	keyword[j] = '\0';
-	for (i = 0; (&(ParseArray[i]))->keyword != NULL; i++) {
-	    if (strcasecmp(keyword, (&(ParseArray[i]))->keyword) == 0) { /* hit */
-		rc = sscanf(g_currLine, "%*s%511s%511s", param1, param2);
-		rc = ((&(ParseArray[i]))->handleCommand)(MailStruct,
-							 ((rc >= 1) ? param1 : NULL),
-							 ((rc == 2) ? param2 : NULL),
-							 default_list);
-		if (rc != 0) {
-		    syslog(LOG_ERR, "Error occured while handling command.");
-		    exit(EXIT_FAILURE);
-		}
-		found++;
-		break;
-	    }
-	}
+        for (j = 0; !isspace((int)g_currLine[j]) && j < (sizeof(keyword)-1); j++)
+          keyword[j] = g_currLine[j];
+        keyword[j] = '\0';
+        for (i = 0; (&(ParseArray[i]))->keyword != NULL; i++) {
+            if (strcasecmp(keyword, (&(ParseArray[i]))->keyword) == 0) { /* hit */
+                rc = sscanf(g_currLine, "%*s%511s%511s", param1, param2);
+                rc = ((&(ParseArray[i]))->handleCommand)(MailStruct,
+                                                         ((rc >= 1) ? param1 : NULL),
+                                                         ((rc == 2) ? param2 : NULL),
+                                                         default_list);
+                if (rc != 0) {
+                    syslog(LOG_ERR, "Error occured while handling command.");
+                    exit(EXIT_FAILURE);
+                }
+                found++;
+                break;
+            }
+        }
 
-	if ((&(ParseArray[i]))->keyword == NULL) {
+        if ((&(ParseArray[i]))->keyword == NULL) {
 
-	    /* No valid command. */
+            /* No valid command. */
 
-	    junklines++;
-	}
+            junklines++;
+        }
     }
 
     if (junklines > 7)
       syslog(LOG_INFO, "Too many junk lines, ignoring rest of the mail.");
 
     if (found == 0) {
-	syslog(LOG_INFO, "No valid command found, sending help file back to \"%s\".",
-	    ((MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From));
-	Indecipherable(MailStruct, default_list);
+        syslog(LOG_INFO, "No valid command found, sending help file back to \"%s\".",
+            ((MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From));
+        Indecipherable(MailStruct, default_list);
     }
 }

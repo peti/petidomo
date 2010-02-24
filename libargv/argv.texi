@@ -103,9 +103,9 @@ Gray Watson.
 
 @menu
 * Copying::                     Library copying conditions.
-* Overview::			Description of how to use the library.
+* Overview::                    Description of how to use the library.
 * Details::                     Details about the library's operations.
-* General Usage::		Invoking Programs Which Use the Library.
+* General Usage::               Invoking Programs Which Use the Library.
 * Plugs::                       A couple soapbox comments.
 * Index of Concepts::           Index of concepts in the manual.
 @ifinfo
@@ -144,8 +144,8 @@ without express or implied warranty.
 @chapter How to Use the Library
 
 @menu
-* Concepts::			General concepts behind the library.
-* How To Get::			How to get the library.
+* Concepts::                    General concepts behind the library.
+* How To Get::                  How to get the library.
 * Installation::                How to install the library.
 * Getting Started::             Getting started with the library.
 @end menu
@@ -736,11 +736,11 @@ Examples:
 @example
         # accept -x=10, no env variables, long messages on errors,
         # accept multiple uses, and print all messages on --usage.
-	setenv GLOBAL_ARGV close=accept,env=none,error=long,multi=accept,usage=all
+        setenv GLOBAL_ARGV close=accept,env=none,error=long,multi=accept,usage=all
 
         # process env variable options before command line,
         # and reject multiple argument uses
-	setenv GLOBAL_ARGV env=before,error=long,multi=reject
+        setenv GLOBAL_ARGV env=before,error=long,multi=reject
 @end example
 
 @node Program Environment Variable,  , Global Environment Variable, General Usage
@@ -794,17 +794,17 @@ values and priorities.  http://www.cpsr.org/
 Top.
 
 * Copying::                     Library copying conditions.
-* Overview::			Description of how to use the library.
+* Overview::                    Description of how to use the library.
 * Details::                     Details about the library's operations.
-* General Usage::		Invoking Programs Which Use the Library.
+* General Usage::               Invoking Programs Which Use the Library.
 * Plugs::                       A couple soapbox comments.
 * Index of Concepts::           Index of concepts in the manual.
 * Full Node Listings::          Listing of all the nodes in the manual.
 
 Overview.
 
-* Concepts::			General concepts behind the library.
-* How To Get::			How to get the library.
+* Concepts::                    General concepts behind the library.
+* How To Get::                  How to get the library.
 * Installation::                How to install the library.
 * Getting Started::             Getting started with the library.
 

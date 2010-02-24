@@ -35,20 +35,20 @@ char* queue_command(const struct Mail* mail, const char* command)
     buffer = text_easy_sprintf("%s/%s", MasterConfig->ack_queue_dir, cookie);
     fh = fopen(buffer, "w");
     if (fh == NULL)
-	{
-	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
+        exit(EXIT_FAILURE);
+        }
     fprintf(fh, "#!/bin/sh\n");
     fprintf(fh, "%s \\\n--masterconf=%s \\\n--mode=listserv --approved \\\n<<[end-of-%s-marker]\n", who_am_i, masterconfig_path, cookie);
     fprintf(fh, "Sender: %s\n", mail->Envelope);
     fprintf(fh, "From: %s\n", mail->From);
     if (mail->Reply_To)
-	fprintf(fh, "Reply-To: %s\n", mail->Reply_To);
+        fprintf(fh, "Reply-To: %s\n", mail->Reply_To);
     if (mail->Message_Id)
-	fprintf(fh, "Message-Id: %s\n", mail->Message_Id);
+        fprintf(fh, "Message-Id: %s\n", mail->Message_Id);
     if (mail->Approve)
-	fprintf(fh, "Approve: %s\n", mail->Approve);
+        fprintf(fh, "Approve: %s\n", mail->Approve);
     fprintf(fh, "\n");
     fprintf(fh, "%s\n", command);
     fprintf(fh, "[end-of-%s-marker]\n", cookie);

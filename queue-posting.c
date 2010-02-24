@@ -35,10 +35,10 @@ char* queue_posting(const struct Mail* mail, const char* listname)
     buffer = text_easy_sprintf("%s/%s", MasterConfig->ack_queue_dir, cookie);
     fh = fopen(buffer, "w");
     if (fh == NULL)
-	{
-	syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "Opening ack spool file \"%s\" failed: %s", buffer, strerror(errno));
+        exit(EXIT_FAILURE);
+        }
     fprintf(fh, "#! /bin/sh\n");
     fprintf(fh, "\n");
     fprintf(fh, "%s --mode=deliver --listname=%s --approved <<[end-of-%s-marker]\n", who_am_i, listname, cookie);

@@ -51,28 +51,28 @@ int InitPetidomo(const char* masterconfig)
     /* Format description of our global config file. */
 
     struct ConfigFile  MasterCF[] =
-	{
-	{ "Hostname", CF_STRING, &fqdn },
-	{ "AdminPassword", CF_STRING, &master_password },
-	{ "MTA", CF_STRING, &mta },
-	{ "MTAOptions", CF_STRING, &mta_options },
-	{ "HelpFile", CF_STRING, &help_file },
-	{ "AclFilePre", CF_STRING, &acl_file_pre },
-	{ "AclFilePost", CF_STRING, &acl_file_post },
-	{ "IndexFile", CF_STRING, &index_file },
-	{ "ListDirectory", CF_STRING, &list_dir },
-	{ "AckQueueDirectory", CF_STRING, &ack_queue_dir },
-	{ NULL, 0, NULL}
-	};
+        {
+        { "Hostname", CF_STRING, &fqdn },
+        { "AdminPassword", CF_STRING, &master_password },
+        { "MTA", CF_STRING, &mta },
+        { "MTAOptions", CF_STRING, &mta_options },
+        { "HelpFile", CF_STRING, &help_file },
+        { "AclFilePre", CF_STRING, &acl_file_pre },
+        { "AclFilePost", CF_STRING, &acl_file_post },
+        { "IndexFile", CF_STRING, &index_file },
+        { "ListDirectory", CF_STRING, &list_dir },
+        { "AckQueueDirectory", CF_STRING, &ack_queue_dir },
+        { NULL, 0, NULL}
+        };
 
     /* Allocate memory for the global config structure. */
 
     MasterConfig = calloc(sizeof(struct PD_Config), 1);
     if (MasterConfig == NULL)
-	{
-	syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct PD_Config));
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct PD_Config));
+        return -1;
+        }
 
     /* Init the list of read list configs. */
 
@@ -82,33 +82,33 @@ int InitPetidomo(const char* masterconfig)
 
     rc = ReadConfig(masterconfig, MasterCF);
     if (rc != 0)
-	{
-	syslog(LOG_ERR, "Failed to parse the master config file.");
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "Failed to parse the master config file.");
+        return -1;
+        }
 
     /* Do consistency checks. */
 
     if (fqdn == NULL)
-	{
-	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the host name.", masterconfig);
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "The master config file \"%s\" doesn't set the host name.", masterconfig);
+        return -1;
+        }
     if (mta == NULL)
-	{
-	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the MTA.", masterconfig);
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "The master config file \"%s\" doesn't set the MTA.", masterconfig);
+        return -1;
+        }
     if (master_password == NULL)
-	{
-	syslog(LOG_ERR, "The master config file \"%s\" doesn't set the admin password.", masterconfig);
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "The master config file \"%s\" doesn't set the admin password.", masterconfig);
+        return -1;
+        }
     if (strstr(mta_options, "%s") == NULL)
-	{
-	syslog(LOG_ERR, "The argument to MTA_Options in the master config file is invalid.");
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "The argument to MTA_Options in the master config file is invalid.");
+        return -1;
+        }
 
     /* Copy the results to the structure. */
 
@@ -162,26 +162,26 @@ const struct List_Config* getListConfig(const char * listname)
     /* Format description of our global config file. */
 
     struct ConfigFile ListCF[] =
-	{
-	{ "ListType", CF_STRING, &listtype },
-	{ "SubscriptionType", CF_STRING, &subtype },
-	{ "AllowMembersCommand", CF_YES_NO, &allowmembers },
-	{ "ReplyTo", CF_STRING, &reply_to },
-	{ "Hostname", CF_STRING, &list_fqdn },
-	{ "AdminPassword", CF_STRING, &admin_password },
-	{ "PostingPassword", CF_STRING, &posting_password },
-	{ "PostingFilter", CF_STRING, &postingfilter },
-	{ "Archive", CF_STRING, &archivepath },
-	{ "IntroductionFile", CF_STRING, &intro_file },
-	{ "SignatureFile", CF_STRING, &sig_file },
-	{ "DescriptionFile", CF_STRING, &desc_file },
-	{ "HeaderFile", CF_STRING, &header_file },
-	{ "ACLFilePre", CF_STRING, &list_acl_file_pre },
-	{ "ACLFilePost", CF_STRING, &list_acl_file_post },
-	{ "AddressFile", CF_STRING, &address_file },
-	{ "AcknowledgementFile", CF_STRING, &ack_file },
-	{ NULL, 0, NULL}
-	};
+        {
+        { "ListType", CF_STRING, &listtype },
+        { "SubscriptionType", CF_STRING, &subtype },
+        { "AllowMembersCommand", CF_YES_NO, &allowmembers },
+        { "ReplyTo", CF_STRING, &reply_to },
+        { "Hostname", CF_STRING, &list_fqdn },
+        { "AdminPassword", CF_STRING, &admin_password },
+        { "PostingPassword", CF_STRING, &posting_password },
+        { "PostingFilter", CF_STRING, &postingfilter },
+        { "Archive", CF_STRING, &archivepath },
+        { "IntroductionFile", CF_STRING, &intro_file },
+        { "SignatureFile", CF_STRING, &sig_file },
+        { "DescriptionFile", CF_STRING, &desc_file },
+        { "HeaderFile", CF_STRING, &header_file },
+        { "ACLFilePre", CF_STRING, &list_acl_file_pre },
+        { "ACLFilePost", CF_STRING, &list_acl_file_post },
+        { "AddressFile", CF_STRING, &address_file },
+        { "AcknowledgementFile", CF_STRING, &ack_file },
+        { NULL, 0, NULL}
+        };
 
     /* Set the defaults. */
 
@@ -207,89 +207,89 @@ const struct List_Config* getListConfig(const char * listname)
 
     node = FindNodeByKey(ListConfigs, listname);
     if (node != NULL)
-	return getNodeData(node);
+        return getNodeData(node);
 
     /* No? Then read the config file. */
 
     buffer = text_easy_sprintf("%s/%s/config", MasterConfig->list_dir, listname);
     this_list_dir = text_easy_sprintf("%s/%s", MasterConfig->list_dir, listname);
     if (stat(buffer, &sb) != 0)
-	{
-	free(buffer);
-	buffer = text_easy_sprintf("%s/%s/conf", MasterConfig->list_dir, listname);
-	if (stat(buffer, &sb) != 0)
-	    {
-	    free(buffer);
-	    buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
-	    this_list_dir = MasterConfig->list_dir;
-	    if (stat(buffer, &sb) != 0)
-		{
-		free(buffer);
-		buffer = text_easy_sprintf("%s/%s.conf", MasterConfig->list_dir, listname);
-		if (stat(buffer, &sb) != 0)
-		    {
-		    syslog(LOG_ERR, "Can't find a config file for list \"%s\".", listname);
-		    exit(EXIT_FAILURE);
-		    }
-		}
-	    }
-	}
+        {
+        free(buffer);
+        buffer = text_easy_sprintf("%s/%s/conf", MasterConfig->list_dir, listname);
+        if (stat(buffer, &sb) != 0)
+            {
+            free(buffer);
+            buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
+            this_list_dir = MasterConfig->list_dir;
+            if (stat(buffer, &sb) != 0)
+                {
+                free(buffer);
+                buffer = text_easy_sprintf("%s/%s.conf", MasterConfig->list_dir, listname);
+                if (stat(buffer, &sb) != 0)
+                    {
+                    syslog(LOG_ERR, "Can't find a config file for list \"%s\".", listname);
+                    exit(EXIT_FAILURE);
+                    }
+                }
+            }
+        }
     rc = ReadConfig(buffer, ListCF);
     if (rc != 0)
-	{
-	syslog(LOG_ERR, "Failed to parse the list \"%s\"'s config file.", listname);
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "Failed to parse the list \"%s\"'s config file.", listname);
+        exit(EXIT_FAILURE);
+        }
 
     /* Do consistency checks. */
 
     if (listtype == NULL)
-	{
-	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
+        exit(EXIT_FAILURE);
+        }
 
     /* Set up the list config structure. */
 
     ListConfig = calloc(sizeof(struct List_Config), 1);
     if (ListConfig == NULL)
-	{
-	syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct List_Config));
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct List_Config));
+        exit(EXIT_FAILURE);
+        }
     if (!strcasecmp(listtype, "open"))
-	ListConfig->listtype = LIST_OPEN;
+        ListConfig->listtype = LIST_OPEN;
     else if (!strcasecmp(listtype, "closed"))
-	ListConfig->listtype = LIST_CLOSED;
+        ListConfig->listtype = LIST_CLOSED;
     else if (!strcasecmp(listtype, "moderated"))
-	ListConfig->listtype = LIST_MODERATED;
+        ListConfig->listtype = LIST_MODERATED;
     else if (!strcasecmp(listtype, "acknowledged") || !strcasecmp(listtype, "acked"))
-	ListConfig->listtype = LIST_ACKED;
+        ListConfig->listtype = LIST_ACKED;
     else if (!strcasecmp(listtype, "acknowledged-once") || !strcasecmp(listtype, "acked-once"))
-	ListConfig->listtype = LIST_ACKED_ONCE;
+        ListConfig->listtype = LIST_ACKED_ONCE;
     else
-	{
-	syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "List \"%s\" doesn't have a valid type in config file.", listname);
+        exit(EXIT_FAILURE);
+        }
 
     if (!strcasecmp(subtype, "public"))
-	ListConfig->subtype = SUBSCRIPTION_PUBLIC;
+        ListConfig->subtype = SUBSCRIPTION_PUBLIC;
     else if (!strcasecmp(subtype, "admin"))
-	ListConfig->subtype = SUBSCRIPTION_ADMIN;
+        ListConfig->subtype = SUBSCRIPTION_ADMIN;
     else if (!strcasecmp(subtype, "acknowledged") || !strcasecmp(subtype, "acked"))
-	ListConfig->subtype = SUBSCRIPTION_ACKED;
+        ListConfig->subtype = SUBSCRIPTION_ACKED;
     else
-	{
-	syslog(LOG_ERR, "List \"%s\" doesn't have a valid subscription type in config file.", listname);
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "List \"%s\" doesn't have a valid subscription type in config file.", listname);
+        exit(EXIT_FAILURE);
+        }
 
     ListConfig->allowmembers = allowmembers;
     ListConfig->fqdn = (list_fqdn) ? list_fqdn : MasterConfig->fqdn;
     ListConfig->reply_to = reply_to;
     if (reply_to != NULL && strcasecmp(reply_to, "none"))
-	CanonizeAddress(&(ListConfig->reply_to), ListConfig->fqdn);
+        CanonizeAddress(&(ListConfig->reply_to), ListConfig->fqdn);
     ListConfig->admin_password = admin_password;
     ListConfig->posting_password = posting_password;
     ListConfig->postingfilter = postingfilter;
@@ -298,9 +298,9 @@ const struct List_Config* getListConfig(const char * listname)
 
 #define EXPAND(dst, src)                  \
     if (src == NULL || src[0] == '/')     \
-	ListConfig->dst = src;            \
+        ListConfig->dst = src;            \
     else                                  \
-	ListConfig->dst = text_easy_sprintf("%s/%s", ListConfig->list_dir, src);
+        ListConfig->dst = text_easy_sprintf("%s/%s", ListConfig->list_dir, src);
 
     EXPAND(archivepath, archivepath);
     EXPAND(intro_file, intro_file);

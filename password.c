@@ -26,9 +26,9 @@ extern char *       g_currLine;
 
 int
 setPassword(struct Mail * MailStruct,
-		const char * param1,
-		const char * param2,
-		const char * defaultlist)
+                const char * param1,
+                const char * param2,
+                const char * defaultlist)
 {
     char *         p;
     char *         q;
@@ -56,8 +56,8 @@ setPassword(struct Mail * MailStruct,
     /* Okay, check for quotes and that's it then. */
 
     if (*p == '\"' && q[-1] == '\"') {
-	p++;
-	q[-1] = '\0';
+        p++;
+        q[-1] = '\0';
     }
 
     /* Store the result. */

@@ -22,9 +22,9 @@
 
 int
 SendHelp(struct Mail * MailStruct,
-		const char * param1,
-		const char * param2,
-		const char * defaultlist)
+                const char * param1,
+                const char * param2,
+                const char * defaultlist)
 {
     const struct PD_Config * MasterConfig;
     const struct List_Config * ListConfig = NULL;
@@ -38,113 +38,113 @@ SendHelp(struct Mail * MailStruct,
 
     MasterConfig = getMasterConfig();
     if (defaultlist != NULL) {
-	ListConfig = getListConfig(defaultlist);
-	sprintf(envelope, "%s-owner@%s", defaultlist, ListConfig->fqdn);
+        ListConfig = getListConfig(defaultlist);
+        sprintf(envelope, "%s-owner@%s", defaultlist, ListConfig->fqdn);
     }
     else
       sprintf(envelope, "petidomo-manager@%s", MasterConfig->fqdn);
     originator = (MailStruct->Reply_To) ? MailStruct->Reply_To : MailStruct->From;
     if (param1 != NULL) {
-	if (isValidListName(param1) == TRUE) {
+        if (isValidListName(param1) == TRUE) {
 
-	    /* Send list's description back. */
+            /* Send list's description back. */
 
-	    ListConfig = getListConfig(param1);
-	    sprintf(envelope, "%s-owner@%s", param1, MasterConfig->fqdn);
-	    fh = vOpenMailer(envelope, originator, NULL);
-	    if (fh == NULL) {
-		syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
-		    originator);
-		return -1;
-	    }
-	    fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
-		    param1, ListConfig->fqdn);
-	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Petidomo: Your request \"help %s\"\n", param1);
-	    if (MailStruct->Message_Id != NULL)
-	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
-	    fprintf(fh, "Precedence: junk\n");
-	    fprintf(fh, "Sender: %s\n", envelope);
-	    fprintf(fh, "\n");
-	    fprintf(fh, "Description of list \"%s\":\n\n", param1);
-	    p = loadfile(ListConfig->desc_file);
-	    if (p != NULL) {
-		fprintf(fh, "%s\n", p);
-		free(p);
-	    }
-	    else {
-		syslog(LOG_INFO, "List \"%s\" doesn't have a description.", param1);
-		fprintf(fh, "No description available.\n");
-	    }
-	    CloseMailer(fh);
-	}
-	else {
+            ListConfig = getListConfig(param1);
+            sprintf(envelope, "%s-owner@%s", param1, MasterConfig->fqdn);
+            fh = vOpenMailer(envelope, originator, NULL);
+            if (fh == NULL) {
+                syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
+                    originator);
+                return -1;
+            }
+            fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
+                    param1, ListConfig->fqdn);
+            fprintf(fh, "To: %s\n", originator);
+            fprintf(fh, "Subject: Petidomo: Your request \"help %s\"\n", param1);
+            if (MailStruct->Message_Id != NULL)
+              fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+            fprintf(fh, "Precedence: junk\n");
+            fprintf(fh, "Sender: %s\n", envelope);
+            fprintf(fh, "\n");
+            fprintf(fh, "Description of list \"%s\":\n\n", param1);
+            p = loadfile(ListConfig->desc_file);
+            if (p != NULL) {
+                fprintf(fh, "%s\n", p);
+                free(p);
+            }
+            else {
+                syslog(LOG_INFO, "List \"%s\" doesn't have a description.", param1);
+                fprintf(fh, "No description available.\n");
+            }
+            CloseMailer(fh);
+        }
+        else {
 
-	    /* List does not exist, I am afraid. */
+            /* List does not exist, I am afraid. */
 
-	    fh = vOpenMailer(envelope, originator, NULL);
-	    if (fh == NULL) {
-		syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
-		    originator);
-		return -1;
-	    }
-	    if (defaultlist != NULL)
-	      fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
-		      defaultlist, ListConfig->fqdn);
-	    else
-	      fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
-		      MasterConfig->fqdn);
-	    fprintf(fh, "To: %s\n", originator);
-	    fprintf(fh, "Subject: Petidomo: Your request \"help %s\"\n", param1);
-	    if (MailStruct->Message_Id != NULL)
-	      fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
-	    fprintf(fh, "Precedence: junk\n");
-	    fprintf(fh, "Sender: %s\n", envelope);
-	    fprintf(fh, "\n");
-	    buffer = text_easy_sprintf(
+            fh = vOpenMailer(envelope, originator, NULL);
+            if (fh == NULL) {
+                syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
+                    originator);
+                return -1;
+            }
+            if (defaultlist != NULL)
+              fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
+                      defaultlist, ListConfig->fqdn);
+            else
+              fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
+                      MasterConfig->fqdn);
+            fprintf(fh, "To: %s\n", originator);
+            fprintf(fh, "Subject: Petidomo: Your request \"help %s\"\n", param1);
+            if (MailStruct->Message_Id != NULL)
+              fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+            fprintf(fh, "Precedence: junk\n");
+            fprintf(fh, "Sender: %s\n", envelope);
+            fprintf(fh, "\n");
+            buffer = text_easy_sprintf(
 "There is no mailing list \"%s\" on this machine, I am afraid. Please check " \
 "whether you spelled the name of the list correctly, or whether you have been " \
 "sending this request to the wrong address.\n\nYou can receive a list of all " \
 "mailing lists available here by sending the command \"INDEX\" to the " \
 "mailing list server.", param1);
-	    text_wordwrap(buffer, 70);
-	    fprintf(fh, "%s\n", buffer);
-	    CloseMailer(fh);
-	}
+            text_wordwrap(buffer, 70);
+            fprintf(fh, "%s\n", buffer);
+            CloseMailer(fh);
+        }
     }
     else {
 
-	/* Send help text to the originator. */
+        /* Send help text to the originator. */
 
-	fh = vOpenMailer(envelope, originator, NULL);
-	if (fh == NULL) {
-	    syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
-		originator);
-	    return -1;
-	}
-	if (defaultlist != NULL)
-	  fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
-		  defaultlist, ListConfig->fqdn);
-	else
-	  fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
-		  MasterConfig->fqdn);
-	fprintf(fh, "To: %s\n", originator);
-	fprintf(fh, "Subject: Petidomo: Your request \"help\"\n");
-	if (MailStruct->Message_Id != NULL)
-	  fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
-	fprintf(fh, "Precedence: junk\n");
-	fprintf(fh, "Sender: %s\n", envelope);
-	fprintf(fh, "\n");
-	p = loadfile(MasterConfig->help_file);
-	if (p != NULL) {
-	    fprintf(fh, "%s\n", p);
-	    free(p);
-	}
-	else {
-	    syslog(LOG_ERR, "There is no help file for Petidomo!");
-	    fprintf(fh, "No help text available.\n");
-	}
-	CloseMailer(fh);
+        fh = vOpenMailer(envelope, originator, NULL);
+        if (fh == NULL) {
+            syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.",
+                originator);
+            return -1;
+        }
+        if (defaultlist != NULL)
+          fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
+                  defaultlist, ListConfig->fqdn);
+        else
+          fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
+                  MasterConfig->fqdn);
+        fprintf(fh, "To: %s\n", originator);
+        fprintf(fh, "Subject: Petidomo: Your request \"help\"\n");
+        if (MailStruct->Message_Id != NULL)
+          fprintf(fh, "In-Reply-To: %s\n", MailStruct->Message_Id);
+        fprintf(fh, "Precedence: junk\n");
+        fprintf(fh, "Sender: %s\n", envelope);
+        fprintf(fh, "\n");
+        p = loadfile(MasterConfig->help_file);
+        if (p != NULL) {
+            fprintf(fh, "%s\n", p);
+            free(p);
+        }
+        else {
+            syslog(LOG_ERR, "There is no help file for Petidomo!");
+            fprintf(fh, "No help text available.\n");
+        }
+        CloseMailer(fh);
     }
 
     return 0;
@@ -164,8 +164,8 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
 
     MasterConfig = getMasterConfig();
     if (defaultlist != NULL) {
-	ListConfig = getListConfig(defaultlist);
-	sprintf(envelope, "%s-owner@%s", defaultlist, ListConfig->fqdn);
+        ListConfig = getListConfig(defaultlist);
+        sprintf(envelope, "%s-owner@%s", defaultlist, ListConfig->fqdn);
     }
     else
       sprintf(envelope, "petidomo-manager@%s", MasterConfig->fqdn);
@@ -175,15 +175,15 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
 
     fh = vOpenMailer(envelope, replyto, NULL);
     if (fh == NULL) {
-	syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.", replyto);
-	return -1;
+        syslog(LOG_ERR, "Failed to send mail to \"%s\" regarding this request.", replyto);
+        return -1;
     }
     if (defaultlist != NULL)
       fprintf(fh, "From: %s-request@%s (Petidomo Mailing List Server)\n",
-	      defaultlist, ListConfig->fqdn);
+              defaultlist, ListConfig->fqdn);
     else
       fprintf(fh, "From: petidomo@%s (Petidomo Mailing List Server)\n",
-	      MasterConfig->fqdn);
+              MasterConfig->fqdn);
     fprintf(fh, "To: %s\n", replyto);
     fprintf(fh, "Subject: Petidomo: Your request \"indecipherable\"\n");
     if (MailStruct->Message_Id != NULL)
@@ -193,12 +193,12 @@ Indecipherable(struct Mail * MailStruct, const char * defaultlist)
     fprintf(fh, "\n");
     p = loadfile(MasterConfig->help_file);
     if (p != NULL) {
-	fprintf(fh, "%s\n", p);
-	free(p);
+        fprintf(fh, "%s\n", p);
+        free(p);
     }
     else {
-	syslog(LOG_ERR, "There is no help file for Petidomo!");
-	fprintf(fh, "No help text available.\n");
+        syslog(LOG_ERR, "There is no help file for Petidomo!");
+        fprintf(fh, "No help text available.\n");
     }
     CloseMailer(fh);
     return 0;

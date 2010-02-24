@@ -40,7 +40,7 @@ extern "C" {
  * as good usage documentation and long and short options.
  */
 
-#include <stdio.h>			/* have to for FILE * below */
+#include <stdio.h>                      /* have to for FILE * below */
 
 /* this defines what type the standard void memory-pointer is */
 typedef void * ARGV_PNT;
@@ -53,12 +53,12 @@ typedef void * ARGV_PNT;
  * { 'c',  "config",  ARGV_CHAR_P,  &config,  "file",  "configuration file" }
  */
 typedef struct {
-  char		ar_short_arg;		/* the char of the arg, 'd' if '-d' */
-  char		*ar_long_arg;		/* long version of arg, 'delete' */
-  unsigned int	ar_type;		/* type of option, see values below */
-  ARGV_PNT	ar_variable;		/* address of variable that is arg */
-  char		*ar_var_label;		/* label for variable descriptions */
-  char		*ar_comment;		/* comment for usage message */
+  char          ar_short_arg;           /* the char of the arg, 'd' if '-d' */
+  char          *ar_long_arg;           /* long version of arg, 'delete' */
+  unsigned int  ar_type;                /* type of option, see values below */
+  ARGV_PNT      ar_variable;            /* address of variable that is arg */
+  char          *ar_var_label;          /* label for variable descriptions */
+  char          *ar_comment;            /* comment for usage message */
 } argv_t;
 
 /*
@@ -70,23 +70,23 @@ typedef struct {
  * aa_entries needs to be free'd by user. argv_cleanup() can be used for this
  */
 typedef struct {
-  int		aa_entry_n;		/* number of elements in aa_entrees */
-  ARGV_PNT	aa_entries;		/* entry list specified */
+  int           aa_entry_n;             /* number of elements in aa_entrees */
+  ARGV_PNT      aa_entries;             /* entry list specified */
 } argv_array_t;
 
 /*  extract the count of the elements from an argv ARRAY */
-#define ARGV_ARRAY_COUNT(array)		((array).aa_entry_n)
+#define ARGV_ARRAY_COUNT(array)         ((array).aa_entry_n)
 
 /* extract WHICH entry of TYPE from an argv ARRAY */
-#define ARGV_ARRAY_ENTRY(array, type, which)	\
-	(((type *)(array).aa_entries)[which])
+#define ARGV_ARRAY_ENTRY(array, type, which)    \
+        (((type *)(array).aa_entries)[which])
 
 /* extract a pointer to WHICH entry of TYPE from an argv ARRAY */
-#define ARGV_ARRAY_ENTRY_P(array, type, which)	\
-	(((type *)(array).aa_entries) + which)
+#define ARGV_ARRAY_ENTRY_P(array, type, which)  \
+        (((type *)(array).aa_entries) + which)
 
 /* special ar_short_arg value to mark the last entry in the argument array */
-#define ARGV_LAST	((char)255)
+#define ARGV_LAST       ((char)255)
 
 /*
  * special ar_short_arg value to mark mandatory arguments (i.e. arguments that
@@ -94,13 +94,13 @@ typedef struct {
  * to have a variable number of mandatory args then make the last MAND
  * entry be a ARG_ARRAY type.
  */
-#define ARGV_MAND	((char)254)
+#define ARGV_MAND       ((char)254)
 
 /*
  * special ar_short_arg value to mark that there is the possibility of
  * a mandatory argument here if one is specified.
  */
-#define ARGV_MAYBE	((char)253)
+#define ARGV_MAYBE      ((char)253)
 
 /*
  * special ar_short_arg value to say that the previous and next arguments in
@@ -108,7 +108,7 @@ typedef struct {
  * {'a'...}, {ARG_OR}, {'b'...}, {ARG_OR}, {'c'...} means
  * the user should only specific -a or -b or -c but not 2 or more.
  */
-#define ARGV_OR		((char)252)
+#define ARGV_OR         ((char)252)
 
 /*
  * special ar_short_arg value that is the same as ARGV_OR but one of the args
@@ -117,85 +117,85 @@ typedef struct {
  * the user must specify one of -a or -b or -c but not 2 or more.
  * ARGV_XOR is there for compatibility with older versions.
  */
-#define ARGV_ONE_OF	((char)251)
-#define ARGV_XOR	((char)251)
+#define ARGV_ONE_OF     ((char)251)
+#define ARGV_XOR        ((char)251)
 
 /*
  * ar_type values of arg_t
  * NOTE: if this list is changed, some defines in argv_loc need to be changed
  */
-#define ARGV_BOOL	1		/* boolean type, sets to ARGV_TRUE */
-#define ARGV_BOOL_NEG	2		/* like bool but sets to ARGV_FALSE */
-#define ARGV_BOOL_ARG	3		/* like bool but takes a yes/no arg */
-#define ARGV_CHAR	4		/* single character */
-#define ARGV_CHAR_P	5		/* same as STRING */
-#define ARGV_SHORT	6		/* short integer number */
-#define ARGV_U_SHORT	7		/* unsigned short integer number */
-#define ARGV_INT	8		/* integer number */
-#define ARGV_U_INT	9		/* unsigned integer number */
-#define ARGV_LONG	10		/* long integer number */
-#define ARGV_U_LONG	11		/* unsinged long integer number */
-#define ARGV_FLOAT	12		/* floating pointer number */
-#define ARGV_DOUBLE	13		/* double floating pointer number */
-#define ARGV_BIN	14		/* binary number (0s and 1s) */
-#define ARGV_OCT	15		/* octal number, (base 8) */
-#define ARGV_HEX	16		/* hexadecimal number, (base 16) */
-#define ARGV_INCR	17		/* int arg which gets ++ each time */
-#define ARGV_SIZE	18		/* long arg which knows mMbBkKgG */
-#define ARGV_U_SIZE	19		/* u_long arg which knows mMbBkKgG */
-#define ARGV_BOOL_INT	20		/* like bool but takes an integer var*/
-#define ARGV_BOOL_INT_NEG 21		/* like bool-neg but with an integer */
-#define ARGV_BOOL_INT_ARG 22		/* like bool-arg but with an integer */
+#define ARGV_BOOL       1               /* boolean type, sets to ARGV_TRUE */
+#define ARGV_BOOL_NEG   2               /* like bool but sets to ARGV_FALSE */
+#define ARGV_BOOL_ARG   3               /* like bool but takes a yes/no arg */
+#define ARGV_CHAR       4               /* single character */
+#define ARGV_CHAR_P     5               /* same as STRING */
+#define ARGV_SHORT      6               /* short integer number */
+#define ARGV_U_SHORT    7               /* unsigned short integer number */
+#define ARGV_INT        8               /* integer number */
+#define ARGV_U_INT      9               /* unsigned integer number */
+#define ARGV_LONG       10              /* long integer number */
+#define ARGV_U_LONG     11              /* unsinged long integer number */
+#define ARGV_FLOAT      12              /* floating pointer number */
+#define ARGV_DOUBLE     13              /* double floating pointer number */
+#define ARGV_BIN        14              /* binary number (0s and 1s) */
+#define ARGV_OCT        15              /* octal number, (base 8) */
+#define ARGV_HEX        16              /* hexadecimal number, (base 16) */
+#define ARGV_INCR       17              /* int arg which gets ++ each time */
+#define ARGV_SIZE       18              /* long arg which knows mMbBkKgG */
+#define ARGV_U_SIZE     19              /* u_long arg which knows mMbBkKgG */
+#define ARGV_BOOL_INT   20              /* like bool but takes an integer var*/
+#define ARGV_BOOL_INT_NEG 21            /* like bool-neg but with an integer */
+#define ARGV_BOOL_INT_ARG 22            /* like bool-arg but with an integer */
 
-#define ARGV_TYPE(t)	((t) & 0x3F)	/* strip off all but the var type */
-#define ARGV_FLAG_ARRAY	(1 << 14)	/* OR with type to indicate array */
-#define ARGV_FLAG_MAND	(1 << 13)	/* OR with type to mark mandatory */
+#define ARGV_TYPE(t)    ((t) & 0x3F)    /* strip off all but the var type */
+#define ARGV_FLAG_ARRAY (1 << 14)       /* OR with type to indicate array */
+#define ARGV_FLAG_MAND  (1 << 13)       /* OR with type to mark mandatory */
 /* NOTE: other internal flags defined in argv_loc.h */
 
 /* argv_usage which argument values */
-#define ARGV_USAGE_SHORT	1	/* print short usage messages */
-#define ARGV_USAGE_LONG		2	/* print long-format usage messages */
-#define ARGV_USAGE_DEFAULT	3	/* default usage messages */
+#define ARGV_USAGE_SHORT        1       /* print short usage messages */
+#define ARGV_USAGE_LONG         2       /* print long-format usage messages */
+#define ARGV_USAGE_DEFAULT      3       /* default usage messages */
 
 /* boolean type settings */
-#define ARGV_FALSE		0
-#define ARGV_TRUE		1
+#define ARGV_FALSE              0
+#define ARGV_TRUE               1
 
 /*<<<<<<<<<<  The below prototypes are auto-generated by fillproto */
 
 /* This is a processed version of argv[0], pre-path removed: /bin/ls -> ls */
 extern
-char	argv_program[/* PROGRAM_NAME + 1 */];
+char    argv_program[/* PROGRAM_NAME + 1 */];
 
 /* A global value of argv from main after argv_process has been called */
 extern
-char	**argv_argv;
+char    **argv_argv;
 
 /* A global value of argc from main after argv_process has been called */
 extern
-int	argv_argc;
+int     argv_argc;
 
 /* This should be set externally to provide general program help to user */
 extern
-char	*argv_help_string;
+char    *argv_help_string;
 
 /* This should be set externally to provide version information to the user */
 extern
-char	*argv_version_string;
+char    *argv_version_string;
 
 /*
  * Are we running interactively?  This will exit on errors.  Set to
  * false to return error codes instead.
  */
 extern
-int 	argv_interactive;
+int     argv_interactive;
 
 /*
  * The FILE stream that argv out_puts all its errors.  Set to NULL to
  * not dump any error messages.  Default is stderr.
  */
 extern
-FILE 	*argv_error_stream;
+FILE    *argv_error_stream;
 
 /*
  * int argv_process_no_env
@@ -221,7 +221,7 @@ FILE 	*argv_error_stream;
  * argv - Array of character pointers terminated by 0L.
  */
 extern
-int	argv_process_no_env(argv_t *args, const int arg_c, char **argv);
+int     argv_process_no_env(argv_t *args, const int arg_c, char **argv);
 
 /*
  * int argv_process
@@ -244,7 +244,7 @@ int	argv_process_no_env(argv_t *args, const int arg_c, char **argv);
  * argv - Array of character pointer arguments terminated by a 0L.
  */
 extern
-int	argv_process(argv_t *args, const int argc, char **argv);
+int     argv_process(argv_t *args, const int argc, char **argv);
 
 /*
  * int argv_usage
@@ -273,7 +273,7 @@ int	argv_process(argv_t *args, const int argc, char **argv);
  * (the user's default either long or short).
  */
 extern
-int	argv_usage(const argv_t *args, const int which);
+int     argv_usage(const argv_t *args, const int which);
 
 /*
  * int argv_was_used
@@ -293,7 +293,7 @@ int	argv_usage(const argv_t *args, const int which);
  * short_arg - Short argument to see if it was used.
  */
 extern
-int	argv_was_used(const argv_t *args, const char short_arg);
+int     argv_was_used(const argv_t *args, const char short_arg);
 
 /*
  * int argv_long_was_used
@@ -313,7 +313,7 @@ int	argv_was_used(const argv_t *args, const char short_arg);
  * long_arg - Long argument to see if it was used.
  */
 extern
-int	argv_long_was_used(const argv_t *args, const char *long_arg);
+int     argv_long_was_used(const argv_t *args, const char *long_arg);
 
 /*
  * void argv_cleanup
@@ -333,7 +333,7 @@ int	argv_long_was_used(const argv_t *args, const char *long_arg);
  * args - Argument array we are cleaning up.
  */
 extern
-void	argv_cleanup(const argv_t *args);
+void    argv_cleanup(const argv_t *args);
 
 /*
  * int argv_copy_args
@@ -359,7 +359,7 @@ void	argv_cleanup(const argv_t *args);
  * buf_size - Size of the buffer.
  */
 extern
-int	argv_copy_args(char *buf, const int buf_size);
+int     argv_copy_args(char *buf, const int buf_size);
 
 /*
  * int argv_value_string
@@ -382,8 +382,8 @@ int	argv_copy_args(char *buf, const int buf_size);
  * buf_size - Size of the buffer.
  */
 extern
-int	argv_value_string(const argv_t *argv_entry_p, char *buf,
-			  const int buf_size);
+int     argv_value_string(const argv_t *argv_entry_p, char *buf,
+                          const int buf_size);
 
 /*<<<<<<<<<<   This is end of the auto-generated output from fillproto. */
 

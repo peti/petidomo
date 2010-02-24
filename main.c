@@ -44,13 +44,13 @@ main(int argc, char * argv[])
     const struct PD_Config * MasterConfig;
     char *        incoming_mail;
     argv_t        args[] =
-	{
+        {
         {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, approve or dump."},
         {ARGV_MAYBE, "listname", ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
         {ARGV_MAYBE, "masterconf", ARGV_CHAR_P, &masterconfig_path, "masterconf", "Path to petidomo.conf."},
         {ARGV_MAYBE, "approved", ARGV_BOOL, &g_is_approved, "approved", "approved flag."},
         {ARGV_LAST}
-	};
+        };
 
     set_program_name(argv[0]);
 
@@ -64,19 +64,19 @@ main(int argc, char * argv[])
        Petidomo binary. */
 
     if (argv[0][0] == '/')
-	{
-	who_am_i = argv[0];
-	}
+        {
+        who_am_i = argv[0];
+        }
     else
-	{
-	char buf[4096];
-	if (getcwd(buf, sizeof(buf)) == NULL)
-	    {
-	    syslog(LOG_CRIT, "Failed to get the path to my current working directory.");
-	    exit(EXIT_FAILURE);
-	    }
-	who_am_i = text_easy_sprintf("%s/%s", buf, argv[0]);
-	}
+        {
+        char buf[4096];
+        if (getcwd(buf, sizeof(buf)) == NULL)
+            {
+            syslog(LOG_CRIT, "Failed to get the path to my current working directory.");
+            exit(EXIT_FAILURE);
+            }
+        who_am_i = text_easy_sprintf("%s/%s", buf, argv[0]);
+        }
 
     /* Set our real user id equal to the effective user id to avoid
        confusion in case we're started as a setuid binary. */
@@ -92,29 +92,29 @@ main(int argc, char * argv[])
     /* Make sure we got all required parameters. */
 
     if ((!strcasecmp(mode, "deliver") || !strcasecmp(mode, "dump")) && listname == NULL)
-	{
-	fprintf(stderr, "petidomo: %s mode requires a list name argument\n", mode);
-	exit(EXIT_FAILURE);
+        {
+        fprintf(stderr, "petidomo: %s mode requires a list name argument\n", mode);
+        exit(EXIT_FAILURE);
         }
 
     /* Member Dump Mode */
 
     if (strcasecmp(mode, "dump") == 0)
-	{
+        {
         char *cp;
         const struct List_Config *ListConfig;
         if (InitPetidomo(masterconfig_path) != 0)
-	    {
+            {
             fprintf(stderr, "petidomo: failed load master configuration.\n");
             exit(EXIT_FAILURE);
-	    }
+            }
         MasterConfig = getMasterConfig();
         ListConfig = getListConfig(listname);
         if ((cp = loadfile(ListConfig->address_file)) == NULL)
-	    {
+            {
             fprintf(stderr, "petidomo: failed to open file \"%s\"\n", ListConfig->address_file);
             exit(EXIT_FAILURE);
-	    }
+            }
         fwrite(cp, strlen(cp), 1, stdout);
         free(cp);
         exit(EXIT_SUCCESS);
@@ -123,14 +123,14 @@ main(int argc, char * argv[])
     /* Log a few helpful facts about this Petidomo instance. */
 
     syslog(LOG_DEBUG, "%s starting up; mode=%s, listname=%s, masterconf=%s, approved=%s, ruid=%d, euid=%d, gid=%d, egid=%d",
-	   PACKAGE_STRING, mode, (listname != NULL ? listname : "<none>"), masterconfig_path, (g_is_approved) ? "true" : "false",
-	   getuid(), geteuid(), getgid(), getegid());
+           PACKAGE_STRING, mode, (listname != NULL ? listname : "<none>"), masterconfig_path, (g_is_approved) ? "true" : "false",
+           getuid(), geteuid(), getgid(), getegid());
 
     /* Init Petidomo's internal stuff. */
 
     if (InitPetidomo(masterconfig_path) != 0) {
-	syslog(LOG_CRIT, "Failed to initialize my internals.");
-	exit(EXIT_FAILURE);
+        syslog(LOG_CRIT, "Failed to initialize my internals.");
+        exit(EXIT_FAILURE);
     }
     MasterConfig = getMasterConfig();
 
@@ -139,33 +139,33 @@ main(int argc, char * argv[])
 
     incoming_mail = LoadFromDescriptor(STDIN_FILENO);
     if (incoming_mail == NULL) {
-	syslog(LOG_ERR, "Failed to read incoming mail from standard input.");
-	exit(EXIT_FAILURE);
+        syslog(LOG_ERR, "Failed to read incoming mail from standard input.");
+        exit(EXIT_FAILURE);
     }
 
     /* Now decide what we actually do with the mail. */
 
     if (strcasecmp("listserv", mode) == 0)
-	listserv_main(incoming_mail, listname);
+        listserv_main(incoming_mail, listname);
     else if (strcasecmp("deliver", mode) == 0)
-	{
-	if (listname != NULL)
-	    hermes_main(incoming_mail, listname);
-	else
-	    {
-	    syslog(LOG_ERR, "Wrong command line syntax; deliver mode requires a parameter.");
-	    exit(EXIT_FAILURE);
-	    }
-	}
+        {
+        if (listname != NULL)
+            hermes_main(incoming_mail, listname);
+        else
+            {
+            syslog(LOG_ERR, "Wrong command line syntax; deliver mode requires a parameter.");
+            exit(EXIT_FAILURE);
+            }
+        }
     else if (strcasecmp("approve", mode) == 0)
-	{
-	approve_main(incoming_mail);
-	}
+        {
+        approve_main(incoming_mail);
+        }
     else
-	{
-	syslog(LOG_ERR, "I don't know anything about mode \"%s\".", mode);
-	exit(EXIT_FAILURE);
-	}
+        {
+        syslog(LOG_ERR, "I don't know anything about mode \"%s\".", mode);
+        exit(EXIT_FAILURE);
+        }
 
     /* Exit gracefully. */
 

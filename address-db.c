@@ -37,22 +37,22 @@ int is_address_on_list(const char* file, const char* address)
 
     list = loadfile(file);
     if (list == NULL)
-	{
-	if (errno == ENOENT)
-	    return 0;
-	else
-	    return -1;
-	}
+        {
+        if (errno == ENOENT)
+            return 0;
+        else
+            return -1;
+        }
 
     for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p))
-	{
-	if (strncasecmp(p, address, len) == 0 &&
-	    (p == list || p[-1] == '\n') &&
-	    (isspace((int)p[len]) || p[len] == '\0'))
-	    {
-	    break;
-	    }
-	}
+        {
+        if (strncasecmp(p, address, len) == 0 &&
+            (p == list || p[-1] == '\n') &&
+            (isspace((int)p[len]) || p[len] == '\0'))
+            {
+            break;
+            }
+        }
 
     rc = ((*p != '\0') ? 1 : 0);
     free(list);
@@ -64,14 +64,14 @@ int add_address(const char* file, const char* address)
     FILE* fh;
     int rc = is_address_on_list(file, address);
     if (rc != 0)
-	return rc;
+        return rc;
 
     fh = fopen(file, "a");
     if (fh == NULL)
-	{
-	syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %s", file, strerror(errno));
-	return -1;
-	}
+        {
+        syslog(LOG_ERR, "Failed to open file \"%s\" for writing: %s", file, strerror(errno));
+        return -1;
+        }
     fprintf(fh, "%s\n", address);
     fclose(fh);
     return 0;

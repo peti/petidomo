@@ -48,10 +48,10 @@
 
 char *
 text_easy_sprintf(const char * fmt  /* Format string in printf(3) syntax. */,
-		  ... /* Parameter list. */)
+                  ... /* Parameter list. */)
 {
     char *    buffer,
-	 *    result;
+         *    result;
     size_t    buffer_size;
     va_list   ap;
     int       rc;
@@ -67,28 +67,28 @@ text_easy_sprintf(const char * fmt  /* Format string in printf(3) syntax. */,
     va_start(ap, fmt);
     for (buffer_size = 0, result = NULL; TRUE; free(buffer)) { /* forever */
 
-	/* Allocate the internal buffer. */
+        /* Allocate the internal buffer. */
 
-	buffer_size += 8 * 1024;
-	buffer = malloc(buffer_size);
-	if (buffer == NULL)
-	  goto leave;
+        buffer_size += 8 * 1024;
+        buffer = malloc(buffer_size);
+        if (buffer == NULL)
+          goto leave;
 
-	/* Format the string into it. */
+        /* Format the string into it. */
 
-	rc = vsnprintf(buffer, buffer_size, fmt, ap);
+        rc = vsnprintf(buffer, buffer_size, fmt, ap);
 
-	/* Success? */
+        /* Success? */
 
-	if (rc < buffer_size) {
-	    /* Yes. */
+        if (rc < buffer_size) {
+            /* Yes. */
 
-	    result = strdup(buffer);
-	    free(buffer);
-	    goto leave;
-	}
+            result = strdup(buffer);
+            free(buffer);
+            goto leave;
+        }
 
-	/* No. */
+        /* No. */
     }
 
 leave:

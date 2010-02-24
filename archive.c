@@ -54,95 +54,95 @@ ArchiveMail(const struct Mail * MailStruct, const char * listname)
     /* Sanity checks. */
 
     if (ListConfig->archivepath == NULL)
-	return 0;
+        return 0;
 
     /* Check whether we have a file or a directory. */
 
     if (stat(ListConfig->archivepath, &sb) == 0 && (sb.st_mode & S_IFDIR) != 0)
-	{
+        {
 
-	/* Read the "active"-file to see at what article number we
+        /* Read the "active"-file to see at what article number we
            were. */
 
-	filename = text_easy_sprintf("%s/.active", ListConfig->archivepath);
-	fh = fopen(filename, "r");
-	if (fh != NULL)
-	    {
-	    fscanf(fh, "%u", &counter);
-	    fclose(fh);
-	    }
-	else
-	    {
-	    if (errno != ENOENT)
-		syslog(LOG_ERR, "Failed to read file \"%s\": %s", filename,  strerror(errno));
-	    else
-		counter = 0;
-	    }
+        filename = text_easy_sprintf("%s/.active", ListConfig->archivepath);
+        fh = fopen(filename, "r");
+        if (fh != NULL)
+            {
+            fscanf(fh, "%u", &counter);
+            fclose(fh);
+            }
+        else
+            {
+            if (errno != ENOENT)
+                syslog(LOG_ERR, "Failed to read file \"%s\": %s", filename,  strerror(errno));
+            else
+                counter = 0;
+            }
 
-	/* Store the article. */
+        /* Store the article. */
 
-	do
-	    {
-	    filename = text_easy_sprintf("%s/%u", ListConfig->archivepath, counter);
-	    if (stat(filename, &sb) == -1)
-		{
-		if (errno == ENOENT)
-		    {
-		    fh = fopen(filename, "a");
-		    if (fh != NULL)
-			{
-			fprintf(fh, "From %s-owner@%s  %s", listname, ListConfig->fqdn, date);
-			fprintf(fh, "%s\n", MailStruct->Header);
-			fprintf(fh, "%s\n", MailStruct->Body);
-			fclose(fh);
-			rc = 0;
-			}
-		    else
-			syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %s", filename, strerror(errno));
-		    break;
-		    }
-		else
-		    {
-		    syslog(LOG_ERR, "An error while trying to access the log " \
-			   "directory \"%s\": %s", ListConfig->archivepath,  strerror(errno));
-		    break;
-		    }
-		}
-	    }
-	while (++counter);	/* until break */
+        do
+            {
+            filename = text_easy_sprintf("%s/%u", ListConfig->archivepath, counter);
+            if (stat(filename, &sb) == -1)
+                {
+                if (errno == ENOENT)
+                    {
+                    fh = fopen(filename, "a");
+                    if (fh != NULL)
+                        {
+                        fprintf(fh, "From %s-owner@%s  %s", listname, ListConfig->fqdn, date);
+                        fprintf(fh, "%s\n", MailStruct->Header);
+                        fprintf(fh, "%s\n", MailStruct->Body);
+                        fclose(fh);
+                        rc = 0;
+                        }
+                    else
+                        syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %s", filename, strerror(errno));
+                    break;
+                    }
+                else
+                    {
+                    syslog(LOG_ERR, "An error while trying to access the log " \
+                           "directory \"%s\": %s", ListConfig->archivepath,  strerror(errno));
+                    break;
+                    }
+                }
+            }
+        while (++counter);      /* until break */
 
-	/* Write the current "active" number back to the file. */
+        /* Write the current "active" number back to the file. */
 
-	counter++;
-	filename = text_easy_sprintf("%s/.active", ListConfig->archivepath);
-	fh = fopen(filename, "w");
-	if (fh != NULL)
-	    {
-	    fprintf(fh, "%u", counter);
-	    fclose(fh);
-	    }
-	else
-	    syslog(LOG_ERR, "Failed to write to file \"%s\": %s", filename, strerror(errno));
-	}
+        counter++;
+        filename = text_easy_sprintf("%s/.active", ListConfig->archivepath);
+        fh = fopen(filename, "w");
+        if (fh != NULL)
+            {
+            fprintf(fh, "%u", counter);
+            fclose(fh);
+            }
+        else
+            syslog(LOG_ERR, "Failed to write to file \"%s\": %s", filename, strerror(errno));
+        }
     else
-	{
+        {
 
-	/* Simply append the article to this file. */
+        /* Simply append the article to this file. */
 
-	fh = fopen(ListConfig->archivepath, "a");
-	if (fh != NULL)
-	    {
-	    /* Write an envelope first. */
+        fh = fopen(ListConfig->archivepath, "a");
+        if (fh != NULL)
+            {
+            /* Write an envelope first. */
 
-	    fprintf(fh, "From %s-owner@%s  %s", listname, ListConfig->fqdn, date);
-	    fprintf(fh, "%s\n", MailStruct->Header);
-	    fprintf(fh, "%s\n", MailStruct->Body);
-	    fclose(fh);
-	    rc = 0;
-	    }
-	else
-	    syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %s", ListConfig->archivepath, strerror(errno));
-	}
+            fprintf(fh, "From %s-owner@%s  %s", listname, ListConfig->fqdn, date);
+            fprintf(fh, "%s\n", MailStruct->Header);
+            fprintf(fh, "%s\n", MailStruct->Body);
+            fclose(fh);
+            rc = 0;
+            }
+        else
+            syslog(LOG_ERR, "Failed opening file \"%s\" for writing: %s", ListConfig->archivepath, strerror(errno));
+        }
 
     return rc;
     }

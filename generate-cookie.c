@@ -29,10 +29,10 @@ static char* encode_digest_to_ascii(unsigned char digest[16])
 
     buffer = xmalloc(33);
     for (i = 0; i < 16; i++)
-	{
-	buffer[i+i] = hex[digest[i] >> 4];
-	buffer[i+i+1] = hex[digest[i] & 0x0f];
-	}
+        {
+        buffer[i+i] = hex[digest[i] >> 4];
+        buffer[i+i+1] = hex[digest[i] & 0x0f];
+        }
 
     buffer[i+i] = '\0';
     return buffer;

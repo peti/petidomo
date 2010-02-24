@@ -145,10 +145,10 @@ InitList(int (*compare)(const void *, const void *))
     List  head;
 
     if ((head = malloc(sizeof(struct ListHead)))) {
-	head->lh_FirstNode = NULL;
-	head->lh_Compare = ((compare != NULL) ?
-			    compare :
-			    (int (*)(const void *, const void *)) strcasecmp);
+        head->lh_FirstNode = NULL;
+        head->lh_Compare = ((compare != NULL) ?
+                            compare :
+                            (int (*)(const void *, const void *)) strcasecmp);
     }
 
     return head;
@@ -176,10 +176,10 @@ FreeList(List head)
     if (currNode == NULL)
       return;
     for (nextNode = getNextNode(currNode);
-	 currNode != NULL;
-	 currNode = nextNode) {
-	nextNode = getNextNode(currNode);
-	FreeNode(currNode);
+         currNode != NULL;
+         currNode = nextNode) {
+        nextNode = getNextNode(currNode);
+        FreeNode(currNode);
     }
 }
 
@@ -205,15 +205,15 @@ AppendNode(List head, const void * key, const void * data)
     /* Append the node at the end of the list. */
 
     if (isListEmpty(head)) {
-	head->lh_FirstNode = newNode;
+        head->lh_FirstNode = newNode;
     }
     else {
-	for (currNode = getFirstNode(head);
-	     ! isEndOfList(currNode);
-	     currNode = getNextNode(currNode))
-	  ;
-	currNode->ln_Next = newNode;
-	newNode->ln_Prev = currNode;
+        for (currNode = getFirstNode(head);
+             ! isEndOfList(currNode);
+             currNode = getNextNode(currNode))
+          ;
+        currNode->ln_Next = newNode;
+        newNode->ln_Prev = currNode;
     }
 
     return newNode;
@@ -235,11 +235,11 @@ InitNode(const List head, const void * key, const void * data)
 
     newNode = malloc(sizeof(struct ListNode));
     if (newNode != NULL) {
-	newNode->ln_Next = NULL;
-	newNode->ln_Prev = NULL;
-	newNode->ln_Head = head;
-	newNode->ln_Key = key;
-	newNode->ln_Data = data;
+        newNode->ln_Next = NULL;
+        newNode->ln_Prev = NULL;
+        newNode->ln_Head = head;
+        newNode->ln_Key = key;
+        newNode->ln_Data = data;
     }
     return newNode;
 }
@@ -274,19 +274,19 @@ RemoveNode(const Node node)
     prevNode = getPrevNode(node);
     nextNode = getNextNode(node);
 
-    if (prevNode == NULL) {	/* We are the first node. */
-	getListHead(node)->lh_FirstNode = nextNode;
-	if (nextNode) {  	/* We're not the last one. */
-	    nextNode->ln_Prev = NULL;
-	}
+    if (prevNode == NULL) {     /* We are the first node. */
+        getListHead(node)->lh_FirstNode = nextNode;
+        if (nextNode) {         /* We're not the last one. */
+            nextNode->ln_Prev = NULL;
+        }
     }
     else if (nextNode == NULL) { /* We are the last node. */
-	prevNode->ln_Next = NULL;
+        prevNode->ln_Next = NULL;
     }
     else {
-	/* We're neither first nor last node. */
-	nextNode->ln_Prev = prevNode;
-	prevNode->ln_Next = nextNode;
+        /* We're neither first nor last node. */
+        nextNode->ln_Prev = prevNode;
+        prevNode->ln_Next = nextNode;
     }
 }
 
@@ -309,15 +309,15 @@ InsertNodeBeforeNode(Node node, const void *key, const void *data)
       return NULL;
 
     if (prevNode == NULL) { /* We'll become the new first node. */
-	head->lh_FirstNode = newNode;
-	newNode->ln_Next = node;
-	node->ln_Prev = newNode;
+        head->lh_FirstNode = newNode;
+        newNode->ln_Next = node;
+        node->ln_Prev = newNode;
     }
     else {
-	prevNode->ln_Next = newNode;
-	newNode->ln_Next = node;
-	newNode->ln_Prev = prevNode;
-	node->ln_Prev = newNode;
+        prevNode->ln_Next = newNode;
+        newNode->ln_Next = node;
+        newNode->ln_Prev = prevNode;
+        node->ln_Prev = newNode;
     }
 
     return newNode;
@@ -342,14 +342,14 @@ InsertNodeAfterNode(Node node, const void *key, const void *data)
       return NULL;
 
     if (nextNode == NULL) { /* We'll become the new last node. */
-	node->ln_Next = newNode;
-	newNode->ln_Prev = node;
+        node->ln_Next = newNode;
+        newNode->ln_Prev = node;
     }
     else {
-	node->ln_Next = newNode;
-	newNode->ln_Next = nextNode;
-	newNode->ln_Prev = node;
-	nextNode->ln_Prev = newNode;
+        node->ln_Next = newNode;
+        newNode->ln_Next = nextNode;
+        newNode->ln_Prev = node;
+        nextNode->ln_Prev = newNode;
     }
 
     return newNode;
@@ -373,10 +373,10 @@ InsertNodeByKey(List head, const void * key, const void * data)
     currNode = getFirstNode(head);
 
     while(currNode != NULL) {
-	if (((*head->lh_Compare)(getNodeKey(currNode), key) < 0))
-	  currNode = getNextNode(currNode);
-	else
-	  return InsertNodeBeforeNode(currNode, key, data);
+        if (((*head->lh_Compare)(getNodeKey(currNode), key) < 0))
+          currNode = getNextNode(currNode);
+        else
+          return InsertNodeBeforeNode(currNode, key, data);
     }
 
     /* We are going to become the last list element. */
@@ -406,10 +406,10 @@ FindNodeByKey(List head, const void * key)
     currNode = getFirstNode(head);
 
     while(currNode != NULL) {
-	if (((*head->lh_Compare)(getNodeKey(currNode), key) != 0))
-	  currNode = getNextNode(currNode);
-	else
-	  return currNode;
+        if (((*head->lh_Compare)(getNodeKey(currNode), key) != 0))
+          currNode = getNextNode(currNode);
+        else
+          return currNode;
     }
 
     return NULL;

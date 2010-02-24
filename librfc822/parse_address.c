@@ -90,16 +90,16 @@
 
 int
 rfc822_parse_address(const char *   string    /* String containing the address. */,
-		     char **  address   /* Where to store the canonic address. */,
-		     char **  localpart /* Where to store the local part. */,
-		     char **  hostpart  /* Where to store the host part. */)
+                     char **  address   /* Where to store the canonic address. */,
+                     char **  localpart /* Where to store the local part. */,
+                     char **  hostpart  /* Where to store the host part. */)
 {
     int     rc;
 
     assert(string != NULL);
     if (!string) {
-	errno = EINVAL;
-	return RFC822_FATAL_ERROR;
+        errno = EINVAL;
+        return RFC822_FATAL_ERROR;
     }
 
     rc = rfc822_decomment(string, &rfc822_address_buffer);
@@ -116,16 +116,16 @@ rfc822_parse_address(const char *   string    /* String containing the address. 
 
     rc = yyparse();
     if (rc == RFC822_OK) {
-	if (address && (*address = result_address))
-	  mp_remove_block_from_pool(poolname, *address);
-	if (localpart && (*localpart = result_localpart))
-	  mp_remove_block_from_pool(poolname, *localpart);
-	if (hostpart && (*hostpart = result_hostpart))
-	  mp_remove_block_from_pool(poolname, *hostpart);
+        if (address && (*address = result_address))
+          mp_remove_block_from_pool(poolname, *address);
+        if (localpart && (*localpart = result_localpart))
+          mp_remove_block_from_pool(poolname, *localpart);
+        if (hostpart && (*hostpart = result_hostpart))
+          mp_remove_block_from_pool(poolname, *hostpart);
     }
     else if (no_memory_flag != 0) {
-	errno = ENOMEM;
-	rc    = RFC822_FATAL_ERROR;
+        errno = ENOMEM;
+        rc    = RFC822_FATAL_ERROR;
     }
     else
       rc = RFC822_SYNTAX_ERROR;

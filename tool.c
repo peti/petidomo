@@ -27,7 +27,7 @@
 
 bool
 isSubscribed(const char * listname, const char * address,
-	     char ** listfile, char ** subscriber, bool dofuzzy)
+             char ** listfile, char ** subscriber, bool dofuzzy)
     {
     const struct List_Config * ListConfig;
     struct stat    sb;
@@ -37,41 +37,41 @@ isSubscribed(const char * listname, const char * address,
     bool           rc;
 
     if (isValidListName(listname))
-	ListConfig = getListConfig(listname);
+        ListConfig = getListConfig(listname);
     else
-	return FALSE;
+        return FALSE;
 
     if (stat(ListConfig->address_file, &sb) != 0)
-	return FALSE;
+        return FALSE;
     list = loadfile(ListConfig->address_file);
     if (list == NULL)
-	return FALSE;
+        return FALSE;
 
     for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p))
-	{
-	if (strncasecmp(p, address, len) == 0 &&
-	    (p == list || p[-1] == '\n') &&
-	    (isspace((int)p[len]) || p[len] == '\0'))
-	    {
-	    break;
-	    }
-	}
+        {
+        if (strncasecmp(p, address, len) == 0 &&
+            (p == list || p[-1] == '\n') &&
+            (isspace((int)p[len]) || p[len] == '\0'))
+            {
+            break;
+            }
+        }
 
     if (*p == '\0' && dofuzzy == TRUE)
-	{
-	address = buildFuzzyMatchAddress(address);
-	if (address != NULL)
-	    {
-	    for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p))
-		{
-		if (text_easy_pattern_match(p, address) == TRUE &&
-		    (p == list || p[-1] == '\n'))
-		    {
-		    break;
-		    }
-		}
-	    }
-	}
+        {
+        address = buildFuzzyMatchAddress(address);
+        if (address != NULL)
+            {
+            for (len = strlen(address), p = list; *p != '\0'; p = text_find_next_line(p))
+                {
+                if (text_easy_pattern_match(p, address) == TRUE &&
+                    (p == list || p[-1] == '\n'))
+                    {
+                    break;
+                    }
+                }
+            }
+        }
 
 
     /* Save the returncode now, because p may be invalid in a few
@@ -82,13 +82,13 @@ isSubscribed(const char * listname, const char * address,
     /* Did the caller want results back? Then give them to him. */
 
     if (listfile != NULL)
-	{
-	*listfile = list;
-	if (subscriber != NULL)
-	    *subscriber = (*p != '\0') ? p : NULL;
-	}
+        {
+        *listfile = list;
+        if (subscriber != NULL)
+            *subscriber = (*p != '\0') ? p : NULL;
+        }
     else
-	free(list);
+        free(list);
 
     /* Return the result. */
 
@@ -103,23 +103,23 @@ buildFuzzyMatchAddress(const char * address)
 
     fuzzyaddress = xmalloc(strlen(address)+16);
     rc = text_transform_text(fuzzyaddress, address, "([^@]+)@[^\\.]+\\.([^\\.]+\\..*)",
-		       "\\1@([^\\\\.]+\\\\.)?\\2");
+                       "\\1@([^\\\\.]+\\\\.)?\\2");
     if (rc == TEXT_REGEX_TRANSFORM_DIDNT_MATCH) {
-	rc = text_transform_text(fuzzyaddress, address, "([^@]+)@([^\\.]+\\.[^\\.]+)",
-		       "\\1@([^\\\\.]+\\\\.)?\\2");
+        rc = text_transform_text(fuzzyaddress, address, "([^@]+)@([^\\.]+\\.[^\\.]+)",
+                       "\\1@([^\\\\.]+\\\\.)?\\2");
     }
 
     switch (rc) {
       case TEXT_REGEX_ERROR:
-	  syslog(LOG_CRIT, "Internal error in buildFuzzyMatchAddress(): "\
-	      "Regular expression can't be compiled.");
-	  break;
+          syslog(LOG_CRIT, "Internal error in buildFuzzyMatchAddress(): "\
+              "Regular expression can't be compiled.");
+          break;
       case TEXT_REGEX_TRANSFORM_DIDNT_MATCH:
-	  break;
+          break;
       case TEXT_REGEX_OK:
-	  return fuzzyaddress;
+          return fuzzyaddress;
       default:
-	  syslog(LOG_CRIT, "Internal error: Unexpected returncode in ParseMessageIdLine().");
+          syslog(LOG_CRIT, "Internal error: Unexpected returncode in ParseMessageIdLine().");
     }
     free(fuzzyaddress);
     return NULL;
@@ -137,29 +137,29 @@ isValidListName(const char * listname)
     assert(listname != NULL);
 
     if ((strchr(listname, '/') != NULL) || (strchr(listname, ':') != NULL))
-	return FALSE;
+        return FALSE;
 
     buffer = text_easy_sprintf("%s/%s/config", MasterConfig->list_dir, listname);
     if (stat(buffer, &sb) != 0)
-	{
-	free(buffer);
-	buffer = text_easy_sprintf("%s/%s/conf", MasterConfig->list_dir, listname);
-	if (stat(buffer, &sb) != 0)
-	    {
-	    free(buffer);
-	    buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
-	    if (stat(buffer, &sb) != 0)
-		{
-		free(buffer);
-		buffer = text_easy_sprintf("%s/%s.conf", MasterConfig->list_dir, listname);
-		if (stat(buffer, &sb) != 0)
-		    {
-		    free(buffer);
-		    return FALSE;
-		    }
-		}
-	    }
-	}
+        {
+        free(buffer);
+        buffer = text_easy_sprintf("%s/%s/conf", MasterConfig->list_dir, listname);
+        if (stat(buffer, &sb) != 0)
+            {
+            free(buffer);
+            buffer = text_easy_sprintf("%s/%s.config", MasterConfig->list_dir, listname);
+            if (stat(buffer, &sb) != 0)
+                {
+                free(buffer);
+                buffer = text_easy_sprintf("%s/%s.conf", MasterConfig->list_dir, listname);
+                if (stat(buffer, &sb) != 0)
+                    {
+                    free(buffer);
+                    return FALSE;
+                    }
+                }
+            }
+        }
     free(buffer);
     return TRUE;
     }

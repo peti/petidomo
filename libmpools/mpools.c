@@ -29,8 +29,8 @@ static List mpools_list = NULL;
 
 static int
 GetMemoryPool(const char * pool_name,
-	      Node * node_ptr,
-	      struct mp_list_entry ** mpool_entry_ptr)
+              Node * node_ptr,
+              struct mp_list_entry ** mpool_entry_ptr)
 {
     Node           node;
 
@@ -45,11 +45,11 @@ GetMemoryPool(const char * pool_name,
 
     node = FindNodeByKey(mpools_list, (const void *) pool_name);
     if (node != NULL) {
-	if (node_ptr != NULL)
-	  *node_ptr = node;
-	if (mpool_entry_ptr != NULL)
-	  *mpool_entry_ptr = (struct mp_list_entry *) getNodeData(node);
-	return 0;
+        if (node_ptr != NULL)
+          *node_ptr = node;
+        if (mpool_entry_ptr != NULL)
+          *mpool_entry_ptr = (struct mp_list_entry *) getNodeData(node);
+        return 0;
     }
 
     /* No entry available. So we create one. */
@@ -60,8 +60,8 @@ GetMemoryPool(const char * pool_name,
 
     node = AppendNode(mpools_list, (const void *) pool_name, NULL);
     if (node == NULL) {
-	free(pool_name);
-	return -1;
+        free(pool_name);
+        return -1;
     }
 
     /* Return result to caller. */
@@ -93,8 +93,8 @@ GetMemoryPool(const char * pool_name,
 
 void *
 mp_malloc(const char * pool_name /* ID-String of the memory pool. */,
-	  size_t block_size	 /* Size of the requested memory block. */
-	  )
+          size_t block_size      /* Size of the requested memory block. */
+          )
 {
     struct mp_list_entry *   mpool;
     Node                     node;
@@ -109,9 +109,9 @@ mp_malloc(const char * pool_name /* ID-String of the memory pool. */,
     /* Init the internal list structure, if it isn't already. */
 
     if (mpools_list == NULL) {
-	mpools_list = InitList((int (*)(const void *, const void *)) strcmp);
-	if (mpools_list == NULL)
-	  return NULL;
+        mpools_list = InitList((int (*)(const void *, const void *)) strcmp);
+        if (mpools_list == NULL)
+          return NULL;
     }
 
     /* Get the pool structure. */
@@ -127,8 +127,8 @@ mp_malloc(const char * pool_name /* ID-String of the memory pool. */,
 
     block = malloc(block_size);
     if (block == NULL) {
-	free(mpool);
-	return NULL;
+        free(mpool);
+        return NULL;
     }
 
     /* Init the mpool structure. */
@@ -159,9 +159,9 @@ mp_malloc(const char * pool_name /* ID-String of the memory pool. */,
 
 void
 mp_free(const char * pool_name  /* ID-String of the memory pool. */,
-	void * block		/* Pointer to a memory block
-				   previously allocated by mp_malloc(). */
-	)
+        void * block            /* Pointer to a memory block
+                                   previously allocated by mp_malloc(). */
+        )
 {
     struct mp_list_entry *   mpool,
                          *   prev_mpool;
@@ -176,9 +176,9 @@ mp_free(const char * pool_name  /* ID-String of the memory pool. */,
     /* Init the internal list structure, if it isn't already. */
 
     if (mpools_list == NULL) {
-	mpools_list = InitList(NULL);
-	if (mpools_list == NULL)
-	  return;
+        mpools_list = InitList(NULL);
+        if (mpools_list == NULL)
+          return;
     }
 
     /* Get the pool structure. */
@@ -189,13 +189,13 @@ mp_free(const char * pool_name  /* ID-String of the memory pool. */,
     /* Find the block we should free. */
 
     for (prev_mpool = NULL;
-	 mpool != NULL && mpool->block != block;
-	 prev_mpool = mpool, mpool = mpool->next)
+         mpool != NULL && mpool->block != block;
+         prev_mpool = mpool, mpool = mpool->next)
       ;
 
-    if (mpool == NULL) {	/* block not found */
-	printf("Warning\n");
-	return;
+    if (mpool == NULL) {        /* block not found */
+        printf("Warning\n");
+        return;
     }
 
     /* Remove the node from the linked list. */
@@ -221,9 +221,9 @@ mp_free(const char * pool_name  /* ID-String of the memory pool. */,
 
 void
 mp_remove_block_from_pool(const char * pool_name  /* ID-String of the memory pool. */,
-			  void * block		  /* Pointer to a memory block
-						     previously allocated by mp_malloc(). */
-			  )
+                          void * block            /* Pointer to a memory block
+                                                     previously allocated by mp_malloc(). */
+                          )
 {
     struct mp_list_entry *   mpool,
                          *   prev_mpool;
@@ -239,8 +239,8 @@ mp_remove_block_from_pool(const char * pool_name  /* ID-String of the memory poo
     /* Init the internal list structure, if it isn't already. */
 
     if (mpools_list == NULL) {
-	mpools_list = InitList(NULL);
-	return;
+        mpools_list = InitList(NULL);
+        return;
     }
 
     /* Get the pool structure. */
@@ -251,11 +251,11 @@ mp_remove_block_from_pool(const char * pool_name  /* ID-String of the memory poo
     /* Find the block we should free. */
 
     for (prev_mpool = NULL;
-	 mpool != NULL && mpool->block != block;
-	 prev_mpool = mpool, mpool = mpool->next)
+         mpool != NULL && mpool->block != block;
+         prev_mpool = mpool, mpool = mpool->next)
       ;
 
-    if (mpool == NULL) 	/* block not found */
+    if (mpool == NULL)  /* block not found */
       return;
 
     /* Remove the node from the linked list. */
@@ -276,10 +276,10 @@ mp_remove_block_from_pool(const char * pool_name  /* ID-String of the memory poo
 
 void
 mp_free_memory_pool(const char * pool_name /* ID-String of the memory pool. */
-		    )
+                    )
 {
     struct mp_list_entry *    mpool_entry,
-	                 *    next_mpool_entry;
+                         *    next_mpool_entry;
     Node                      node;
 
     /* Sanity checks. */
@@ -305,9 +305,9 @@ mp_free_memory_pool(const char * pool_name /* ID-String of the memory pool. */
     FreeNode(node);
 
     for ( ; mpool_entry != NULL; mpool_entry = next_mpool_entry) {
-	next_mpool_entry = mpool_entry->next;
-	free(mpool_entry->block);
-	free(mpool_entry);
+        next_mpool_entry = mpool_entry->next;
+        free(mpool_entry->block);
+        free(mpool_entry);
     }
 }
 
@@ -319,7 +319,7 @@ mp_free_memory_pool(const char * pool_name /* ID-String of the memory pool. */
 
 void
 mp_dump_memory_pool(const char * pool_name /* ID-String of the memory pool. */
-		    )
+                    )
 {
     struct mp_list_entry *    mpool_entry;
     unsigned int              total;
@@ -336,14 +336,14 @@ mp_dump_memory_pool(const char * pool_name /* ID-String of the memory pool. */
       return;
 
     if (mpool_entry == NULL) {
-	printf("mpool \"%s\" is empty.\n", pool_name);
-	return;
+        printf("mpool \"%s\" is empty.\n", pool_name);
+        return;
     }
 
     for (total = 0; mpool_entry != NULL; mpool_entry = mpool_entry->next) {
-	printf("\"%s\": %d byte block at $%08x.\n", pool_name, mpool_entry->size,
-	       (unsigned int) mpool_entry->block);
-	total += mpool_entry->size;
+        printf("\"%s\": %d byte block at $%08x.\n", pool_name, mpool_entry->size,
+               (unsigned int) mpool_entry->block);
+        total += mpool_entry->size;
     }
     printf("Total size of mpool \"%s\" is %u byte.\n", pool_name, total);
 }

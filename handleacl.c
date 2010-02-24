@@ -38,118 +38,118 @@ handleACL(struct Mail * MailStruct, const char * listname, int operation, char *
 
     MasterConfig = getMasterConfig();
     if (listname != NULL) {
-	ListConfig = getListConfig(listname);
-	sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
-	sprintf(owner, "%s-owner@%s", listname, ListConfig->fqdn);
+        ListConfig = getListConfig(listname);
+        sprintf(envelope, "%s-owner@%s", listname, ListConfig->fqdn);
+        sprintf(owner, "%s-owner@%s", listname, ListConfig->fqdn);
     }
     else {
-	sprintf(envelope, "petidomo-manager@%s", MasterConfig->fqdn);
-	sprintf(owner, "petidomo-manager@%s", MasterConfig->fqdn);
+        sprintf(envelope, "petidomo-manager@%s", MasterConfig->fqdn);
+        sprintf(owner, "petidomo-manager@%s", MasterConfig->fqdn);
     }
 
     /* Check for authorization. */
 
     switch(operation) {
       case ACL_NONE:
-	  break;
+          break;
       case ACL_PASS:
-	  break;
+          break;
       case ACL_APPROVE:
-	  MailStruct->Approve = MasterConfig->master_password;
-	  break;
+          MailStruct->Approve = MasterConfig->master_password;
+          break;
       case ACL_DROP:
-	  return 1;
+          return 1;
       case ACL_REJECTWITH:
-	  assert(parameter != NULL);
+          assert(parameter != NULL);
       case ACL_REJECT:
-	  fh = vOpenMailer(envelope, owner, (MailStruct->Reply_To) ?
-			   (MailStruct->Reply_To) : (MailStruct->From), NULL);
-	  if (fh == NULL) {
-	      syslog(LOG_ERR, "Failed to open mailer for redirection.");
-	      return -1;
-	  }
-	  fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
-	  fprintf(fh, "To: %s\n", (MailStruct->Reply_To) ?
-		  (MailStruct->Reply_To) : (MailStruct->From));
-	  fprintf(fh, "Cc: %s\n", owner);
-	  if (listname != NULL)
-	    fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Rejected due to ACL\n", listname, ListConfig->fqdn);
-	  else
-	    fprintf(fh, "Subject: Petidomo: BOUNCE: Rejected due to ACL\n");
-	  fprintf(fh, "Precedence: junk\n");
-	  fprintf(fh, "Sender: %s\n", owner);
-	  fprintf(fh, "\n");
-	  if (operation == ACL_REJECTWITH && (buffer = loadfile(parameter)) != NULL) {
-	      fprintf(fh, "%s\n", buffer);
-	      free(buffer);
-	  }
-	  else {
+          fh = vOpenMailer(envelope, owner, (MailStruct->Reply_To) ?
+                           (MailStruct->Reply_To) : (MailStruct->From), NULL);
+          if (fh == NULL) {
+              syslog(LOG_ERR, "Failed to open mailer for redirection.");
+              return -1;
+          }
+          fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
+          fprintf(fh, "To: %s\n", (MailStruct->Reply_To) ?
+                  (MailStruct->Reply_To) : (MailStruct->From));
+          fprintf(fh, "Cc: %s\n", owner);
+          if (listname != NULL)
+            fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Rejected due to ACL\n", listname, ListConfig->fqdn);
+          else
+            fprintf(fh, "Subject: Petidomo: BOUNCE: Rejected due to ACL\n");
+          fprintf(fh, "Precedence: junk\n");
+          fprintf(fh, "Sender: %s\n", owner);
+          fprintf(fh, "\n");
+          if (operation == ACL_REJECTWITH && (buffer = loadfile(parameter)) != NULL) {
+              fprintf(fh, "%s\n", buffer);
+              free(buffer);
+          }
+          else {
               if (listname != NULL)
                   fprintf(fh, "The following posting was rejected by Petidomo, due to\n"
                               "the access control list (ACL) rules for list `%s@%s'.\n", listname, ListConfig->fqdn);
-	  else
+          else
                   fprintf(fh, "The following posting was rejected by Petidomo, due to\n" \
                               "the global access control list (ACL) rules.\n\n");
           }
-	  fprintf(fh, "%s\n", MailStruct->Header);
-	  fprintf(fh, "%s", MailStruct->Body);
-	  CloseMailer(fh);
-	  return 1;
+          fprintf(fh, "%s\n", MailStruct->Header);
+          fprintf(fh, "%s", MailStruct->Body);
+          CloseMailer(fh);
+          return 1;
       case ACL_REDIRECT:
-	  assert(parameter != NULL);
-	  syslog(LOG_INFO, "Mail is redirected to \"%s\" due to access control.", parameter);
-	  fh = vOpenMailer(MailStruct->Envelope, parameter, NULL);
-	  if (fh == NULL) {
-	      syslog(LOG_ERR, "Failed to open mailer for redirection.");
-	      return -1;
-	  }
-	  fprintf(fh, "%s\n", MailStruct->Header);
-	  fprintf(fh, "%s", MailStruct->Body);
-	  CloseMailer(fh);
-	  return 1;
+          assert(parameter != NULL);
+          syslog(LOG_INFO, "Mail is redirected to \"%s\" due to access control.", parameter);
+          fh = vOpenMailer(MailStruct->Envelope, parameter, NULL);
+          if (fh == NULL) {
+              syslog(LOG_ERR, "Failed to open mailer for redirection.");
+              return -1;
+          }
+          fprintf(fh, "%s\n", MailStruct->Header);
+          fprintf(fh, "%s", MailStruct->Body);
+          CloseMailer(fh);
+          return 1;
       case ACL_FORWARD:
-	  assert(parameter != NULL);
-	  syslog(LOG_INFO, "Mail is forwarded to \"%s\" due to access control.", parameter);
-	  fh = vOpenMailer(envelope, parameter, NULL);
-	  if (fh == NULL) {
-	      syslog(LOG_ERR, "Failed to open mailer for redirection.");
-	      return -1;
-	  }
-	  fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
-	  fprintf(fh, "To: %s\n", parameter);
-	  if (listname != NULL)
-	    fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Forwarded due to ACL\n", listname, ListConfig->fqdn);
-	  else
-	    fprintf(fh, "Subject: Petidomo: BOUNCE: Forwarded due to ACL\n");
-	  fprintf(fh, "Precedence: junk\n");
-	  fprintf(fh, "Sender: %s\n", owner);
-	  fprintf(fh, "\n");
-	  if (listname != NULL)
-	      fprintf(fh, "The following posting was forwarded to you by Petidomo, due to\n"
-		          "the access control list (ACL) rules for list `%s@%s'.\n", listname, ListConfig->fqdn);
+          assert(parameter != NULL);
+          syslog(LOG_INFO, "Mail is forwarded to \"%s\" due to access control.", parameter);
+          fh = vOpenMailer(envelope, parameter, NULL);
+          if (fh == NULL) {
+              syslog(LOG_ERR, "Failed to open mailer for redirection.");
+              return -1;
+          }
+          fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", owner);
+          fprintf(fh, "To: %s\n", parameter);
+          if (listname != NULL)
+            fprintf(fh, "Subject: Petidomo: BOUNCE %s@%s: Forwarded due to ACL\n", listname, ListConfig->fqdn);
           else
-	      fprintf(fh, "The following posting was forwarded to you by Petidomo, due to\n" \
-		          "the global access control list (ACL) rules.\n");
+            fprintf(fh, "Subject: Petidomo: BOUNCE: Forwarded due to ACL\n");
+          fprintf(fh, "Precedence: junk\n");
+          fprintf(fh, "Sender: %s\n", owner);
+          fprintf(fh, "\n");
+          if (listname != NULL)
+              fprintf(fh, "The following posting was forwarded to you by Petidomo, due to\n"
+                          "the access control list (ACL) rules for list `%s@%s'.\n", listname, ListConfig->fqdn);
+          else
+              fprintf(fh, "The following posting was forwarded to you by Petidomo, due to\n" \
+                          "the global access control list (ACL) rules.\n");
           fprintf(fh, "If you approve this posting, pipe this mail through `petidomo-approve'.\n"
                       "If you do not approve this posting, just do nothing.\n\n");
-	  fprintf(fh, "%s\n", MailStruct->Header);
-	  fprintf(fh, "%s", MailStruct->Body);
-	  CloseMailer(fh);
-	  return 1;
+          fprintf(fh, "%s\n", MailStruct->Header);
+          fprintf(fh, "%s", MailStruct->Body);
+          CloseMailer(fh);
+          return 1;
       case ACL_FILTER:
-	  assert(parameter != NULL);
-	  syslog(LOG_INFO, "Mail is filtered through \"%s\" due to access control.",
-	      parameter);
-	  rc = MailFilter(MailStruct, parameter);
-	  if (rc != 0) {
-	      syslog(LOG_ERR, "Mail filter \"%s\" returned error code %d.", parameter, rc);
-	      return -1;
-	  }
-	  break;
+          assert(parameter != NULL);
+          syslog(LOG_INFO, "Mail is filtered through \"%s\" due to access control.",
+              parameter);
+          rc = MailFilter(MailStruct, parameter);
+          if (rc != 0) {
+              syslog(LOG_ERR, "Mail filter \"%s\" returned error code %d.", parameter, rc);
+              return -1;
+          }
+          break;
       default:
-	  syslog(LOG_CRIT, "Internal error: Unexpected return code %d from checkACL()",
-	      operation);
-	  return -1;
+          syslog(LOG_CRIT, "Internal error: Unexpected return code %d from checkACL()",
+              operation);
+          return -1;
     }
     free(parameter);
 

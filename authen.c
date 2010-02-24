@@ -32,18 +32,18 @@ FindBodyPassword(struct Mail * MailStruct)
     while(isspace((int)*currLine))
       currLine++;
     if (!strncasecmp(currLine, "Approve", 7) ||
-	!strncasecmp(currLine, "Approved", 8) ||
-	!strncasecmp(currLine, "Passwd", 6) ||
-	!strncasecmp(currLine, "Password", 8)) {
-	MailStruct->Body = text_find_next_line(currLine);
-	(text_find_next_line(currLine))[-1] = '\0';
-	while(!isspace((int)*currLine))
-	  currLine++;
-	if (ParseApproveLine(currLine) != 0) {
-	    syslog(LOG_ERR, "Failed to parse the approve statement in the mail body.");
-	    return -1;
-	}
-	MailStruct->Approve = currLine;
+        !strncasecmp(currLine, "Approved", 8) ||
+        !strncasecmp(currLine, "Passwd", 6) ||
+        !strncasecmp(currLine, "Password", 8)) {
+        MailStruct->Body = text_find_next_line(currLine);
+        (text_find_next_line(currLine))[-1] = '\0';
+        while(!isspace((int)*currLine))
+          currLine++;
+        if (ParseApproveLine(currLine) != 0) {
+            syslog(LOG_ERR, "Failed to parse the approve statement in the mail body.");
+            return -1;
+        }
+        MailStruct->Approve = currLine;
     }
     return 0;
 }
@@ -63,13 +63,13 @@ isValidAdminPassword(const char * password, const char * listname)
       return TRUE;
 
     if (listname != NULL) {
-	ListConfig = getListConfig(listname);
+        ListConfig = getListConfig(listname);
 
-	if (ListConfig->admin_password == NULL)
-	  return FALSE;
+        if (ListConfig->admin_password == NULL)
+          return FALSE;
 
-	if (!strcasecmp(ListConfig->admin_password, password))
-	  return TRUE;
+        if (!strcasecmp(ListConfig->admin_password, password))
+          return TRUE;
     }
     return FALSE;
 }
@@ -80,21 +80,21 @@ isValidPostingPassword(const char * password, const char * listname)
     const struct List_Config *   ListConfig;
 
     if (password == NULL)
-	return FALSE;
+        return FALSE;
 
     if (isValidAdminPassword(password, listname) == TRUE)
-	return TRUE;
+        return TRUE;
 
     if (listname != NULL)
-	{
-	ListConfig = getListConfig(listname);
+        {
+        ListConfig = getListConfig(listname);
 
-	if (ListConfig->posting_password == NULL)
-	    return FALSE;
+        if (ListConfig->posting_password == NULL)
+            return FALSE;
 
-	if (!strcasecmp(ListConfig->posting_password, password))
-	    return TRUE;
-	}
+        if (!strcasecmp(ListConfig->posting_password, password))
+            return TRUE;
+        }
 
     return FALSE;
     }

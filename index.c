@@ -28,9 +28,9 @@
 
 int
 GenIndex(struct Mail * MailStruct,
-		const char * param1,
-		const char * param2,
-		const char * defaultlist)
+                const char * param1,
+                const char * param2,
+                const char * defaultlist)
 {
     const struct PD_Config * MasterConfig = getMasterConfig();
     FILE *           fh;
@@ -54,8 +54,8 @@ GenIndex(struct Mail * MailStruct,
 
     fh = vOpenMailer(envelope, address, NULL);
     if (fh == NULL) {
-	syslog(LOG_ERR, "Failed to send mail to \"%s\": %s", address, strerror(errno));
-	return -1;
+        syslog(LOG_ERR, "Failed to send mail to \"%s\": %s", address, strerror(errno));
+        return -1;
     }
     fprintf(fh, "From: %s (Petidomo Mailing List Server)\n", from);
     fprintf(fh, "To: %s\n", address);
@@ -67,15 +67,15 @@ GenIndex(struct Mail * MailStruct,
     fprintf(fh, "\n");
     p = loadfile(MasterConfig->index_file);
     if (p != NULL)
-	{
+        {
         fprintf(fh, "%s\n", p);
         free(p);
-	}
+        }
     else
-	{
+        {
         syslog(LOG_ERR, "There is no index file for Petidomo!");
         fprintf(fh, "No index available.\n");
-	}
+        }
     CloseMailer(fh);
     return 0;
 }

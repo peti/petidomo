@@ -35,8 +35,8 @@
  */
 
 char *
-text_find_string(char * buffer,	/* text buffer */
-	   char * string	/* string to find */
+text_find_string(char * buffer, /* text buffer */
+           char * string        /* string to find */
 )
 
 {
@@ -62,10 +62,10 @@ text_find_string(char * buffer,	/* text buffer */
     /* Now look for the string. */
 
     for(result = NULL; buffer_len >= string_len; buffer++, buffer_len--) {
-	if (!strncasecmp(buffer, string, string_len)) {
-	    result = buffer;
-	    break;
-	}
+        if (!strncasecmp(buffer, string, string_len)) {
+            result = buffer;
+            break;
+        }
     }
     return result;
 }

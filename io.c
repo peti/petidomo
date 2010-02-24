@@ -36,37 +36,37 @@ LoadFromDescriptor(int fd)
     read_size = 0;
     buffer = malloc(buffer_size);
     if (buffer == NULL) {
-	syslog(LOG_ERR, "Failed to allocate %u byte of memory.", buffer_size);
-	return NULL;
+        syslog(LOG_ERR, "Failed to allocate %u byte of memory.", buffer_size);
+        return NULL;
     }
 
     for (;;) {
-	rc = read(fd, (buffer+read_size), (buffer_size - read_size - 1));
-	if (rc == -1) {
-	    syslog(LOG_ERR, "Error occured while reading file: %s", strerror(errno));
-	    free(buffer);
-	    return NULL;
-	}
-	else if (rc == 0) {	/* EOF */
-	    break;
-	}
-	else {			/* Read succeeded normally */
-	    read_size += rc;
-	    if ((buffer_size - read_size) <= 1) { /* re-allocate larger buffer */
-		char *   new_buffer;
-		buffer_size += 4 * 1024;
-		new_buffer = realloc(buffer, buffer_size);
-		if (new_buffer == NULL) {
-		    syslog(LOG_ERR, "Failed to allocate %u byte of memory.", buffer_size);
-		    free(buffer);
-		    return NULL;
-		}
-		else
-		  buffer = new_buffer;
-	    }
-	}
+        rc = read(fd, (buffer+read_size), (buffer_size - read_size - 1));
+        if (rc == -1) {
+            syslog(LOG_ERR, "Error occured while reading file: %s", strerror(errno));
+            free(buffer);
+            return NULL;
+        }
+        else if (rc == 0) {     /* EOF */
+            break;
+        }
+        else {                  /* Read succeeded normally */
+            read_size += rc;
+            if ((buffer_size - read_size) <= 1) { /* re-allocate larger buffer */
+                char *   new_buffer;
+                buffer_size += 4 * 1024;
+                new_buffer = realloc(buffer, buffer_size);
+                if (new_buffer == NULL) {
+                    syslog(LOG_ERR, "Failed to allocate %u byte of memory.", buffer_size);
+                    free(buffer);
+                    return NULL;
+                }
+                else
+                  buffer = new_buffer;
+            }
+        }
     }
-    buffer[read_size] = '\0';	/* terminate read data */
+    buffer[read_size] = '\0';   /* terminate read data */
     errno = read_size;
     return buffer;
 }
@@ -84,8 +84,8 @@ loadfile(const char *  filename)
     assert(filename);
 
     if ((fd = open(filename, O_RDONLY, 0)) == -1) {
-	syslog(LOG_WARNING, "open(\"%s\", O_RDONLY): %s", filename, strerror(errno));
-	return NULL;
+        syslog(LOG_WARNING, "open(\"%s\", O_RDONLY): %s", filename, strerror(errno));
+        return NULL;
     }
     lock.l_start  = 0;
     lock.l_len    = 0;
@@ -93,22 +93,22 @@ loadfile(const char *  filename)
     lock.l_whence = SEEK_SET;
     fcntl(fd, F_SETLKW, &lock);
     if ((len = lseek(fd, 0, SEEK_END)) == -1) {
-	syslog(LOG_WARNING, "lseek(\"%s\", SEEK_END): %s", filename, strerror(errno));
-	return NULL;
+        syslog(LOG_WARNING, "lseek(\"%s\", SEEK_END): %s", filename, strerror(errno));
+        return NULL;
     }
     if ((lseek(fd, 0, SEEK_SET) == -1)) {
-	syslog(LOG_WARNING, "lseek(\"%s\", SEEK_SET): %s", filename, strerror(errno));
-	return NULL;
+        syslog(LOG_WARNING, "lseek(\"%s\", SEEK_SET): %s", filename, strerror(errno));
+        return NULL;
     }
     buffer = malloc(len+1);
     if (buffer == NULL) {
-	syslog(LOG_WARNING, "Failed to allocate %d byte of memory.", len+1);
-	return NULL;
+        syslog(LOG_WARNING, "Failed to allocate %d byte of memory.", len+1);
+        return NULL;
     }
     rc = read(fd, buffer, len);
     if (rc != len) {
-	syslog(LOG_WARNING, "read(\"%s\", %d) read %d byte: %s", filename, len, rc, strerror(errno));
-	return NULL;
+        syslog(LOG_WARNING, "read(\"%s\", %d) read %d byte: %s", filename, len, rc, strerror(errno));
+        return NULL;
     }
     buffer[len] = '\0';
     close(fd);
@@ -134,14 +134,14 @@ savefile(const char * filename, const char * buffer)
     lock.l_whence = SEEK_SET;
     fcntl(fd, F_SETLKW, &lock);
     if (fd == -1) {
-	syslog(LOG_ERR, "open(\"%s\"): %s", filename, strerror(errno));
-	return -1;
+        syslog(LOG_ERR, "open(\"%s\"): %s", filename, strerror(errno));
+        return -1;
     }
     rc = write(fd, buffer, len);
     if (rc == -1) {
-	syslog(LOG_ERR, "Error occured while writing to file \"%s\": %s", filename, strerror(errno));
-	close(fd);
-	return -1;
+        syslog(LOG_ERR, "Error occured while writing to file \"%s\": %s", filename, strerror(errno));
+        close(fd);
+        return -1;
     }
     close(fd);
     return 0;

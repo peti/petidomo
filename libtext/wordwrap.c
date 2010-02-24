@@ -33,7 +33,7 @@
 
 void
 text_wordwrap(char *         buffer    /* Pointer to text buffer. */,
-	      unsigned int   line_len  /* Maximum line length. */)
+              unsigned int   line_len  /* Maximum line length. */)
 {
     char *         p;
     char *         q;
@@ -44,61 +44,61 @@ text_wordwrap(char *         buffer    /* Pointer to text buffer. */,
        multiple blanks to one. */
 
     for (p = q = buffer; *p != '\0'; ) {
-	if (*p == '\n') {
-	    if (p[1] == '\n') {
-		*q++ = *p++;
-		*q++ = *p++;
-	    }
-	    else {
-		*q++ = ' ';
-		p++;
-	    }
-	} else if (isspace((int)*p)) {
-	    if (isspace((int)q[-1]))
-	      p++;
-	    else
-	      *q++ = *p++;
-	}
-	else
-	  *q++ = *p++;
+        if (*p == '\n') {
+            if (p[1] == '\n') {
+                *q++ = *p++;
+                *q++ = *p++;
+            }
+            else {
+                *q++ = ' ';
+                p++;
+            }
+        } else if (isspace((int)*p)) {
+            if (isspace((int)q[-1]))
+              p++;
+            else
+              *q++ = *p++;
+        }
+        else
+          *q++ = *p++;
     }
 
     /* Wrap the text. */
 
     for (p = buffer, lastbreak = NULL, linepos = 1; *p != '\0'; p++, linepos++) {
-	if (*p == '\n') {
-	    linepos = 0;
-	    lastbreak = NULL;
-	}
-	else if (isspace((int)*p)) {
-	    if (linepos <= line_len) {
-		lastbreak = p;
-	    }
-	    else {
-		/* Wrap it. */
-		if (lastbreak) {
-		    *lastbreak = '\n';
-		    p = lastbreak;
-		    linepos = 0;
-		    lastbreak = NULL;
-		}
-		else {
-		    /* Word is too long. <shrug> */
-		    *p = '\n';
-		    linepos = 0;
-		    lastbreak = NULL;
-		}
-	    }
-	}
+        if (*p == '\n') {
+            linepos = 0;
+            lastbreak = NULL;
+        }
+        else if (isspace((int)*p)) {
+            if (linepos <= line_len) {
+                lastbreak = p;
+            }
+            else {
+                /* Wrap it. */
+                if (lastbreak) {
+                    *lastbreak = '\n';
+                    p = lastbreak;
+                    linepos = 0;
+                    lastbreak = NULL;
+                }
+                else {
+                    /* Word is too long. <shrug> */
+                    *p = '\n';
+                    linepos = 0;
+                    lastbreak = NULL;
+                }
+            }
+        }
     }
 
     if (linepos >= line_len) {
-	/* Wrap it one last time. */
-	if (lastbreak) {
-	    *lastbreak = '\n';
-	    p = lastbreak;
-	    linepos = 0;
-	    lastbreak = NULL;
-	}
+        /* Wrap it one last time. */
+        if (lastbreak) {
+            *lastbreak = '\n';
+            p = lastbreak;
+            linepos = 0;
+            lastbreak = NULL;
+        }
     }
 }

@@ -1,9 +1,9 @@
-   _        ___  ____ ____  ____              _   _     _                       
-  |_|_ _   / _ \/ ___/ ___||  _ \  _ __   ___| |_(_) __| | ___  _ __ ___   ___  
-  _|_||_| | | | \___ \___ \| |_) || '_ \ / _ \ __| |/ _` |/ _ \| '_ ` _ \ / _ \ 
+   _        ___  ____ ____  ____              _   _     _
+  |_|_ _   / _ \/ ___/ ___||  _ \  _ __   ___| |_(_) __| | ___  _ __ ___   ___
+  _|_||_| | | | \___ \___ \| |_) || '_ \ / _ \ __| |/ _` |/ _ \| '_ ` _ \ / _ \
  |_||_|_| | |_| |___) |__) |  __/ | |_) |  __/ |_| | (_| | (_) | | | | | | (_) |
-  |_|_|_|  \___/|____/____/|_|    | .__/ \___|\__|_|\__,_|\___/|_| |_| |_|\___/ 
-                                  |_|                                            
+  |_|_|_|  \___/|____/____/|_|    | .__/ \___|\__|_|\__,_|\___/|_| |_| |_|\___/
+                                  |_|
   OSSP petidomo - mailing list manager
   Version 4.0b6 (19-Mar-2004)
 
@@ -23,28 +23,28 @@
     and administrators of a mailing list to subscribe or unsubscribe
     addresses, approve postings that have been deferred or rejected,
     alist ll subscribed addresses of a list, etc.
-  
+
   * Petidomo supports various modes of operation for a mailing list such
     as open lists, closed lists, and moderated lists.
-  
+
   * Mailing list subscriptions or postings can be verified by requiring
     an acknowledgement. This feature is particularly useful when used
     for mailing list postings as it will keep the vast majority of all
     spam mail off the list.
-  
+
   * Petidomo can host an arbitrary number of mailing lists in entirely
     different domain name spaces -- also known as »Virtual Hosting«.
-  
+
   * A powerful »Access Control Language« (ACL) can be used to reject,
     approve, drop, or redirect postings or subscription attempts.
-  
+
   * Mailing list postings can be piped through an external »Posting
     Filter«, which can modify the article before it's delivered in any
     way it sees fit.
 
   * Petidomo can be configured to add arbitrary headers to any mail
     that's posted on a mailing list.
-  
+
   * Petidomo can be configured to add a signature to any mail that's
     posted on a mailing list.
 
@@ -87,8 +87,8 @@
 
   PETI's STATEMENT
 
-		    Petidomo Mailing List Manager
-			  Version 4.0b6 (19-Mar-2004)
+                    Petidomo Mailing List Manager
+                          Version 4.0b6 (19-Mar-2004)
 
 
 Greetings citizen,
@@ -175,5 +175,4 @@ Okay, I hope you'll find the Petidomo Mailing List Manager useful, and
 may the force be with you!
 
 
-                                    Peter Simons <simons@petidomo.com>
-
+                                         Peter Simons <simons@cryp.to>
