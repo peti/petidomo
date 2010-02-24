@@ -60,7 +60,7 @@ GetMemoryPool(const char * pool_name,
 
     node = AppendNode(mpools_list, (const void *) pool_name, NULL);
     if (node == NULL) {
-	free((char *) pool_name);
+	free(pool_name);
 	return -1;
     }
 
@@ -301,7 +301,7 @@ mp_free_memory_pool(const char * pool_name /* ID-String of the memory pool. */
     /* And now we move the pool completely. */
 
     RemoveNode(node);
-    free((void *) getNodeKey(node)); /* kill the pool name buffer */
+    free(getNodeKey(node)); /* kill the pool name buffer */
     FreeNode(node);
 
     for ( ; mpool_entry != NULL; mpool_entry = next_mpool_entry) {

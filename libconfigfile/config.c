@@ -243,8 +243,8 @@ FreeConfig(const char * filename)
     if (node == NULL)
       return;
 
-    free((void *) getNodeData(node));
-    free((void *) getNodeKey(node));
+    free(getNodeData(node));
+    free(getNodeKey(node));
     RemoveNode(node);
     FreeNode(node);
 }
