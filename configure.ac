@@ -1,13 +1,13 @@
 dnl configure.ac -- Process this file with autoconf to produce a configure script.
 
-AC_INIT([petidomo], [4.1-beta-1], [simons@cryp.to])
+AC_INIT([petidomo], m4_esyscmd([build-aux/git-version-gen .tarball-version]), [simons@cryp.to], [petidomo], [http://petidomo.sourceforge.net/])
 AC_CONFIG_SRCDIR([petidomo.h])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([-Wall -Werror 1.10 gnu filename-length-max=99 tar-v7])
+AM_INIT_AUTOMAKE([1.11 -Wall gnu])
 AC_CONFIG_MACRO_DIR([build-aux])
 
 AC_COPYRIGHT([dnl
-Copyright (C) 1997-2008 Peter Simons <simons@cryp.to>
+Copyright (C) 1997-2010 Peter Simons <simons@cryp.to>
 Copyright (C) 1999-2000 CyberSolutions GmbH, Germany.
 Copyright (C) 2000 Cable & Wireless Corp.
 
@@ -24,7 +24,10 @@ more details.
 You should have received a copy of the GNU General Public License along
 with Petidomo. If not, see <http://www.gnu.org/licenses/>.])
 
+AC_MSG_NOTICE([mapSoN version $VERSION])
+
 AC_PROG_CC
+gl_EARLY
 AM_PROG_CC_C_O
 AC_PROG_RANLIB
 AM_PROG_LEX
@@ -35,10 +38,7 @@ AC_PROG_YACC
 if test "$YACC" != "bison -y"; then
   AC_MSG_WARN([$YACC might not work; install bison if the build fails.])
 fi
-
-AC_CHECK_SIZEOF(unsigned short, 2)
-AC_CHECK_SIZEOF(unsigned int, 4)
-AC_CHECK_SIZEOF(unsigned long, 4)
+gl_INIT
 
 AC_SUBST(mta)
 AC_ARG_WITH(mta, [  --with-mta=PATH         location of the mail transport agent (sendmail?)],
@@ -85,9 +85,11 @@ AC_SYS_LARGEFILE
 
 dnl Grande Finale
 
+AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([
     Makefile
-    docs/Makefile
+    doc/Makefile
+    libgnu/Makefile
     libargv/Makefile
     libconfigfile/Makefile
     liblists/Makefile

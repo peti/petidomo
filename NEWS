@@ -1,11 +1,7 @@
+#+TITLE: Petidomo Mailing List Server          -*- mode:org;fill-column:79; -*-
+#+STARTUP: showall
 
-  NEWS
-  ====
+* Noteworthy changes in release 4.1 (????-??-??) [stable]
 
-  This is a list of user-visible and/or major changes to Petidomo.
-  For more details please have a look at the ChangeLog file.
-
-  Changes between 3.0 and 4.0:
-
-   *) ...
-
+  Moved Petidomo source code to SourceForge and released all files under
+  GPL version 3 or later.

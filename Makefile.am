@@ -2,21 +2,23 @@
 # build petidomo
 #
 
+ACLOCAL_AMFLAGS = -I build-aux
 AM_YFLAGS = -d
 
-SUBDIRS = libargv libtext liblists librfc822 libmpools libconfigfile docs
+SUBDIRS = libgnu libargv libtext liblists librfc822 libmpools libconfigfile doc
 
 sbin_PROGRAMS = petidomo
 
-petidomo_SOURCES =						\
-  acl-parser.y acl-scanner.l approve.c config-files.c		\
-  handleacl.c index.c parsearray.c queue-posting.c		\
-  tool.c archive.c filter.c help.c io.c main.c			\
-  password.c rfcparse.c unsubscribe.c address-db.c		\
-  authen.c generate-cookie.c hermes.c listserv.c		\
+petidomo_SOURCES =                                              \
+  acl-parser.y acl-scanner.l approve.c config-files.c           \
+  handleacl.c index.c parsearray.c queue-posting.c              \
+  tool.c archive.c filter.c help.c io.c main.c                  \
+  password.c rfcparse.c unsubscribe.c address-db.c              \
+  authen.c generate-cookie.c hermes.c listserv.c                \
   members.c mailer.c queue-command.c subscribe.c
 
 petidomo_CPPFLAGS =                                             \
+  -I${srcdir}/libgnu                                            \
   -DMTA=\"${mta}\"                                              \
   -DSYSCONFDIR=\"${sysconfdir}\"                                \
   -DLOCALSTATEDIR=\"${localstatedir}\"                          \
@@ -24,12 +26,13 @@ petidomo_CPPFLAGS =                                             \
 
 petidomo_LDADD =                                                \
   libconfigfile/libconfigfile.a libtext/libtext.a               \
-  liblists/liblists.a librfc822/librfc822.a   \
-  libmpools/libmpools.a libargv/libargv.a
-
+  liblists/liblists.a librfc822/librfc822.a                     \
+  libmpools/libmpools.a libargv/libargv.a libgnu/libgnu.a
 
 noinst_HEADERS  = petidomo.h
 BUILT_SOURCES   = acl-parser.c acl-scanner.c acl-parser.h
+
+EXTRA_DIST      = build-aux/gnulib-cache.m4
 
 CLEANFILES      = petidomo-*.tar.gz
 DISTCLEANFILES  = $(BUILT_SOURCES) $(EXTRA_DIST)
@@ -84,3 +87,12 @@ maintainer-clean-local:
 # update-version:
 # 	@OPT="-s`$(SHTOOL) version -lc -dshort version.c`"; \
 # 	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
+
+dist-hook:
+	echo $(VERSION) > $(distdir)/.tarball-version
+	if test -d .git; then						\
+	  $(top_srcdir)/build-aux/gitlog-to-changelog			\
+	    >$(distdir)/cl-t $(top_srcdir);				\
+	  rm -f $(distdir)/ChangeLog;					\
+	  mv $(distdir)/cl-t $(distdir)/ChangeLog;			\
+	fi

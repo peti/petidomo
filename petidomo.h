@@ -20,6 +20,8 @@
 #ifndef __PETIDOMO_H__
 #define __PETIDOMO_H__ 1
 
+#include "config.h"
+
 /********** Useful defines and declarations **********/
 
 #ifndef __HAVE_DEFINED_BOOL__
@@ -78,7 +80,7 @@ enum list_type_t
     LIST_ACKED_ONCE
     };
 
-typedef enum 
+typedef enum
     {
     ACL_PRE,
     ACL_POST
