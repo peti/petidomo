@@ -1,8 +1,4 @@
 /*
- * $Source$
- * $Revision$
- * $Date$
- *
  * Copyright (c) 1999 by Gray Watson <gray.watson@letters.com>.
  * All rights reserved.
  *

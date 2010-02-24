@@ -13,14 +13,10 @@
 @c Also, run `makeinfo' rather than `texinfo-format-buffer'.
 @c ================================================================
 
-@c ================================================================
-@c $Id$
-@c ================================================================
-
 @ifinfo
 This file is an introduction to the Argv library which handles the
 process of command-line arguments.
- 
+
 Copyright 1992 to 1998 by Gray Watson.
 
 Permission is granted to make and distribute verbatim copies of this
@@ -148,7 +144,7 @@ without express or implied warranty.
 @chapter How to Use the Library
 
 @menu
-* Concepts::			General concepts behind the library. 
+* Concepts::			General concepts behind the library.
 * How To Get::			How to get the library.
 * Installation::                How to install the library.
 * Getting Started::             Getting started with the library.
@@ -279,7 +275,7 @@ If it doesn't work you may have to do Deansify.pl's job by hand.
 program.  This can be run and given arguments to test the various
 library features.
 
-@item Typing @kbd{make install} should install the @file{libargv.a} 
+@item Typing @kbd{make install} should install the @file{libargv.a}
 library in @file{/usr/local/lib}, the @file{argv_shell} utility in
 @file{/usr/local/bin}, and the @file{argv.info} documentation file in
 @file{/usr/local/info}.
@@ -807,7 +803,7 @@ Top.
 
 Overview.
 
-* Concepts::			General concepts behind the library. 
+* Concepts::			General concepts behind the library.
 * How To Get::			How to get the library.
 * Installation::                How to install the library.
 * Getting Started::             Getting started with the library.

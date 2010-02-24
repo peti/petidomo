@@ -1,7 +1,3 @@
-#
-# $Header$
-#
-
 #  TAG: ListType <open|closed|moderated|acknowledged|acknowledged-once>
 #       The following types of mailing lists exists:
 #

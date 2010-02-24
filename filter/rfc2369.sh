@@ -2,8 +2,6 @@
 #
 # Add headers to a posting as specified in RFC 2369.
 #
-# $Header$
-#
 
 # Check command line.
 

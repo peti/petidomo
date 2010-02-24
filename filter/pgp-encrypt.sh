@@ -2,8 +2,6 @@
 #
 # Encrypt an incoming PGP for the subscribers of list so and so.
 #
-# $Header$
-#
 
 PDHOME=`csh -c "echo ~petidomo" | sed -e 's#/$##'`
 

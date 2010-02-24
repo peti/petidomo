@@ -1,7 +1,5 @@
 #! /bin/sh
 #
-# $Header$
-#
 # Insert the name specified on the command line to the Subject of
 # every posted article. To use this posting filter, set the following
 # in the list's config file:

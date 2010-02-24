@@ -1,8 +1,6 @@
 #
 # Generic mailing list acl file -- Please customize for your needs!
 #
-# $Header$
-#
 
 # Re-directing anything that looks like a command.
 IF   (subject matches "^[	 ]*((un)?subscribe|remove|delete)")

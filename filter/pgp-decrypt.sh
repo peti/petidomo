@@ -2,8 +2,6 @@
 #
 # Decrypt an incoming PGP if necessary.
 #
-# $Header$
-#
 
 PDHOME=`csh -c "echo ~petidomo" | sed -e 's#/$##'`
 
