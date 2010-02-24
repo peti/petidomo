@@ -26,6 +26,7 @@
 #include "libargv/argv.h"
 #include "libtext/text.h"
 #include "petidomo.h"
+#include "progname.h"
 
 #ifndef LOG_PERROR
 #  define LOG_PERROR 0
@@ -50,6 +51,8 @@ main(int argc, char * argv[])
         {ARGV_MAYBE, "approved", ARGV_BOOL, &g_is_approved, "approved", "approved flag."},
         {ARGV_LAST}
 	};
+
+    set_program_name(argv[0]);
 
     /* Init logging routines first of all, so that we can report
        errors. */

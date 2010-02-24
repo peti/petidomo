@@ -22,6 +22,7 @@
 #ifdef DEBUG_DMALLOC
 #  include <dmalloc.h>
 #endif
+#include <progname.h>
 
 #include "rfc822.h"
 
@@ -35,6 +36,8 @@ main(int argc, char ** argv)
 	 *   local,
 	 *   host;
     int      rc;
+
+    set_program_name(argv[0]);
 
     while(gets(buffer)) {
 

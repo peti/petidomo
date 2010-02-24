@@ -8,7 +8,7 @@ else
   gnulibtool=gnulib-tool
 fi
 
-gnulib_modules=( git-version-gen gitlog-to-changelog gnupload
+gnulib_modules=( git-version-gen gitlog-to-changelog gnupload progname
                  maintainer-makefile announce-gen crypto/md5 )
 
 $gnulibtool --m4-base build-aux --source-base libgnu --import "${gnulib_modules[@]}"

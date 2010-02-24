@@ -4,6 +4,7 @@
  * $Date$
  */
 
+#include <progname.h>
 #include "argv.h"
 
 int
@@ -24,6 +25,8 @@ main(int argc, char ** argv)
      {ARGV_LAST}
     };
     unsigned int i;
+
+    set_program_name(argv[0]);
 
     /* Parse the command line. */
 
