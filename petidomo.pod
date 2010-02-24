@@ -1,18 +1,19 @@
 ##
 ##  petidomo.pod -- Petidomo Unix Manual Page
-##  Copyright (c) 2001 Ralf S. Engelschall <rse@engelschall.com> 
+##  Copyright (c) 2001 Ralf S. Engelschall <rse@engelschall.com>
 ##
-##  This file is part of Petidomo.
+## This program is free software: you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation, either version 3 of the License, or (at your option) any later
+## version.
 ##
-##  Petidomo is free software; you can redistribute it and/or modify
-##  it under the terms of the GNU General Public License as published by
-##  the Free Software Foundation; either version 2, or (at your option)
-##  any later version.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+## FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-##  Petidomo is distributed in the hope that it will be useful, but
-##  WITHOUT ANY WARRANTY; without even the implied warranty of
-##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-##  General Public License for more details.
+## You should have received a copy of the GNU General Public License along with
+## this program. If not, see <http://www.gnu.org/licenses/>.
 ##
 
 =pod
@@ -181,7 +182,7 @@ if the master config file doesn't set it.
 =item B<MTAOptions> I<string>
 
 This tag is a bit tricky and in ninety-nine out of hundred cases you
-should simply leave this option undefined as it is rarely required 
+should simply leave this option undefined as it is rarely required
 anyway.
 This entry sets the options which will be handed over to the MTA
 when it is called. You usually won't change this.
@@ -493,8 +494,8 @@ This file is supposed to contain a short description of the mailing
 list's topic and purpose. It's contents will be sent back if a user
 requests the command B<"help listname">.
 
-If the path specified has no trailing "/", it is interpreted to be 
-relative to the directory where the list's config file has been found. 
+If the path specified has no trailing "/", it is interpreted to be
+relative to the directory where the list's config file has been found.
 The default path is B<@PREFIX@/etc/petidomo/listname.desc>.
 
 =item B<SignatureFile>  I<string>
@@ -504,7 +505,7 @@ every posting on this list. This may be used to add a
 list-specific signature.
 
 If the path specified has no trailing "/", it is interpreted to be
-relative to the directory where the list's config file has been found. 
+relative to the directory where the list's config file has been found.
 The default path is B<@PREFIX@/etc/petidomo/$listname.sig>.
 
 =item B<AddressFile>  I<string>
@@ -594,7 +595,7 @@ Example:
 =over 4
 
 B<PostingFilter        "/bin/cat | /bin/cat; echo ; echo Testing"">
-  
+
 =back
 
 =back
@@ -1139,7 +1140,7 @@ address will make it into the B<Listname.list> file.
 Sometimes, it is necessary to edit these files manually, though, or
 B<Petidomo>'s address validation algorithm fails. Once you have an
 incorrect address in your list file, sendmail will abort with an
-error, without trying to deliver the mail at all. 
+error, without trying to deliver the mail at all.
 
 To clarify, this does not happen when an address is not reachable,
 this happens only when you subscribe something like
@@ -1294,7 +1295,7 @@ the user whenever he or she issues a command that is syntactically
 incorrect.
 
 User commands always have to be sent to the request address of
-the mailing list not to the mailing list itself! 
+the mailing list not to the mailing list itself!
 
 Alternatively, commands can always be sent to the address
 B<petidomo@yourhost.dom>, but the B<listname-request@yourhost.dom> address is
@@ -1456,7 +1457,7 @@ B<sendmail(8)>
 B<bounce(8)>, B<cleanup(8)>, B<defer(8)>, B<error(8)>, B<flush(8)>, B<lmtp(8)>,
 B<local(8)>, B<master(8)>, B<pickup(8)>, B<pipe(8)>, B<qmgr(8)>, B<showq(8)>, B<smtp(8)>,
 B<smtpd(8)>, B<spawn(8)>, B<trivial-rewrite(8)>.
-
+2
 =back
 
 =back
