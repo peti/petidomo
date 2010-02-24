@@ -24,7 +24,7 @@ more details.
 You should have received a copy of the GNU General Public License along
 with Petidomo. If not, see <http://www.gnu.org/licenses/>.])
 
-AC_MSG_NOTICE([mapSoN version $VERSION])
+AC_MSG_NOTICE([petidomo version $VERSION])
 
 AC_PROG_CC
 gl_EARLY
