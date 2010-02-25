@@ -32,9 +32,14 @@ petidomo_LDADD =                                                \
 noinst_HEADERS  = petidomo.h
 BUILT_SOURCES   = acl-parser.c acl-scanner.c acl-parser.h
 
-EXTRA_DIST      = build-aux/gnulib-cache.m4
+EXTRA_DIST      = build-aux/gnulib-cache.m4 petidomo-approve.pl \
+                  petidomo-kickout.pl filter/rfc2369.sh         \
+                  filter/insert-name-in-subject.sh              \
+                  filter/pgp-decrypt.sh filter/pgp-encrypt.sh   \
+                  config/petidomo.conf config/petidomo.acl      \
+                  config/help config/index config/list-config   \
+                  config/list-acl
 
-CLEANFILES      = petidomo-*.tar.gz
 DISTCLEANFILES  = $(BUILT_SOURCES) $(EXTRA_DIST)
 MAINTAINERCLEANFILES =                                          \
   Makefile.in aclocal.m4 compile config.guess config.sub        \
@@ -44,41 +49,44 @@ MAINTAINERCLEANFILES =                                          \
 maintainer-clean-local:
 	-rm -rf build-aux
 
-# install:	all
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(bindir)
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(sysconfdir)
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/lists
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/ack-queue
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(datadir)
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(libexecdir)
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(mandir)/man1
-#	$(SHTOOL) install -c -s -m 555 petidomo $(DESTDIR)$(bindir)
-#	$(SHTOOL) install -c -m 755 petidomo-approve $(DESTDIR)$(bindir)
-#	$(SHTOOL) install -c -m 755 petidomo-kickout $(DESTDIR)$(bindir)
-#	$(SHTOOL) install -c -m 644 petidomo.1 $(DESTDIR)$(mandir)/man1/petidomo.1
-#	$(SHTOOL) install -c -m 644 config/petidomo.conf $(DESTDIR)$(sysconfdir)/petidomo.conf-sample
-#	$(SHTOOL) install -c -m 644 config/petidomo.acl $(DESTDIR)$(sysconfdir)/petidomo.acl-sample
-#	$(SHTOOL) install -c -m 444 config/help $(DESTDIR)$(datadir)
-#	if [ ! -f $(DESTDIR)$(localstatedir)/index ] ; then $(SHTOOL) install -c -m 444 config/index $(DESTDIR)$(localstatedir); fi
-#	$(SHTOOL) install -c -m 555 filter/insert-name-in-subject.sh $(DESTDIR)$(libexecdir)
-#	$(SHTOOL) install -c -m 555 filter/pgp-decrypt.sh $(DESTDIR)$(libexecdir)
-#	$(SHTOOL) install -c -m 555 filter/pgp-encrypt.sh $(DESTDIR)$(libexecdir)
-#	$(SHTOOL) install -c -m 555 filter/rfc2369.sh $(DESTDIR)$(libexecdir)
-#
-# install-testlist:
-#	$(SHTOOL) mkdir -f -p -m 755 $(DESTDIR)$(localstatedir)/lists/testlist
-#	$(SHTOOL) install -c -m 644 config/list-config $(DESTDIR)$(localstatedir)/lists/testlist/config
-#	$(SHTOOL) install -c -m 644 config/list-acl $(DESTDIR)$(localstatedir)/lists/testlist/acl
-#	@rm -f $(DESTDIR)$(localstatedir)/lists/testlist/list
-#	$(SHTOOL) install -c -m 644 /dev/null $(DESTDIR)$(localstatedir)/lists/testlist/list
-#
-# #   increase or update version information
-# new-version:
-#	@V="$(VERSION)"; OPT="-e"; [ ".$$V" != . ] && OPT="-s$$V"; \
-#	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
-# update-version:
-#	@OPT="-s`$(SHTOOL) version -lc -dshort version.c`"; \
-#	$(SHTOOL) version -lc -n 'Petidomo' -p petidomo_ $$OPT version.c
+install-exec-local:
+	test -d "$(DESTDIR)$(sbindir)" || $(MKDIR_P) "$(DESTDIR)$(sbindir)"
+	test -d "$(DESTDIR)$(libexecdir)" || $(MKDIR_P) "$(DESTDIR)$(libexecdir)"
+	$(INSTALL_PROGRAM) ${srcdir}/petidomo-approve.pl "$(DESTDIR)$(sbindir)/petidomo-approve"
+	$(INSTALL_PROGRAM) ${srcdir}/petidomo-kickout.pl "$(DESTDIR)$(sbindir)/petidomo-kickout"
+	$(INSTALL_PROGRAM) ${srcdir}/filter/insert-name-in-subject.sh "$(DESTDIR)$(libexecdir)"
+	$(INSTALL_PROGRAM) ${srcdir}/filter/pgp-decrypt.sh "$(DESTDIR)$(libexecdir)"
+	$(INSTALL_PROGRAM) ${srcdir}/filter/pgp-encrypt.sh "$(DESTDIR)$(libexecdir)"
+	$(INSTALL_PROGRAM) ${srcdir}/filter/rfc2369.sh "$(DESTDIR)$(libexecdir)"
+
+install-data-local:
+	test -d "$(DESTDIR)$(sysconfdir)" || $(MKDIR_P) "$(DESTDIR)$(sysconfdir)"
+	test -d "$(DESTDIR)$(localstatedir)/lists" || $(MKDIR_P) "$(DESTDIR)$(localstatedir)/lists"
+	test -d "$(DESTDIR)$(localstatedir)/ack-queue" || $(MKDIR_P) "$(DESTDIR)$(localstatedir)/ack-queue"
+	test -d "$(DESTDIR)$(datadir)" || $(MKDIR_P) "$(DESTDIR)$(datadir)"
+	$(INSTALL_DATA) ${srcdir}/config/petidomo.conf "$(DESTDIR)$(sysconfdir)/petidomo.conf-sample"
+	$(INSTALL_DATA) ${srcdir}/config/petidomo.acl "$(DESTDIR)$(sysconfdir)/petidomo.acl-sample"
+	$(INSTALL_DATA) ${srcdir}/config/help "$(DESTDIR)$(datadir)"
+	if [ ! -f "$(DESTDIR)$(localstatedir)/index" ] ; then $(INSTALL_DATA) ${srcdir}/config/index "$(DESTDIR)$(localstatedir)"; fi
+
+install-testlist:
+	test -d "$(DESTDIR)$(localstatedir)/lists/testlist" || $(MKDIR_P) "$(DESTDIR)$(localstatedir)/lists/testlist"
+	$(INSTALL_DATA) ${srcdir}/config/list-config "$(DESTDIR)$(localstatedir)/lists/testlist/config"
+	$(INSTALL_DATA) ${srcdir}/config/list-acl "$(DESTDIR)$(localstatedir)/lists/testlist/acl"
+	@rm -f "$(DESTDIR)$(localstatedir)/lists/testlist/list"
+	$(INSTALL_DATA) /dev/null "$(DESTDIR)$(localstatedir)/lists/testlist/list"
+
+uninstall-local:
+	rm -f "$(DESTDIR)$(sbindir)/petidomo-kickout"
+	rm -f "$(DESTDIR)$(sbindir)/petidomo-approve"
+	rm -f "$(DESTDIR)$(sysconfdir)/petidomo.acl-sample"
+	rm -f "$(DESTDIR)$(sysconfdir)/petidomo.conf-sample"
+	rm -f "$(DESTDIR)$(libexecdir)/rfc2369.sh"
+	rm -f "$(DESTDIR)$(libexecdir)/insert-name-in-subject.sh"
+	rm -f "$(DESTDIR)$(libexecdir)/pgp-encrypt.sh"
+	rm -f "$(DESTDIR)$(libexecdir)/pgp-decrypt.sh"
+	rm -f "$(DESTDIR)$(localstatedir)/index"
+	rm -f "$(DESTDIR)$(datadir)/help"
 
 dist-hook:
 	echo $(VERSION) > $(distdir)/.tarball-version
