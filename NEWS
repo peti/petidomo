@@ -1,6 +1,8 @@
 #+TITLE: Petidomo Mailing List Server          -*- mode:org;fill-column:79; -*-
 #+STARTUP: showall
 
+* Noteworthy changes in release ?.? (????-??-??) [?]
+
 * Noteworthy changes in release 4.1 (2010-02-25) [stable]
 
   Moved Petidomo source code to SourceForge and released all files under
