@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2010 Peter Simons <simons@cryp.to>
+ * Copyright (c) 1995-2013 Peter Simons <simons@cryp.to>
  * Copyright (c) 2000-2001 Cable & Wireless GmbH
  * Copyright (c) 1999-2000 CyberSolutions GmbH
  *
@@ -42,4 +42,3 @@ int     rfc822_parse_address(const char *, char **, char **, char **);
 char *  rfc822_address_sep(struct rfc822_address_sep_state *);
 
 #endif /* !__LIB_RFC822_H__ */
-
