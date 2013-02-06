@@ -29,6 +29,7 @@ AC_MSG_NOTICE([petidomo version $VERSION])
 AC_PROG_CC
 gl_EARLY
 AM_PROG_CC_C_O
+AM_PROG_AR
 AC_PROG_RANLIB
 AM_PROG_LEX
 if test "$LEX" != "flex"; then
