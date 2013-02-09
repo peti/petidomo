@@ -2,6 +2,8 @@
 # Petidomo User Manual
 #
 
+EXTRA_DIST		= petidomo.tex
+
 htmldir                 = $(pkgdatadir)/html
 dist_html_DATA          = petidomo.html petidomo.css
 
