@@ -1,7 +1,9 @@
 #+TITLE: Petidomo Mailing List Server          -*- mode:org;fill-column:79; -*-
 #+STARTUP: showall
 
-* Noteworthy changes in release ?.? (????-??-??) [?]
+* Noteworthy changes in release 4.2 (2013-02-09) [stable]
+
+  This release fixes several minor portability issues.
 
 * Noteworthy changes in release 4.1 (2010-02-25) [stable]
 
