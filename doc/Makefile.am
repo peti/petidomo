@@ -9,6 +9,9 @@ petidomo.html:	$(srcdir)/petidomo.tex
 	latex $<
 	htlatex $<
 
+petidomo.css:	petidomo.html
+	touch $@
+
 CLEANFILES = \
   petidomo.4ct petidomo.4tc petidomo.aux petidomo.css petidomo.dvi  \
   petidomo.html petidomo.idv petidomo.lg petidomo.log petidomo.tmp  \
