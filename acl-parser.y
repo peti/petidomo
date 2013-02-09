@@ -138,7 +138,7 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
 static int
 acl_error(const char * string)
 {
-    syslog(LOG_ERR, "Syntax error in line %u: %s\n", lineno, string);
+    syslog(LOG_ERR, "syntax error in line %u: %s\n", lineno, string);
     return 0;
 }
 
@@ -151,7 +151,7 @@ dofilter(const char * filter)
 
     fh = popen(filter, "w");
     if (fh == NULL) {
-        syslog(LOG_ERR, "Failed to open ACL-filter \"%s\": %s", filter, strerror(errno));
+        syslog(LOG_ERR, "failed to open ACL-filter \"%s\": %s", filter, strerror(errno));
         return -1;
     }
     fprintf(fh, "%s\n", g_MailStruct->Header);
@@ -168,7 +168,7 @@ dofilter(const char * filter)
       case 1:
           return FALSE;
       default:
-          syslog(LOG_ERR, "ACL-filter \"%s\" returned unexpected value %d.", filter, rc);
+          syslog(LOG_ERR, "acl filter \"%s\" returned unexpected value %d.", filter, rc);
           return -1;
     }
 }
