@@ -15,3 +15,4 @@ test_LDADD        = librfc822.a ../libgnu/libgnu.a
 EXTRA_DIST        = testaddresslines parse_address.c
 
 DISTCLEANFILES    = address.c address_scan.c
+MAINTAINERCLEANFILES = Makefile.in

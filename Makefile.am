@@ -40,14 +40,16 @@ EXTRA_DIST      = build-aux/gnulib-cache.m4 petidomo-approve.pl \
                   config/help config/index config/list-config   \
                   config/list-acl
 
-DISTCLEANFILES  = $(BUILT_SOURCES) $(EXTRA_DIST)
+DISTCLEANFILES  = $(BUILT_SOURCES)
 MAINTAINERCLEANFILES =                                          \
   Makefile.in aclocal.m4 compile config.guess config.sub        \
-  configure liblists/Makefile.in     \
-  libmpools/Makefile.in libargv/Makefile.in librfc822/Makefile.in
+  configure ChangeLog GNUmakefile config.h.in maint.mk
 
 maintainer-clean-local:
-	-rm -rf build-aux
+	-rm -rf build-aux libgnu
+
+distclean-local:
+	-rm -rf autom4te.cache
 
 install-exec-local:
 	test -d "$(DESTDIR)$(sbindir)" || $(MKDIR_P) "$(DESTDIR)$(sbindir)"

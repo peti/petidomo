@@ -6,3 +6,5 @@ libtext_a_SOURCES	= \
   easy_sprintf.c transform_text.c wordwrap.c
 
 noinst_HEADERS		= text.h
+
+MAINTAINERCLEANFILES = Makefile.in
