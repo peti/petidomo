@@ -19,6 +19,7 @@
  */
 
 #include <ctype.h>
+#define YY_NO_INPUT
 #include "acl-parser.h"
 %}
 

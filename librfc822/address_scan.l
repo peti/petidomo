@@ -30,6 +30,7 @@ extern int     yylval;
 char *         rfc822_address_buffer;
 int            rfc822_address_buffer_pos;
 
+#define YY_NO_INPUT
 #define YY_INPUT(buf,result,max_size) { \
     buf[0] = rfc822_address_buffer[rfc822_address_buffer_pos++]; \
     result = ((buf[0] != '\0') ? 1 : YY_NULL); \
