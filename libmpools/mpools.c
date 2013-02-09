@@ -312,6 +312,8 @@ mp_free_memory_pool(const char * pool_name /* ID-String of the memory pool. */
 }
 
 
+#if 0
+
 /* This routine is experimental and for debugging purposes only. In
    the current version, it will dump the contents of pool 'pool_name'
    to the screen, using printf(3).
@@ -347,3 +349,5 @@ mp_dump_memory_pool(const char * pool_name /* ID-String of the memory pool. */
     }
     printf("Total size of mpool \"%s\" is %u byte.\n", pool_name, total);
 }
+
+#endif
