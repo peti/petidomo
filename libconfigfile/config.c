@@ -243,8 +243,8 @@ FreeConfig(const char * filename)
     if (node == NULL)
       return;
 
-    free(getNodeData(node));
-    free(getNodeKey(node));
+    free((void*)getNodeData(node));
+    free((void*)getNodeKey(node));
     RemoveNode(node);
     FreeNode(node);
 }
@@ -335,7 +335,7 @@ GetConfig(const char * filename, char * keyword)
 
     result_buf = strdup(p);
     if (result_buf == NULL) {
-	syslog(LOG_ERR, "GetConfig: Failed to allocate %d byte of memory.", strlen(p));
+        syslog(LOG_ERR, "GetConfig: Failed to allocate memory for parameter buffer.");
 	errno = ENOMEM;
 	return NULL;
     }
