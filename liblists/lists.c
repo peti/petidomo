@@ -17,6 +17,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 #include "lists.h"
 
 /* Routines to access the elements of the structures transparently. */

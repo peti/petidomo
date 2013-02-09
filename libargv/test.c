@@ -14,6 +14,8 @@
  * without express or implied warranty.
  */
 
+#include <config.h>
+
 #include <progname.h>
 #include "argv.h"
 

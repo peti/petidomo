@@ -14,6 +14,8 @@
  * without express or implied warranty.
  */
 
+#include <config.h>
+
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>

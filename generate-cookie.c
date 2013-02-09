@@ -17,6 +17,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include "petidomo.h"
 #include "md5.h"
 #include <string.h>
