@@ -101,7 +101,7 @@ void approve_main(char* mail)
     if (ParseMail(&MailStruct, mail, MasterConfig->fqdn) != 0)
         {
         syslog(LOG_ERR, "Parsing the incoming mail failed.");
-        exit(-1);
+        exit(EXIT_FAILURE);
         }
 
     if (MailStruct->From == NULL)
@@ -133,6 +133,6 @@ void approve_main(char* mail)
     else
         {
         syslog(LOG_ERR, "Failed to send email to \"%s\" concerning his request.", originator);
-        exit(-1);
+        exit(EXIT_FAILURE);
         }
     }

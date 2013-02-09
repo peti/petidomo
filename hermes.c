@@ -145,7 +145,7 @@ void hermes_main(char * incoming_mail, const char * listname)
             else
                 {
                 syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-                exit(-1);
+                exit(EXIT_FAILURE);
                 }
             return;
             }
@@ -177,7 +177,7 @@ void hermes_main(char * incoming_mail, const char * listname)
                 else
                     {
                     syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-                    exit(-1);
+                    exit(EXIT_FAILURE);
                     }
                 return;
                 }
@@ -217,7 +217,7 @@ void hermes_main(char * incoming_mail, const char * listname)
             else
                 {
                 syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-                exit(-1);
+                exit(EXIT_FAILURE);
                 }
             return;
             }
@@ -235,7 +235,7 @@ void hermes_main(char * incoming_mail, const char * listname)
                 if (rc < 0)
                     {
                     syslog(LOG_ERR, "Can't add address to ack file.");
-                    exit(-1);
+                    exit(EXIT_FAILURE);
                     }
                 }
             else
@@ -247,7 +247,7 @@ void hermes_main(char * incoming_mail, const char * listname)
                 if (rc < 0)
                     {
                     syslog(LOG_ERR, "Can't verify whether address \"%s\" needs to be acknowledged or not.", MailStruct->From);
-                    exit(-1);
+                    exit(EXIT_FAILURE);
                     }
                 else if (rc == 0)
                     {
@@ -282,7 +282,7 @@ void hermes_main(char * incoming_mail, const char * listname)
                     else
                         {
                         syslog(LOG_ERR, "Failed to send email to \"%s\" concerning this request.", owner);
-                        exit(-1);
+                        exit(EXIT_FAILURE);
                         }
                     return;
                     }
