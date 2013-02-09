@@ -18,6 +18,7 @@
 #define __ARGV_LOC_H__
 
 #include "argv.h"                       /* to get the types */
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,11 +27,6 @@ extern "C" {
 /*
  * generic constants
  */
-/* special consideration for NULL.  some compilers bitch if I redefine it */
-#ifndef NULL
-#define NULL            0L
-#endif
-
 #undef  MIN
 #define MIN(a,b)        ((a) < (b) ? (a) : (b))
 
