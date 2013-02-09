@@ -17,15 +17,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PETIDOMO_H__
-#define __PETIDOMO_H__ 1
+#ifndef PETIDOMO_H_INCLUDED
+#define PETIDOMO_H_INCLUDED 1
 
 #include <config.h>
 
 /********** Useful defines and declarations **********/
 
-#ifndef __HAVE_DEFINED_BOOL__
-#    define __HAVE_DEFINED_BOOL__ 1
+#ifndef PETIDOMO_HAS_DEFINED_BOOL
+#    define PETIDOMO_HAS_DEFINED_BOOL 1
      typedef int bool;
 #endif
 
@@ -267,4 +267,4 @@ char* queue_command(const struct Mail* mail, const char* command);
 int is_address_on_list(const char* file, const char* address);
 int add_address(const char* file, const char* address);
 
-#endif /* !defined(__PETIDOMO_H__) */
+#endif /* !defined(PETIDOMO_H_INCLUDED) */
