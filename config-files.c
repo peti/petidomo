@@ -70,7 +70,7 @@ int InitPetidomo(const char* masterconfig)
     MasterConfig = calloc(sizeof(struct PD_Config), 1);
     if (MasterConfig == NULL)
         {
-        syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct PD_Config));
+        syslog(LOG_ERR, "Failed to allocate memory for the global PD_Config data structure.");
         return -1;
         }
 
@@ -254,7 +254,7 @@ const struct List_Config* getListConfig(const char * listname)
     ListConfig = calloc(sizeof(struct List_Config), 1);
     if (ListConfig == NULL)
         {
-        syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct List_Config));
+        syslog(LOG_ERR, "Failed to allocate memory for List_Config data structure.");
         exit(EXIT_FAILURE);
         }
     if (!strcasecmp(listtype, "open"))

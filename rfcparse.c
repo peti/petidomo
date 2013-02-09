@@ -211,7 +211,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 
     MailStruct = calloc(sizeof(struct Mail), 1);
     if (MailStruct == NULL) {
-        syslog(LOG_ERR, "Failed to allocate %d byte of memory.", sizeof(struct Mail));
+        syslog(LOG_ERR, "Failed to allocate memory for Mail data structure.");
         return -1;
     }
 
@@ -220,7 +220,7 @@ ParseMail(struct Mail **result, char * incoming_mail, const char * fqdn)
 
     MailStruct->Header = strdup(incoming_mail);
     if (MailStruct->Header == NULL) {
-        syslog(LOG_ERR, "Failed to allocate %d byte of memory.", strlen(incoming_mail));
+        syslog(LOG_ERR, "Failed to allocate memory for the incoming mail.");
         return -1;
     }
     for (MailStruct->Body = MailStruct->Header;
