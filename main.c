@@ -41,7 +41,6 @@ const char* who_am_i;
 int
 main(int argc, char * argv[])
     {
-    const struct PD_Config * MasterConfig;
     char *        incoming_mail;
     argv_t        args[] =
         {
@@ -108,7 +107,6 @@ main(int argc, char * argv[])
             fprintf(stderr, "petidomo: failed load master configuration.\n");
             exit(EXIT_FAILURE);
             }
-        MasterConfig = getMasterConfig();
         ListConfig = getListConfig(listname);
         if ((cp = loadfile(ListConfig->address_file)) == NULL)
             {
@@ -132,7 +130,6 @@ main(int argc, char * argv[])
         syslog(LOG_CRIT, "Failed to initialize my internals.");
         exit(EXIT_FAILURE);
     }
-    MasterConfig = getMasterConfig();
 
     /* Load the file from standard input and save it, so that it isn't
        lost in case of an error. */

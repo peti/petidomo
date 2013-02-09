@@ -26,7 +26,6 @@
 
 void hermes_main(char * incoming_mail, const char * listname)
     {
-    const struct PD_Config *     MasterConfig;
     const struct List_Config *   ListConfig;
     struct stat     sb;
     struct Mail *   MailStruct;
@@ -45,7 +44,6 @@ void hermes_main(char * incoming_mail, const char * listname)
 
     /* Initialize internals. */
 
-    MasterConfig = getMasterConfig();
     ListConfig = getListConfig(listname);
 
     /* Parse the incoming mail. */
