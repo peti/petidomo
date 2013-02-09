@@ -22,7 +22,7 @@
 #include <string.h>
 #include "text.h"
 
-#if !defined(HAVE_VSNPRINTF) && defined(HAVE___VSNPRINTF)
+#if !defined HAVE_VSNPRINTF && defined HAVE___VSNPRINTF
 #  define vsnprintf __vsnprintf
 #endif
 
