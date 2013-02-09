@@ -29,8 +29,8 @@
 #include "libtext/text.h"
 #include "petidomo.h"
 
-static int acl_error(char *);
-static int acl_lex(void);
+static int acl_error(const char *);
+int acl_lex(void);
 static int domatch(int, int, char *);
 static int dofilter(const char *);
 
@@ -136,7 +136,7 @@ action:   TOK_PASS                        { $$ = ACL_PASS; }
 /***** internal routines *****/
 
 static int
-acl_error(char * string)
+acl_error(const char * string)
 {
     syslog(LOG_ERR, "Syntax error in line %u: %s\n", lineno, string);
     return 0;
