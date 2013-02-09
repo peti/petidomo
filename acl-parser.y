@@ -39,7 +39,7 @@ int operation, g_rc;
 char * g_parameter = NULL;
 struct Mail * g_MailStruct;
 
-// Forward declarations for the scanner generated from acl-scanner.l.
+/* Forward declarations for the scanner generated from acl-scanner.l. */
 extern char *acl_text;
 extern FILE *acl_in;
 
