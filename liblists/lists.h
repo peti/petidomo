@@ -30,8 +30,8 @@
 /********** Useful defines and declarations **********/
 
 #ifndef __cplusplus
-#ifndef __HAVE_DEFINED_BOOL__
-#  define __HAVE_DEFINED_BOOL__ 1
+#ifndef PETIDOMO_HAS_DEFINED_BOOL
+#  define PETIDOMO_HAS_DEFINED_BOOL 1
 typedef int bool;
 #endif
 #ifndef FALSE

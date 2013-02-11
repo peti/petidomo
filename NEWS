@@ -1,7 +1,9 @@
 #+TITLE: Petidomo Mailing List Server          -*- mode:org;fill-column:79; -*-
 #+STARTUP: showall
 
-* Noteworthy changes in release ?.? (????-??-??) [?]
+* Noteworthy changes in release 4.3 (2013-02-11) [stable]
+
+  Fix build error on FreeBSD.
 
 * Noteworthy changes in release 4.2 (2013-02-09) [stable]
 
