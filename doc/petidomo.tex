@@ -3,17 +3,17 @@
 \usepackage{lastpage}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\lhead{\sl The Petidomo Mailing List Manager}
+\lhead{\textsl{The Petidomo Mailing List Manager}}
 \chead{}
-\rhead{Page \thepage\ of \pageref{LastPage}}
+\rhead{Page~\thepage~of~\pageref{LastPage}}
 \lfoot{}
 \cfoot{}
 \rfoot{}
 \fancypagestyle{plain}{}
 \fussy
 
-\newcommand{\Def}[1]{{\sl #1}}
-\newcommand{\file}[1]{{\sf #1}}
+\newcommand{\Def}[1]{{\textsl{#1}}}
+\newcommand{\file}[1]{{\textsf{#1}}}
 
 \begin{document}
 
@@ -277,9 +277,9 @@ testlist-request:   "|/usr/local/bin/petidomo --mode=listserv testlist"
 testlist-owner:     petidomo-manager
 \end{verbatim}
 \end{quote}
-Having done all this, execute the newaliases(1) utility to rebuild
-sendmail's internal database. Your changes will not have any effect
-unless you do this.
+Having done all this, execute the \texttt{newaliases(1)} utility to rebuild
+sendmail's internal database. Your changes will not have any effect unless you
+do this.
 
 \section{Configuring the File Permissions}
 
@@ -482,18 +482,7 @@ It does ...
 \end{quote}
 
 If this all worked for you, you have a your Petidomo installation up
-and running. Men will envy you and women will desire you --- unless,
-of course, you \emph{are} a woman, then it is vice versa. You will be
-able to stop smoking any time you want, you may eat anything you like
-and as much as you like, but you will never gain a single pound. Your
-sex life will improve dramatically, your boss will like you, your hard
-drives will never crash and your Internet connections will always be
-fast. All this, thanks to the wonders of the {\bf Petidomo Mailing
-List Manager!}
-
-In case any of the benefits promised above stays away, please consult
-paragraphs 11 and 12 of the file \file{COPYING} included in this
-distribution.
+and running. Congratulations!
 
 \chapter{Configuring Petidomo}
 
@@ -1016,7 +1005,7 @@ complete list:
 
 \begin{description}
 
-\item[{-}-mode={\sf mode}] \hfill ``listserv'', ``deliver'', ``approve'', or ``dump''
+\item[{-}-mode={\textsf{mode}}] \hfill ``listserv'', ``deliver'', ``approve'', or ``dump''
 
 The mode parameter is the only mandatory parameter and it will
 determine what mode Petidomo runs in. Anyway, if Petidomo is started
@@ -1037,7 +1026,7 @@ In ``dump'' mode, Petidomo will expect the name of a mailing list on
 the command line --- the ``listname'' option --- and dump the list of
 subscribed addresses on that list to standart output.
 
-\item[{-}-listname={\sf list name}]
+\item[{-}-listname={\textsf{list name}}]
 
 This parameter may contain any valid mailing list name. Depending on
 the mode, it this list name will be used as follows. In ``listserv''
@@ -1463,15 +1452,15 @@ an ACL statement is shown in figure~\ref{acl syntax}.
 \begin{figure}[bth]
 \begin{center}
 \begin{tabular}{cccccccccc}
-IF & ( & from & match & {\tt "}regexp{\tt "} & ) & THEN & pass & & ; \\
+IF & ( & from & match & {\texttt{"}}regexp{\texttt{"}} & ) & THEN & pass & & ; \\
    &   & subject & matches &                   &   &      & drop & & \\
-   &   & envelope & ==     & {\tt "}string{\tt "}          &   &      & reject & & \\
-   &   & header   & =     &                & &     & rejectwith & {\tt "}file{\tt "}  & \\
-   &   & body     &       &                & &     & redirect   & {\tt "}address{\tt "} & \\
-   &   &      &       &                &   &      & forward    & {\tt "}address{\tt "} & \\
-   &   &      &       &                &   &      & filter     & {\tt "}script{\tt "} & \\
+   &   & envelope & ==     & {\texttt{"}}string{\texttt{"}}          &   &      & reject & & \\
+   &   & header   & =     &                & &     & rejectwith & {\texttt{"}}file{\texttt{"}}  & \\
+   &   & body     &       &                & &     & redirect   & {\texttt{"}}address{\texttt{"}} & \\
+   &   &      &       &                &   &      & forward    & {\texttt{"}}address{\texttt{"}} & \\
+   &   &      &       &                &   &      & filter     & {\texttt{"}}script{\texttt{"}} & \\
    &   &      &       &                &   &      & approve     &  & \\
-IF & ( &  & {\tt "}filter{\tt "} &  & ) & THEN &  & & ; \\
+IF & ( &  & {\texttt{"}}filter{\texttt{"}} &  & ) & THEN &  & & ; \\
 \end{tabular}
 \caption{Access Control Language syntax}
 \label{acl syntax}
@@ -1565,7 +1554,7 @@ IF (from == "moron@moron.net") OR
 \end{quote}
 
 The keyword ``from'' stands for the address, noted in the ``From:''
-header line of the mail and, the ``== {\tt "}address{\tt "}'' means
+header line of the mail and, the ``== {\texttt{"}}address{\texttt{"}}'' means
 that the condition if this address is equal to the one written in
 quotes thereafter. (You can also use a single `=' character, if you
 prefer that over two equal-characters.) This is a verbatim match. If
@@ -1739,9 +1728,8 @@ if (from matches "simons@.*\.de") and
 \end{verbatim}
 \end{quote}
 
-\item Currently you can't match for the double quote character ({\tt
-"}), we're afraid. The escape sequence {\tt \verb+\+"} is not
-supported yet.
+\item Currently you can't match for the double quote character ({\texttt{"}}),
+  we're afraid. The escape sequence \verb|\"| is not supported yet.
 
 \end{itemize}
 
@@ -1899,7 +1887,7 @@ volunteers are welcome, and install it.
 \item Log in as user ``petidomo''.
 
 \item Create a directory \file{.pgp} in the home directory of the
-users Petidomo runs under and set the {\tt \$PGPPATH} variable to it.
+users Petidomo runs under and set the {\texttt{\$PGPPATH}} variable to it.
 
 \item Create a PGP key pair by calling `pgp -kg''. As user-id enter
 the address of the mailing list itself, for example: ``The secret
@@ -1974,13 +1962,13 @@ who, when being called by \file{pgp-encrypt.sh}.
 
 Finally, make sure that you do this only with the correct versions of
 the software. Petidomo needs to be version 2.1 or later, earlier
-versions won't work. The PGP binary needs to understand the {\tt -@}
+versions won't work. The PGP binary needs to understand the {\texttt{-@}}
 operator on the command line, which has been added in PGP 2.6i at some
 time.
 
-One last hint: If PGP-encryption or decryption doesn't work, it will
-usually help to remove the {\tt \$LOGFILE} parameter from the {\tt
-trap} command in the scripts:
+One last hint: If PGP-encryption or decryption doesn't work, it will usually
+help to remove the {\texttt{\$LOGFILE}} parameter from the {\texttt{trap}}
+command in the scripts:
 
 \begin{quote}
 \begin{verbatim}
@@ -2065,11 +2053,11 @@ Petidomo's address validation algorithm fails. Once you have an
 incorrect address in your list file, sendmail will abort with an
 error, without trying to deliver the mail at all.
 
-To clarify, this does not happen when an address is not reachable,
-this happens only when you subscribe something like {\tt
-hey@this@is@wrong....}. Once you suspect that your address list has
-been corrupted, there's an easy way to find out, which addresses are
-wrong. Simply use sendmail's address verification mode like this:
+To clarify, this does not happen when an address is not reachable, this happens
+only when you subscribe something like {\texttt{hey@this@is@wrong....}}. Once
+you suspect that your address list has been corrupted, there's an easy way to
+find out, which addresses are wrong. Simply use sendmail's address verification
+mode like this:
 
 \begin{quote}
 \begin{verbatim}
