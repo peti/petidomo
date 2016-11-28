@@ -43,7 +43,7 @@ EXTRA_DIST      = build-aux/gnulib-cache.m4 petidomo-approve.pl \
 DISTCLEANFILES  = $(BUILT_SOURCES)
 MAINTAINERCLEANFILES =                                          \
   Makefile.in aclocal.m4 compile config.guess config.sub        \
-  configure ChangeLog GNUmakefile config.h.in maint.mk
+  configure ChangeLog GNUmakefile config.h.in maint.mk INSTALL
 
 maintainer-clean-local:
 	-rm -rf build-aux libgnu
