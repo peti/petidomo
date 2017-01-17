@@ -1,0 +1,22 @@
+# .travis.yml
+
+language: c
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - sendmail
+      - texlive
+      - texlive-latex-extra
+      - tex4ht
+
+install:
+  - git clone --depth=1 git://git.savannah.gnu.org/gnulib.git
+
+script:
+  - ./bootstrap.sh
+  - ./configure
+  - make -j$(nproc)
+  - make check
+  - make distcheck
