@@ -317,7 +317,7 @@ DeleteAddress(struct Mail * MailStruct,
 
         /* Send success notification to the originator and the unsubscribed address */
 
-        if (!strcasecmp(address, originator) == TRUE)
+        if (!strcasecmp(address, originator))
             fh = vOpenMailer(envelope, address, NULL);
         else
             fh = vOpenMailer(envelope, address, originator, NULL);
@@ -334,7 +334,7 @@ DeleteAddress(struct Mail * MailStruct,
             fprintf(fh, "Precedence: junk\n");
             fprintf(fh, "Sender: %s\n", envelope);
             fprintf(fh, "\n");
-            if (!strcasecmp(address, originator) == TRUE)
+            if (!strcasecmp(address, originator))
                 {
                 buffer = text_easy_sprintf(
                                            "Per your request, the address \"%s\" has been unsubscribed from the " \
@@ -370,7 +370,7 @@ DeleteAddress(struct Mail * MailStruct,
             fprintf(fh, "Precedence: junk\n");
             fprintf(fh, "Sender: %s\n", envelope);
             fprintf(fh, "\n");
-            if (!strcasecmp(address, originator) == TRUE) {
+            if (!strcasecmp(address, originator)) {
                 buffer = text_easy_sprintf(
                              "Per request from the subscriber, the address \"%s\"\n"
                              "has been unsubscribed from the \"%s\" mailing list.\n",
