@@ -18,6 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include <ctype.h>
 #define YY_NO_INPUT
 #include "acl-parser.h"
