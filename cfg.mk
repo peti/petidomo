@@ -6,3 +6,8 @@ gpg_key_ID      := 99089D72
 today           := $(date "+%Y-%m-%d")
 TAR_OPTIONS     += --mtime=$(today)
 old_NEWS_hash   := c038031744d765d91e18bb4119f69fe0
+
+.PHONY: maintainer-upload-website
+
+maintainer-upload-website::
+	rsync -vaP doc/*.html doc/*.css web.sourceforge.net:/home/project-web/petidomo/htdocs/
