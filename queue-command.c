@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2013 Peter Simons <simons@cryp.to>
+ * Copyright (c) 1995-2019 Peter Simons <simons@cryp.to>
  * Copyright (c) 2000-2001 Cable & Wireless GmbH
  * Copyright (c) 1999-2000 CyberSolutions GmbH
  *

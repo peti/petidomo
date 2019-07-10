@@ -7,7 +7,7 @@ AM_INIT_AUTOMAKE([1.11 -Wall gnu subdir-objects])
 AC_CONFIG_MACRO_DIR([build-aux])
 
 AC_COPYRIGHT([dnl
-Copyright (C) 1997-2013 Peter Simons <simons@cryp.to>
+Copyright (C) 1995-2019 Peter Simons <simons@cryp.to>
 Copyright (C) 1999-2000 CyberSolutions GmbH, Germany.
 Copyright (C) 2000 Cable & Wireless Corp.
 
