@@ -12,6 +12,7 @@ addons:
       - texlive
       - texlive-latex-extra
       - tex4ht
+      - latexmk
 
 install:
   - git clone --depth=1 git://git.savannah.gnu.org/gnulib.git

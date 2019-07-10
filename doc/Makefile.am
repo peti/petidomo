@@ -8,7 +8,7 @@ htmldir                 = $(pkgdatadir)/html
 dist_html_DATA          = petidomo.html petidomo.css
 
 petidomo.html:	$(srcdir)/petidomo.tex
-	latex $<
+	latexmk $<
 	htlatex $<
 
 petidomo.css:	petidomo.html
