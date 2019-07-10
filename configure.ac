@@ -1,6 +1,6 @@
 dnl configure.ac -- Process this file with autoconf to produce a configure script.
 
-AC_INIT([petidomo], m4_esyscmd([build-aux/git-version-gen .tarball-version]), [simons@cryp.to], [petidomo], [http://petidomo.sourceforge.net/])
+AC_INIT([petidomo],[m4_esyscmd(build-aux/git-version-gen .tarball-version)],[simons@cryp.to],[petidomo],[http://petidomo.sourceforge.net/])
 AC_CONFIG_SRCDIR([petidomo.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall gnu subdir-objects])
