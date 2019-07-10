@@ -1,7 +1,9 @@
 # .travis.yml
 
 language: c
-sudo: false
+dist: xenial
+git:
+  submodules: false
 
 addons:
   apt:
