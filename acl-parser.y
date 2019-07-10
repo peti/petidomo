@@ -45,7 +45,7 @@ extern FILE *acl_in;
 
 #define YYERROR_VERBOSE
 %}
-%name-prefix="acl_"
+%define api.prefix {acl_}
 %token TOK_IF TOK_EQUAL TOK_FROM TOK_SUBJECT
 %token TOK_ENVELOPE TOK_HEADER TOK_BODY TOK_AND TOK_OR TOK_NOT
 %token TOK_THEN TOK_MATCH TOK_STRING TOK_DROP TOK_PASS TOK_APPROVE
