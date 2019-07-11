@@ -5,7 +5,7 @@
 ACLOCAL_AMFLAGS = -I build-aux
 AM_YFLAGS = -d
 
-SUBDIRS = libgnu libargv libtext liblists librfc822 libmpools libconfigfile doc
+SUBDIRS = libgnu libargv libtext liblists libmpools librfc822 libconfigfile doc
 
 sbin_PROGRAMS = petidomo
 
