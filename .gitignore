@@ -34,6 +34,8 @@ Makefile.in
 /doc/petidomo.aux
 /doc/petidomo.css
 /doc/petidomo.dvi
+/doc/petidomo.fdb_latexmk
+/doc/petidomo.fls
 /doc/petidomo.html
 /doc/petidomo.idv
 /doc/petidomo.lg
