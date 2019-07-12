@@ -46,9 +46,9 @@ main(int argc, char * argv[])
     char *        incoming_mail;
     argv_t        args[] =
         {
-        {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, approve or dump."},
-        {ARGV_MAYBE, "listname", ARGV_CHAR_P, &listname, "listname", "Default mailing list."},
-        {ARGV_MAYBE, "masterconf", ARGV_CHAR_P, &masterconfig_path, "masterconf", "Path to petidomo.conf."},
+        {ARGV_MAND, "mode", ARGV_CHAR_P, &mode, "mode", "listserv, deliver, approve or dump"},
+        {ARGV_MAYBE, "listname", ARGV_CHAR_P, &listname, "listname", "default mailing list name"},
+        {ARGV_MAYBE, "masterconf", ARGV_CHAR_P, &masterconfig_path, "masterconf", "path to global petidomo.conf"},
         {ARGV_MAYBE, "approved", ARGV_BOOL, &g_is_approved, "approved", "approved flag."},
         {ARGV_LAST}
         };
