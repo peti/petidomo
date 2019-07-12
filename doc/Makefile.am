@@ -17,6 +17,6 @@ petidomo.css:	petidomo.html
 CLEANFILES = \
   petidomo.4ct petidomo.4tc petidomo.aux petidomo.css petidomo.dvi  \
   petidomo.html petidomo.idv petidomo.lg petidomo.log petidomo.tmp  \
-  petidomo.toc petidomo.xref
+  petidomo.toc petidomo.xref petidomo.fdb_latexmk petidomo.fls
 
 MAINTAINERCLEANFILES = Makefile.in
