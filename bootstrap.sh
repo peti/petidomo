@@ -4,6 +4,8 @@ set -eu
 
 if [ -x "gnulib/gnulib-tool" ]; then
   gnulibtool=gnulib/gnulib-tool
+elif [ -x "../gnulib/gnulib-tool" ]; then
+  gnulibtool=../gnulib/gnulib-tool
 else
   gnulibtool=gnulib-tool
 fi
