@@ -2,10 +2,10 @@
 #       The following types of mailing lists exists:
 #
 #         open -- The list is open for all postings which are not rejected
-#		due to the access control mechanism.
+#               due to the access control mechanism.
 #         closed -- Only subscribers are allowed to post.
 #         moderated -- Only postings which contain the correct posting
-#		password are allowed.
+#               password are allowed.
 #         acknowledged -- Every attempt to post will be answered with
 #               a request for acknowledgment, asking the poster to
 #               confirm. This prevents abuse and forgery.
@@ -13,30 +13,30 @@
 #               acknowledge his posting once, after that, he can post
 #               as he wishes.
 #
-#	The default, if this option is unset, is an open mailing list.
-ListType	open
+#       The default, if this option is unset, is an open mailing list.
+ListType        open
 
 #  TAG: SubscriptionType <public|admin|acknowledged>
-#	  public -- Everybody can subscribe and unsubscribe.
+#         public -- Everybody can subscribe and unsubscribe.
 #         admin  -- Un-/subscription can only be done by the admin.
-#		Authenticiation is done via password mechanism.
+#               Authenticiation is done via password mechanism.
 #         acknowledged -- Anybody can un-/subscribe, but he has to
 #               acknowledge the request sent to the address add to or
 #               deleted from the list.
 #
-#	The default, if this option is unset, is to allow public
-#	subscription and unsubscription.
-SubscriptionType	public
+#       The default, if this option is unset, is to allow public
+#       subscription and unsubscription.
+SubscriptionType        public
 
 #  TAG: AllowMembersCommand <yes|no>
-#	Does the 'members' or 'who' command work for this mailing list, or
-#	do you want to keep the addresses of the subscribers confidential?
-#	Set this option to 'yes' to allow the 'members'-command, or set it
-#	to 'no' to disallow it.
+#       Does the 'members' or 'who' command work for this mailing list, or
+#       do you want to keep the addresses of the subscribers confidential?
+#       Set this option to 'yes' to allow the 'members'-command, or set it
+#       to 'no' to disallow it.
 #
 #       The default, if the option is unset, is NOT to allow the 'members'-
-#	command.
-AllowMembersCommand	no
+#       command.
+AllowMembersCommand     no
 
 #  TAG: Hostname <string>
 #       This entry specifies the fully qualified domain name, Petidomo
@@ -51,41 +51,41 @@ AllowMembersCommand	no
 #       Hosting''.
 #
 #       If this option is unset, Petidomo will use the name that has
-#	been specified in the master config file, ~petidomo/etc/petidomo.conf.
+#       been specified in the master config file, ~petidomo/etc/petidomo.conf.
 #Hostname        host.domain.net
 
 #  TAG: AdminPassword <string>
 #       This tag sets the master password, which authenticiates the
-#	administrator of this mailing list. The administrator has
-#	special priviledes, such as deleting other users, overriding
-#	access control restrictions or un-/subscribing users to closed
-#	mailing lists. Passwords are always case-insensitive.
+#       administrator of this mailing list. The administrator has
+#       special priviledes, such as deleting other users, overriding
+#       access control restrictions or un-/subscribing users to closed
+#       mailing lists. Passwords are always case-insensitive.
 #
 #       Leave this entry blank, if you don't want to enable remote
-#	administration of the mailing list. This is not recommended,
-#	though, because you will have to edit all files manually,
-#	then.
+#       administration of the mailing list. This is not recommended,
+#       though, because you will have to edit all files manually,
+#       then.
 #AdminPassword   "open sesame"
 
 #  TAG: PostingPassword <string>
-#	The posting password must be specified when posting to closed
-#	or moderated mailing lists, or the server will reject the
-#	article and forward it to the list owner. Passwords are always
-#	case-insensitive.
-#PostingPassword	"yeahyeah"
+#       The posting password must be specified when posting to closed
+#       or moderated mailing lists, or the server will reject the
+#       article and forward it to the list owner. Passwords are always
+#       case-insensitive.
+#PostingPassword        "yeahyeah"
 
 #  TAG: ReplyTo <address|none>
-#	This tag controls the 'Reply-To:' field, which Petidomo adds
-#	to posted articles before they are delivered. Using this
-#	option, you can force Petidomo to insert a 'Reply-To:' which
-#	points to a certain address, or you can tell Petidomo to leave
-#	'Reply-To:' alone, by setting the parameter to "none".
+#       This tag controls the 'Reply-To:' field, which Petidomo adds
+#       to posted articles before they are delivered. Using this
+#       option, you can force Petidomo to insert a 'Reply-To:' which
+#       points to a certain address, or you can tell Petidomo to leave
+#       'Reply-To:' alone, by setting the parameter to "none".
 #
-#	If this option is unset, Petidomo will default to insert a
-#	'Reply-To:' point back to the mailing list, so that
-#	subscribers can conveniently post simply by hitting the
-#	'reply' function in their mail reader.
-#ReplyTo	none
+#       If this option is unset, Petidomo will default to insert a
+#       'Reply-To:' point back to the mailing list, so that
+#       subscribers can conveniently post simply by hitting the
+#       'reply' function in their mail reader.
+#ReplyTo        none
 
 #  TAG: PostingFilter <string>
 #       If you specify a posting filter, this program or script will
@@ -96,98 +96,98 @@ AllowMembersCommand	no
 #       filter can be used to manipulate the headers for special
 #       purposes, for example.
 #
-#	If the filter program exits with a returncode not equal to 0
+#       If the filter program exits with a returncode not equal to 0
 #       (zero), Petidomo will not post the article and terminate.
 #PostingFilter "/bin/cat"
 
 #  TAG: Archive <string>
-#	Petidomo has the ability to archive all articles that have been
-#	posted to a mailing list. With this tag you can chose the path to
-#	this archive. You have two options: You can specify a directory
-#	name here, or a file name. If Petidomo finds a file name, it will
-#	simply append the posted article to the file, one by one. If you
-#	provide the path of a directory, Petidomo will save each article in
-#	a seperate file into this directory. Paths without a leading slash
-#	("/") are treated relative to the list's home directory, otherwise
-#	the path is absolute.
+#       Petidomo has the ability to archive all articles that have been
+#       posted to a mailing list. With this tag you can chose the path to
+#       this archive. You have two options: You can specify a directory
+#       name here, or a file name. If Petidomo finds a file name, it will
+#       simply append the posted article to the file, one by one. If you
+#       provide the path of a directory, Petidomo will save each article in
+#       a seperate file into this directory. Paths without a leading slash
+#       ("/") are treated relative to the list's home directory, otherwise
+#       the path is absolute.
 #
-#	If this option is unset, no archives of the posted articles will be
-#	kept.
-#Archive		"log"
+#       If this option is unset, no archives of the posted articles will be
+#       kept.
+#Archive                "log"
 
 #  TAG: IntroductionFile <string>
-#	This entry sets the path to the introduction file, which
-#	Petidomo will send to every new subscriber. If the path is not
-#	absolute -- not beginning with a '/' character, that is --, it
-#	will be interpreted relative to the directory where this
-#	config file has been found.
+#       This entry sets the path to the introduction file, which
+#       Petidomo will send to every new subscriber. If the path is not
+#       absolute -- not beginning with a '/' character, that is --, it
+#       will be interpreted relative to the directory where this
+#       config file has been found.
 #
-#	If this option has not been set, the default value is
-#	"introduction".
-#IntroductionFile	introduction
+#       If this option has not been set, the default value is
+#       "introduction".
+#IntroductionFile       introduction
 
 #  TAG: DescriptionFile <string>
-#	This entry sets the path to the description file, which
-#	Petidomo will send back to a "help listname" command. If the
-#	path is not absolute -- not beginning with a '/' character,
-#	that is --, it will be interpreted relative to the directory
-#	where this config file has been found.
+#       This entry sets the path to the description file, which
+#       Petidomo will send back to a "help listname" command. If the
+#       path is not absolute -- not beginning with a '/' character,
+#       that is --, it will be interpreted relative to the directory
+#       where this config file has been found.
 #
-#	If this option has not been set, the default value is
-#	"description".
-#DescriptionFile	description
+#       If this option has not been set, the default value is
+#       "description".
+#DescriptionFile        description
 
 #  TAG: ACLFile <string>
-#	This entry sets the path to the ACL file, which Petidomo will
-#	use to check whether a posting to this list is allowed. If the
-#	path is not absolute -- not beginning with a '/' character,
-#	that is --, it will be interpreted relative to the directory
-#	where this config file has been found.
+#       This entry sets the path to the ACL file, which Petidomo will
+#       use to check whether a posting to this list is allowed. If the
+#       path is not absolute -- not beginning with a '/' character,
+#       that is --, it will be interpreted relative to the directory
+#       where this config file has been found.
 #
-#	If this option has not been set, the default value is "acl".
-#ACLFile	acl
+#       If this option has not been set, the default value is "acl".
+#ACLFile        acl
 
 #  TAG: HeaderFile <string>
-#	This entry sets the path to the header file, which's contents
-#	Petidomo will add to the header of every posting on this list.
-#	If the path is not absolute -- not beginning with a '/'
-#	character, that is --, it will be interpreted relative to the
-#	directory where this config file has been found.
+#       This entry sets the path to the header file, which's contents
+#       Petidomo will add to the header of every posting on this list.
+#       If the path is not absolute -- not beginning with a '/'
+#       character, that is --, it will be interpreted relative to the
+#       directory where this config file has been found.
 #
-#	If this option has not been set, the default value is
-#	"header".
-#HeaderFile	header
+#       If this option has not been set, the default value is
+#       "header".
+#HeaderFile     header
 
 #  TAG: SignatureFile <string>
-#	This entry sets the path to the signature file, which's
-#	contents Petidomo will append to every posting on this list.
-#	If the path is not absolute -- not beginning with a '/'
-#	character, that is --, it will be interpreted relative to the
-#	directory where this config file has been found.
+#       This entry sets the path to the signature file, which's
+#       contents Petidomo will append to every posting on this list.
+#       If the path is not absolute -- not beginning with a '/'
+#       character, that is --, it will be interpreted relative to the
+#       directory where this config file has been found.
 #
-#	If this option has not been set, the default value is
-#	"signature".
-#SignatureFile	signature
+#       If this option has not been set, the default value is
+#       "signature".
+#SignatureFile  signature
 
 #  TAG: AddressFile <string>
-#	This entry sets the path to the address database file, which
-#	Petidomo uses to store the addresses of the list's
-#	subscribers. If the path is not absolute -- not beginning with
-#	a '/' character, that is --, it will be interpreted relative
-#	to the directory where this config file has been found.
+#       This entry sets the path to the address database file, which
+#       Petidomo uses to store the addresses of the list's
+#       subscribers. If the path is not absolute -- not beginning with
+#       a '/' character, that is --, it will be interpreted relative
+#       to the directory where this config file has been found.
 #
-#	If this option has not been set, the default value is
-#	"list".
-#AddressFile	list
+#       If this option has not been set, the default value is
+#       "list".
+#AddressFile    list
 
 #  TAG: AcknowledgementFile <string>
-#	This entry sets the path to the acknowledgement database file,
-#	which Petidomo uses to store the addresses of posters who have
-#	verified their address by acknowledgement already. If the path
-#	is not absolute -- not beginning with a '/' character, that is
-#	--, it will be interpreted relative to the directory where
-#	this config file has been found.
+#       This entry sets the path to the acknowledgement database file,
+#       which Petidomo uses to store the addresses of posters who have
+#       verified their address by acknowledgement already. If the path
+#       is not absolute -- not beginning with a '/' character, that is
+#       --, it will be interpreted relative to the directory where
+#       this config file has been found.
 #
-#	If this option has not been set, the default value is
-#	"list".
-#AcknowledgementFile	ack
+#       If this option has not been set, the default value is
+#       "list".
+#AcknowledgementFile    ack
