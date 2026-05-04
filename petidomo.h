@@ -26,7 +26,7 @@
 
 #ifndef PETIDOMO_HAS_DEFINED_BOOL
 #    define PETIDOMO_HAS_DEFINED_BOOL 1
-     typedef int bool;
+#include <stdbool.h>
 #endif
 
 #ifndef DEBUG_DMALLOC
@@ -135,7 +135,7 @@ struct Mail
     };
 
 void RemoveCarrigeReturns(char *buffer);
-int isRFC822Address(const char *buffer);
+bool isRFC822Address(const char *buffer);
 int ParseAddressLine(char *buffer);
 int ParseReplyToLine(char *buffer);
 int ParseFromLine(char *buffer);
@@ -157,8 +157,8 @@ int ArchiveMail(const struct Mail *MailStruct, const char *listname);
 /********** authen.c **********/
 
 int FindBodyPassword(struct Mail *MailStruct);
-int isValidAdminPassword(const char *password, const char *listname);
-int isValidPostingPassword(const char *password, const char *listname);
+bool isValidAdminPassword(const char *password, const char *listname);
+bool isValidPostingPassword(const char *password, const char *listname);
 
 /********** filter.c **********/
 
@@ -226,7 +226,7 @@ const char *getPassword(void  );
 /********** tool.c **********/
 
 char *buildFuzzyMatchAddress(const char *);
-int isValidListName(const char *);
+bool isValidListName(const char *);
 bool isSubscribed(const char *, const char *, char **, char **, bool);
 
 /********** unsubscribe.c **********/

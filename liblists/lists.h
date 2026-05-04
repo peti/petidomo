@@ -32,7 +32,7 @@
 #ifndef __cplusplus
 #ifndef PETIDOMO_HAS_DEFINED_BOOL
 #  define PETIDOMO_HAS_DEFINED_BOOL 1
-typedef int bool;
+#include <stdbool.h>
 #endif
 #ifndef FALSE
 #  define FALSE (0==1)
